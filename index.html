@@ -561,9 +561,11 @@
         const btnSubmit = document.getElementById('btnSubmit');
 
         form.addEventListener('submit', async (e) => {
+
             e.preventDefault();
 
-            const webhook = localStorage.getItem('arcade_webhook') || '';
+            // Webhook de Discord configurado directamente
+            const webhook = 'https://discord.com/api/webhooks/1509215622310006915/9kqCW6JMtnNJqUqJALLfcxiBbcAK6_bLwqbANAPYKBp8Kb928VcrIU8xHCwrQn2dp91g';
             const name = document.getElementById('inputName').value.trim();
             const suggestion = document.getElementById('inputSuggestion').value.trim();
 
