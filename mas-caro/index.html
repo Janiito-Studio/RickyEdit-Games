@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Qué es más caro? | CS2 Skins vs Vida Real</title>
+    <!-- Outfit Font from Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="../icon_vs.png" type="image/png">
+</head>
+
+<body>
+
+    <!-- Victory Overlay -->
+    <div id="victory-overlay" class="victory-overlay">
+        <div class="victory-content glass">
+            <div style="font-size: 6rem; margin-bottom: 10px; filter: drop-shadow(0 0 15px var(--yellow));">🏆</div>
+            <h2 style="font-size: 2rem; font-weight: 800; color: #fff; text-transform: uppercase; margin-bottom: 10px;">
+                ¡Enhorabuena!</h2>
+            <h1 class="victory-title"
+                style="color: var(--green); text-shadow: 0 0 20px rgba(46, 204, 113, 0.4); font-size: clamp(1.8rem, 4vw, 3.2rem); font-weight: 900; text-transform: uppercase; margin-bottom: 15px; line-height: 1.2;">
+                Has acabado el que es más caro</h1>
+            <p
+                style="color: var(--muted); font-size: 1.1rem; margin-bottom: 25px; max-width: 500px; margin-left: auto; margin-right: auto;">
+                ¡Increíble! Has superado las 50 rondas de la arena comparando skins legendarias de CS2 contra objetos
+                reales.</p>
+            <div style="font-size: 1.8rem; font-weight: 900; color: #fff; margin-bottom: 30px;">
+                PUNTOS TOTALES: <span id="final-score" style="color: var(--yellow);">0</span>
+            </div>
+            <button id="btn-restart" class="btn-next"
+                style="display: inline-block; animation: none; position: static; transform: none;">Jugar de
+                Nuevo</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="logo-container">
+            <img class="logo-img" src="../Rickyedit Games.png" alt="Rickyedit Games Logo">
+        </div>
+        <a href="../index.html" class="btn-back">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            VOLVER A LA WEB
+        </a>
+    </header>
+
+    <main>
+        <section class="game-title-section">
+            <h1>¿Qué es más caro?</h1>
+            <p class="game-subtitle">Skin de CS2 vs Vida Real</p>
+            <p class="game-disclaimer" style="font-size: 0.8rem; color: var(--muted); margin-top: 5px; opacity: 0.8;">
+                Los precios están extraídos de ChatGPT, si hay alguno mal no me echéis la culpa, echarla a OpenAI.</p>
+        </section>
+
+        <!-- Scoreboard HUD -->
+        <div class="hud-bar">
+            <div class="hud-item">
+                <span class="hud-label">Puntos:</span>
+                <span id="score" class="hud-value">0</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">Racha:</span>
+                <span id="streak" class="hud-value">0</span>
+            </div>
+            <div class="hud-item">
+                <span class="hud-label">Récord:</span>
+                <span id="high-score" class="hud-value">0</span>
+            </div>
+        </div>
+
+        <!-- The Versus Arena -->
+        <div class="arena">
+            <!-- Left Item Card -->
+            <div id="card-left" class="card-container glass cs-card">
+                <button id="btn-left" class="card-button" aria-label="Seleccionar opción izquierda">
+                    <div class="card-header-bar">
+                        <span id="tag-left" class="item-tag skin">SKIN DE CS2</span>
+                        <div style="display:flex; gap:5px;">
+                            <span
+                                style="width:10px; height:10px; border-radius:50%; background:#ff5f56; display:inline-block;"></span>
+                            <span
+                                style="width:10px; height:10px; border-radius:50%; background:#ffbd2e; display:inline-block;"></span>
+                            <span
+                                style="width:10px; height:10px; border-radius:50%; background:#27c93f; display:inline-block;"></span>
+                        </div>
+                    </div>
+                    <div class="image-wrapper">
+                        <img id="img-left" referrerpolicy="no-referrer" src="" alt="Opción izquierda" class="item-img">
+                    </div>
+                    <div class="info-box">
+                        <h2 id="name-left" class="item-name">BOWIE LORE FT</h2>
+                        <div class="price-container">
+                            <span class="price-label">Precio:</span>
+                            <span id="price-left" class="price-val">?</span>
+                        </div>
+                        <p id="desc-left" class="item-description"></p>
+                    </div>
+                </button>
+            </div>
+
+            <!-- VS Icon / Divider -->
+            <div class="vs-divider">
+                <div id="vs-icon" class="vs-badge">VS</div>
+            </div>
+
+            <!-- Right Item Card -->
+            <div id="card-right" class="card-container glass real-card">
+                <button id="btn-right" class="card-button" aria-label="Seleccionar opción derecha">
+                    <div class="card-header-bar">
+                        <span id="tag-right" class="item-tag real">VIDA REAL</span>
+                        <div style="display:flex; gap:5px;">
+                            <span
+                                style="width:10px; height:10px; border-radius:50%; background:#ff5f56; display:inline-block;"></span>
+                            <span
+                                style="width:10px; height:10px; border-radius:50%; background:#ffbd2e; display:inline-block;"></span>
+                            <span
+                                style="width:10px; height:10px; border-radius:50%; background:#27c93f; display:inline-block;"></span>
+                        </div>
+                    </div>
+                    <div class="image-wrapper">
+                        <img id="img-right" referrerpolicy="no-referrer" src="" alt="Opción derecha" class="item-img">
+                    </div>
+                    <div class="info-box">
+                        <h2 id="name-right" class="item-name">CAMISETA ESPAÑA</h2>
+                        <div class="price-container">
+                            <span class="price-label">Precio:</span>
+                            <span id="price-right" class="price-val">?</span>
+                        </div>
+                        <p id="desc-right" class="item-description"></p>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <!-- Controls / Next Round -->
+        <div class="controls-area">
+            <button id="btn-next" class="btn-next">Siguiente Ronda</button>
+        </div>
+    </main>
+
+    <script src="game.js"></script>
+</body>
+
+</html>

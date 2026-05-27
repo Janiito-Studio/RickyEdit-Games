@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rickyedit Games | Minijuegos</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="icon" href="Avatar Rickyedit.jpg" type="image/jpeg" />
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0d0d10;
+            --card: rgba(22, 23, 27, 0.65);
+            --card-strong: #16171b;
+            --pink: #ff33cc;
+            --pink-2: #ff168c;
+            --yellow: #f1c40f;
+            --cyan: #38d4ff;
+            --green: #2ecc71;
+            --text: #fff;
+            --muted: #95a5a6;
+            --line: rgba(255, 255, 255, 0.08);
+            --shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: Outfit, system-ui, sans-serif;
+            background:
+                linear-gradient(135deg,
+                    rgba(255, 51, 204, 0.15),
+                    transparent 32rem),
+                radial-gradient(circle at 78% 12%,
+                    rgba(56, 212, 255, 0.18),
+                    transparent 24rem),
+                var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header stylings */
+        header {
+            background: linear-gradient(90deg, var(--pink-2), var(--pink));
+            padding: 16px clamp(16px, 4vw, 44px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 8px 30px rgba(255, 51, 204, 0.3);
+            z-index: 10;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-img {
+            width: min(220px, 48vw);
+            max-height: 48px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.55));
+        }
+
+        /* Main Layout */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 50px;
+            max-width: 700px;
+        }
+
+        .hero-avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid var(--pink);
+            box-shadow: 0 0 25px rgba(255, 51, 204, 0.45);
+            object-fit: cover;
+            margin-bottom: 20px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .hero-section h1 {
+            font-size: clamp(2.4rem, 6vw, 4.5rem);
+            font-weight: 900;
+            line-height: 0.95;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .hero-section p {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        /* Arcade Grid Options */
+        .arcade-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            width: 100%;
+            margin-bottom: 60px;
+        }
+
+        .arcade-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            min-height: 440px;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .card-image-header {
+            height: 180px;
+            width: 100%;
+            position: relative;
+            background: radial-gradient(circle, rgba(255, 51, 204, 0.06) 0%, rgba(0, 0, 0, 0.35) 100%);
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-icon-img {
+            max-height: 110px;
+            width: auto;
+            object-fit: contain;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .songless-card .card-icon-img {
+            filter: drop-shadow(0 0 10px var(--pink));
+        }
+
+        .mascaro-card .card-icon-img {
+            filter: drop-shadow(0 0 10px var(--yellow));
+        }
+
+        .soon-card .card-icon-img {
+            filter: brightness(0.6) grayscale(0.5);
+        }
+
+        .arcade-card:hover .card-icon-img {
+            transform: scale(1.15) rotate(3deg);
+        }
+
+        .arcade-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(255, 51, 204, 0.15);
+            border-color: rgba(255, 51, 204, 0.25);
+        }
+
+        .card-body {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            justify-content: space-between;
+        }
+
+        .card-badge {
+            align-self: flex-start;
+            font-size: 0.72rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            padding: 6px 14px;
+            border-radius: 99px;
+            margin-bottom: 14px;
+        }
+
+        .songless-card .card-badge {
+            background: rgba(255, 51, 204, 0.15);
+            color: var(--pink);
+            border: 1px solid rgba(255, 51, 204, 0.3);
+        }
+
+        .mascaro-card .card-badge {
+            background: rgba(241, 196, 15, 0.15);
+            color: var(--yellow);
+            border: 1px solid rgba(241, 196, 15, 0.3);
+        }
+
+        .soon-card .card-badge {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--muted);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .card-body h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+
+        .card-body p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            line-height: 1.4;
+            margin-bottom: 20px;
+        }
+
+        .card-action {
+            font-weight: 900;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s ease;
+        }
+
+        .songless-card .card-action {
+            color: var(--pink);
+        }
+
+        .mascaro-card .card-action {
+            color: var(--yellow);
+        }
+
+        .soon-card .card-action {
+            color: var(--muted);
+        }
+
+        .arcade-card:hover .card-action {
+            gap: 12px;
+        }
+
+        .arcade-card.soon-card {
+            opacity: 0.65;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .soon-card h2,
+        .soon-card p {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Suggestions Box */
+        .suggestions-container {
+            width: 100%;
+            max-width: 680px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            padding: 32px;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow);
+            margin-bottom: 40px;
+        }
+
+        .suggestions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .suggestions-header h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .btn-settings {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: var(--muted);
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .btn-settings:hover {
+            color: var(--yellow);
+        }
+
+        .settings-panel {
+            display: none;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px dashed var(--line);
+            border-radius: 14px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .settings-panel.show {
+            display: block;
+        }
+
+        .settings-panel h4 {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: var(--yellow);
+        }
+
+        .settings-panel p {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--pink);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            border: none;
+            color: #000;
+            font-weight: 900;
+            padding: 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 51, 204, 0.35);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .form-status {
+            margin-top: 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .form-status.success {
+            color: var(--green);
+        }
+
+        .form-status.error {
+            color: var(--pink);
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 20px;
+            border-top: 1px solid var(--line);
+            text-align: center;
+            background: rgba(0, 0, 0, 0.25);
+            width: 100%;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        footer a {
+            color: var(--pink);
+            text-decoration: none;
+            font-weight: 800;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="logo-container">
+            <img class="logo-img" src="Rickyedit Games.png" alt="Rickyedit Games" />
+        </div>
+    </header>
+
+    <main>
+        <section class="hero-section">
+            <img class="hero-avatar" src="Avatar Rickyedit.jpg" alt="Rickyedit" />
+            <h1>Rickyedit Games</h1>
+            <p>Elige tu minijuego preferido del universo de Rickyedit</p>
+        </section>
+
+        <div class="arcade-grid">
+            <!-- Tarjeta Songless -->
+            <a href="songless/index.html" class="arcade-card songless-card">
+                <div class="card-image-header">
+                    <img class="card-icon-img" src="icon_songless.png" alt="Songless Icon">
+                </div>
+                <div class="card-body">
+                    <div>
+                        <span class="card-badge">Adivinar</span>
+                        <h2>Songless</h2>
+                        <p>Escucha fragmentos de audio aleatorios de tus vídeos y canciones favoritas y adivina el
+                            título en el menor tiempo posible.</p>
+                    </div>
+                    <div class="card-action">
+                        JUGAR AHORA
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Tarjeta ¿Qué es más caro? -->
+            <a href="mas-caro/index.html" class="arcade-card mascaro-card">
+                <div class="card-image-header">
+                    <img class="card-icon-img" src="icon_vs.png" alt="¿Qué es más caro? Icon">
+                </div>
+                <div class="card-body">
+                    <div>
+                        <span class="card-badge">Comparar</span>
+                        <h2>¿Qué es más caro?</h2>
+                        <p>El gran dilema: ¿Es una skin de Counter Strike más cara que un coche, un viaje o un reloj de
+                            lujo en la vida real? ¡Atrévete a adivinar!</p>
+                    </div>
+                    <div class="card-action">
+                        JUGAR AHORA
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Tarjeta Próximamente -->
+            <div class="arcade-card soon-card">
+                <div class="card-image-header">
+                    <img class="card-icon-img" src="icon_soon.png" alt="Próximamente Icon">
+                </div>
+                <div class="card-body">
+                    <div>
+                        <span class="card-badge">Bloqueado</span>
+                        <h2>Próximamente</h2>
+                        <p>Estamos desarrollando nuevos minijuegos inspirados en los directos e ideas locas de
+                            Rickyedit. ¡Espéralo muy pronto!</p>
+                    </div>
+                    <div class="card-action">
+                        PRÓXIMAMENTE
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sugerir más juegos -->
+        <div class="suggestions-container">
+            <div class="suggestions-header">
+                <h3>Proponer nuevo juego</h3>
+            </div>
+
+
+
+            <form id="suggestionForm" style="display: flex; flex-direction: column; gap: 16px;">
+                <div class="form-group">
+                    <label for="inputName">Tu Nombre :</label>
+                    <input type="text" id="inputName" required placeholder="ej. Jan">
+                </div>
+                <div class="form-group">
+                    <label for="inputSuggestion">Idea del Minijuego:</label>
+                    <textarea id="inputSuggestion" rows="4" required
+                        placeholder="Describe tu idea de juego, reglas, etc. PD: Si eres Rickyedit lo puedes decir por voz."></textarea>
+                </div>
+                <button type="submit" id="btnSubmit" class="btn-submit">Enviar Propuesta</button>
+                <div id="formStatus" class="form-status"></div>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>Hecho por Jan &copy; 2026. Todos los derechos a <a href="https://www.youtube.com/@rickyedit" target="_blank"
+                rel="noreferrer">Rickyedit</a>.</p>
+    </footer>
+
+    <script>
+        // Enviar sugerencia
+        const form = document.getElementById('suggestionForm');
+        const statusDiv = document.getElementById('formStatus');
+        const btnSubmit = document.getElementById('btnSubmit');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const webhook = localStorage.getItem('arcade_webhook') || '';
+            const name = document.getElementById('inputName').value.trim();
+            const suggestion = document.getElementById('inputSuggestion').value.trim();
+
+            if (!webhook) {
+                statusDiv.textContent = '⚠️ No hay webhook configurado. Contacta al admin para activar las sugerencias.';
+                statusDiv.className = 'form-status error';
+                return;
+            }
+
+            btnSubmit.disabled = true;
+            statusDiv.textContent = 'Enviando...';
+            statusDiv.className = 'form-status';
+
+            try {
+                const response = await fetch(webhook, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        embeds: [{
+                            title: "🆕 ¡Nueva sugerencia de juego para Rickyedit Games!",
+                            color: 16724684,
+                            fields: [
+                                { name: "👤 Sugerido por", value: name, inline: true },
+                                { name: "💡 Idea del juego", value: suggestion }
+                            ],
+                            timestamp: new Date().toISOString()
+                        }]
+                    })
+                });
+
+                if (!response.ok) throw new Error('Error al enviar');
+
+                statusDiv.textContent = '✅ ¡Sugerencia enviada con éxito! Muchas gracias.';
+                statusDiv.className = 'form-status success';
+                document.getElementById('inputSuggestion').value = '';
+            } catch (err) {
+                statusDiv.textContent = '❌ Ocurrió un error al enviar la sugerencia.';
+                statusDiv.className = 'form-status error';
+            } finally {
+                btnSubmit.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

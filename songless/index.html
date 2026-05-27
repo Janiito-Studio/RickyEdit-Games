@@ -1,0 +1,2995 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rickyedit Songless - By Jan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="icon" href="../icon_songless.png" type="image/png" />
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #18191c;
+            --card: rgba(34, 35, 41, 0.78);
+            --card-strong: #222329;
+            --dark: #0d0d10;
+            --pink: #ff33cc;
+            --pink-2: #ff168c;
+            --yellow: #f1c40f;
+            --cyan: #38d4ff;
+            --green: #36e28a;
+            --text: #fff;
+            --muted: #b9bbbe;
+            --line: rgba(255, 255, 255, 0.1);
+            --shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Outfit, system-ui, sans-serif;
+            background:
+                linear-gradient(135deg,
+                    rgba(255, 51, 204, 0.15),
+                    transparent 32rem),
+                radial-gradient(circle at 78% 12%,
+                    rgba(56, 212, 255, 0.18),
+                    transparent 24rem),
+                var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            border: 0;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            cursor: not-allowed;
+            filter: grayscale(0.8);
+            opacity: 0.55;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            min-height: 62px;
+            padding: 8px clamp(16px, 4vw, 44px);
+            background: linear-gradient(90deg, var(--pink-2), var(--pink));
+            box-shadow: 0 8px 30px rgba(255, 51, 204, 0.3);
+        }
+
+        .nav-logo {
+            width: min(220px, 48vw);
+            max-height: 48px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.55));
+        }
+
+        .nav-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: end;
+            gap: 10px;
+        }
+
+        .pill-link,
+        .icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 40px;
+            border-radius: 999px;
+            padding: 0 14px;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            background: rgba(0, 0, 0, 0.18);
+            color: #fff;
+            font-weight: 800;
+            white-space: nowrap;
+            transition:
+                transform 0.2s ease,
+                background 0.2s ease;
+        }
+
+        .pill-link:hover,
+        .icon-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(0, 0, 0, 0.32);
+        }
+
+        .hero {
+            position: relative;
+            min-height: 330px;
+            display: grid;
+            align-items: end;
+            overflow: hidden;
+            padding: 54px clamp(16px, 5vw, 68px) 86px;
+            background: #050506;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: -50%;
+            background-image:
+                linear-gradient(45deg, var(--pink) 25%, transparent 25%),
+                linear-gradient(-45deg, var(--pink) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, var(--pink) 75%),
+                linear-gradient(-45deg, transparent 75%, var(--pink) 75%);
+            background-position:
+                0 0,
+                0 32px,
+                32px -32px,
+                -32px 0;
+            background-size: 64px 64px;
+            opacity: 0.78;
+            animation: pattern 18s linear infinite;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(90deg,
+                    rgba(0, 0, 0, 0.78),
+                    rgba(0, 0, 0, 0.18) 55%,
+                    rgba(0, 0, 0, 0.72)),
+                linear-gradient(180deg, transparent 0%, var(--bg) 100%);
+        }
+
+        @keyframes pattern {
+            to {
+                transform: translate(-128px, 128px);
+            }
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(180px, 320px);
+            gap: clamp(24px, 5vw, 58px);
+            align-items: end;
+            width: min(1180px, 100%);
+            margin: 0 auto;
+        }
+
+        .hero-copy {
+            display: grid;
+            gap: 18px;
+        }
+
+        .logo-title {
+            width: min(520px, 90vw);
+            filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.8));
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        h1 {
+            margin: 0;
+            max-width: 780px;
+            font-size: clamp(2.4rem, 7vw, 6.8rem);
+            line-height: 0.86;
+            letter-spacing: 0;
+            text-transform: lowercase;
+            text-shadow: 0 10px 36px rgba(0, 0, 0, 0.65);
+        }
+
+        .hero-copy p {
+            margin: 0;
+            max-width: 700px;
+            color: #f2edf4;
+            font-size: clamp(1rem, 2.4vw, 1.35rem);
+            font-weight: 600;
+        }
+
+        .avatar-card {
+            justify-self: end;
+            width: min(100%, 290px);
+            padding: 8px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, var(--pink), #ff9bdc);
+            box-shadow: 0 22px 58px rgba(0, 0, 0, 0.55);
+            transform: rotate(2deg);
+        }
+
+        .avatar-card img {
+            display: block;
+            width: 100%;
+            border-radius: 16px;
+        }
+
+        .shell {
+            position: relative;
+            z-index: 1;
+            width: min(1080px, calc(100% - 32px));
+            margin: -52px auto 40px;
+        }
+
+        .window {
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            background: rgba(14, 14, 18, 0.45);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(20px);
+            overflow: visible;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .window-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            background: rgba(0, 0, 0, 0.32);
+            border-bottom: 1px solid var(--line);
+            border-radius: 22px 22px 0 0;
+            overflow: hidden;
+        }
+
+        .window-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .dot-red {
+            background: #ff5f56;
+        }
+
+        .dot-yellow {
+            background: #ffbd2e;
+        }
+
+        .dot-green {
+            background: #27c93f;
+        }
+
+        .window-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            flex-grow: 1;
+            text-align: center;
+            margin-right: 48px;
+        }
+
+        .window-content {
+            padding: 24px;
+        }
+
+        .game-layout {
+            display: grid;
+            grid-template-columns: 290px minmax(0, 1fr);
+            gap: 22px;
+            align-items: start;
+        }
+
+        .glass {
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            background: var(--card);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+        }
+
+        .game-card {
+            /* Removed overflow: hidden to prevent search results from being clipped */
+        }
+
+        .mystery-screen {
+            position: relative;
+            min-height: 420px;
+            overflow: hidden;
+            background: #000;
+            border-top-left-radius: 22px;
+            border-top-right-radius: 22px;
+        }
+
+        #youtube-player {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .curtain {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            background:
+                linear-gradient(90deg,
+                    rgba(255, 51, 204, 0.1) 1px,
+                    transparent 1px) 0 0 / 34px 34px,
+                linear-gradient(180deg,
+                    rgba(255, 255, 255, 0.06) 1px,
+                    transparent 1px) 0 0 / 34px 34px,
+                radial-gradient(circle at 50% 44%,
+                    rgba(255, 51, 204, 0.45),
+                    transparent 14rem),
+                #101014;
+        }
+
+        .record {
+            position: relative;
+            display: grid;
+            place-items: center;
+            width: min(330px, 72vw);
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle, #050505 0 18%, transparent 19%),
+                repeating-radial-gradient(circle,
+                    #16161b 0 7px,
+                    #0d0d11 8px 13px);
+            box-shadow:
+                inset 0 0 0 14px rgba(255, 255, 255, 0.035),
+                0 28px 70px rgba(0, 0, 0, 0.5);
+            animation: spin 9s linear infinite;
+            animation-play-state: paused;
+        }
+
+        .record::before {
+            content: "";
+            width: 42%;
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--pink), var(--yellow));
+            box-shadow: inset 0 0 0 28px #111116;
+        }
+
+        .playing .record {
+            animation-play-state: running;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .screen-badge,
+        .timer {
+            position: absolute;
+            top: 18px;
+            min-height: 42px;
+            display: inline-flex;
+            align-items: center;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(0, 0, 0, 0.48);
+            backdrop-filter: blur(10px);
+            font-weight: 900;
+        }
+
+        .screen-badge {
+            left: 18px;
+            gap: 8px;
+            padding: 0 14px;
+        }
+
+        .screen-badge span {
+            color: var(--yellow);
+        }
+
+        .timer {
+            right: 18px;
+            padding: 0 16px;
+            font-variant-numeric: tabular-nums;
+            color: #fff;
+        }
+
+        .sound-wave {
+            position: absolute;
+            left: 22px;
+            right: 22px;
+            bottom: 26px;
+            display: grid;
+            grid-template-columns: repeat(32, 1fr);
+            gap: 5px;
+            height: 64px;
+            align-items: end;
+            opacity: 0.9;
+        }
+
+        .wave-bar {
+            min-width: 4px;
+            border-radius: 999px;
+            background: linear-gradient(180deg, var(--yellow), var(--pink));
+            height: calc(16px + var(--h) * 1px);
+            transform-origin: bottom;
+            animation: bounce 0.7s ease-in-out infinite alternate;
+            animation-delay: calc(var(--i) * -45ms);
+            animation-play-state: paused;
+        }
+
+        .playing .wave-bar {
+            animation-play-state: running;
+        }
+
+        @keyframes bounce {
+            to {
+                transform: scaleY(0.35);
+                opacity: 0.58;
+            }
+        }
+
+        .controls {
+            display: grid;
+            gap: 18px;
+            padding: 22px;
+            background: rgba(14, 14, 18, 0.56);
+        }
+
+        .rounds {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+        }
+
+        .round-step {
+            position: relative;
+            min-height: 44px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--muted);
+            font-weight: 900;
+            overflow: hidden;
+        }
+
+        .round-step.active,
+        .round-step.done {
+            color: #111;
+            border-color: transparent;
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+        }
+
+        .guess-row {
+            position: relative;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 10px;
+        }
+
+        .search-results {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: calc(100% + 8px);
+            z-index: 200;
+            display: none;
+            max-height: 380px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 16px;
+            background: rgba(13, 13, 17, 0.98);
+            box-shadow: 0 28px 60px rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(20px);
+        }
+
+        .search-results.show {
+            display: block;
+        }
+
+        .search-summary {
+            position: sticky;
+            top: 0;
+            padding: 8px 14px;
+            background:
+                linear-gradient(90deg,
+                    rgba(255, 51, 204, 0.22),
+                    rgba(241, 196, 15, 0.12)),
+                #15151a;
+            color: var(--muted);
+            font-size: 0.82rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            z-index: 1;
+        }
+
+        .search-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 8px 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+            background: transparent;
+            color: #fff;
+            text-align: left;
+            cursor: pointer;
+            transition: background 0.12s ease;
+        }
+
+        .search-option:hover,
+        .search-option.selected {
+            background: rgba(255, 51, 204, 0.18);
+            outline: none;
+        }
+
+        .search-option-thumb {
+            flex-shrink: 0;
+            width: 88px;
+            aspect-ratio: 16 / 9;
+            border-radius: 6px;
+            object-fit: cover;
+            background: #111;
+            border: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .search-option-info {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            flex: 1;
+        }
+
+        .search-option-title {
+            font-weight: 800;
+            font-size: 0.88rem;
+            line-height: 1.3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .search-option-meta {
+            color: var(--muted);
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-top: 3px;
+        }
+
+        input {
+            min-width: 0;
+            min-height: 54px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 0 16px;
+            outline: 0;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        input:focus {
+            border-color: var(--pink);
+            box-shadow: 0 0 0 4px rgba(255, 51, 204, 0.16);
+        }
+
+        .btn {
+            min-height: 54px;
+            border-radius: 14px;
+            padding: 0 18px;
+            color: #111;
+            font-weight: 900;
+            box-shadow: 0 8px 0 rgba(0, 0, 0, 0.3);
+            transition:
+                transform 0.16s ease,
+                box-shadow 0.16s ease;
+            white-space: nowrap;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(3px);
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.32);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            color: #111;
+        }
+
+        .btn-pink {
+            background: var(--pink-2);
+            color: #fff;
+        }
+
+        .btn-blue {
+            background: linear-gradient(135deg, var(--pink-2), var(--pink));
+            color: #fff;
+        }
+
+        .btn-dark {
+            background: rgba(255, 51, 204, 0.1);
+            color: #fff;
+            border: 1px solid var(--pink);
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .status {
+            min-height: 26px;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .side {
+            display: grid;
+            gap: 18px;
+            padding: 20px;
+        }
+
+        .side h2,
+        .reveal h2 {
+            margin: 0;
+            font-size: 1.35rem;
+            letter-spacing: 0;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .stat {
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.045);
+        }
+
+        .stat span {
+            display: block;
+            color: var(--muted);
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .stat strong {
+            display: block;
+            margin-top: 4px;
+            font-size: 1.7rem;
+            line-height: 1;
+        }
+
+        .hint-card {
+            padding: 16px;
+            border-radius: 16px;
+            background: linear-gradient(135deg,
+                    rgba(255, 51, 204, 0.18),
+                    rgba(241, 196, 15, 0.13));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #f3f3f3;
+        }
+
+        .hint-card p {
+            margin: 8px 0 0;
+            color: var(--muted);
+        }
+
+        .reveal {
+            display: none;
+            margin-top: 22px;
+            overflow: hidden;
+        }
+
+        .reveal.show {
+            display: block;
+        }
+
+        .reveal-media {
+            aspect-ratio: 16 / 9;
+            background: #000;
+        }
+
+        .reveal-media iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        .reveal-body {
+            display: grid;
+            gap: 12px;
+            padding: 18px 20px 20px;
+        }
+
+        .reveal-body p {
+            margin: 0;
+            color: var(--muted);
+            font-weight: 700;
+        }
+
+        .letter-toggle {
+            position: fixed;
+            z-index: 24;
+            right: 18px;
+            bottom: 18px;
+            min-height: 48px;
+            border-radius: 999px;
+            padding: 0 16px;
+            background: var(--pink);
+            color: #fff;
+            font-weight: 900;
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 30;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.68);
+            backdrop-filter: blur(8px);
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .letter {
+            width: min(720px, 100%);
+            max-height: min(760px, calc(100vh - 40px));
+            overflow: auto;
+            border-radius: 22px;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            background:
+                linear-gradient(135deg,
+                    rgba(255, 51, 204, 0.12),
+                    rgba(241, 196, 15, 0.08)),
+                #18191c;
+            box-shadow: var(--shadow);
+        }
+
+        .letter-head {
+            position: sticky;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 18px 20px;
+            background: linear-gradient(90deg, var(--pink-2), var(--pink));
+        }
+
+        .letter-head strong {
+            font-size: 1.15rem;
+        }
+
+        .close-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.26);
+            color: #fff;
+            font-size: 1.3rem;
+            font-weight: 900;
+        }
+
+        .letter-body {
+            padding: 22px 22px 6px;
+            color: #f7f2f7;
+            font-size: 1.05rem;
+            line-height: 1.65;
+        }
+
+        .letter-body p {
+            margin: 0 0 16px;
+        }
+
+        .letter-body a {
+            color: var(--yellow);
+            font-weight: 900;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        footer {
+            margin-top: 42px;
+            padding: 38px 18px 52px;
+            background: #111214;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .footer-links a {
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 18px;
+            border-radius: 999px;
+            background: #1a1b1e;
+            border: 1px solid var(--line);
+            color: var(--yellow);
+            font-weight: 900;
+            box-shadow: 0 6px 0 rgba(255, 51, 204, 0.42);
+        }
+
+        footer p {
+            margin: 0;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 700;
+        }
+
+        @media (max-width: 900px) {
+            .hero-inner {
+                grid-template-columns: 1fr;
+            }
+
+            .avatar-card {
+                justify-self: start;
+                width: 210px;
+            }
+
+            .game-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .mystery-screen {
+                min-height: 360px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero {
+                padding-bottom: 70px;
+            }
+
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .nav-actions {
+                justify-content: start;
+            }
+
+            .guess-row {
+                grid-template-columns: 1fr;
+            }
+
+            .rounds {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .actions .btn,
+            .guess-row .btn {
+                width: 100%;
+            }
+
+            .sound-wave {
+                grid-template-columns: repeat(16, 1fr);
+            }
+        }
+
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background:
+                radial-gradient(circle at 50% 50%,
+                    rgba(255, 51, 204, 0.25),
+                    #0d0d10 80%),
+                var(--bg);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            transition:
+                opacity 0.4s ease,
+                visibility 0.4s ease;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .start-screen.hide {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .start-title {
+            font-size: clamp(2.2rem, 8vw, 4rem);
+            font-weight: 900;
+            line-height: 1.1;
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+            filter: drop-shadow(0 4px 15px rgba(255, 51, 204, 0.35));
+        }
+
+        .start-subtitle {
+            color: var(--muted);
+            font-size: clamp(1rem, 4vw, 1.25rem);
+            max-width: 480px;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        .start-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid var(--pink);
+            box-shadow: 0 0 30px rgba(255, 51, 204, 0.5);
+            object-fit: cover;
+            margin-bottom: 8px;
+            animation: pulseAvatar 3s infinite alternate;
+        }
+
+        @keyframes pulseAvatar {
+            from {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(255, 51, 204, 0.4);
+            }
+
+            to {
+                transform: scale(1.05);
+                box-shadow: 0 0 35px rgba(255, 51, 204, 0.7);
+            }
+        }
+
+        .start-btn {
+            font-size: 1.3rem;
+            font-weight: 900;
+            padding: 16px 44px;
+            border-radius: 50px;
+            color: #0d0d10;
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 16px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 51, 204, 0.65);
+        }
+
+        .start-btn:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .mode-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 500px;
+            margin-top: 24px;
+        }
+
+        .mode-card {
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .mode-card-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 16px 24px;
+            background: rgba(255, 51, 204, 0.15);
+            color: #fff;
+            font-size: 1.15rem;
+            font-weight: 900;
+            text-align: left;
+            border: 2px solid rgba(255, 51, 204, 0.4);
+            border-radius: 16px;
+            box-shadow: 0 10px 35px rgba(255, 51, 204, 0.15);
+            transition: all 0.2s ease;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+        }
+
+        .mode-card-toggle:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 51, 204, 0.25);
+            border-color: rgba(255, 51, 204, 0.7);
+            box-shadow: 0 12px 40px rgba(255, 51, 204, 0.25);
+        }
+
+        .mode-card.open .mode-card-toggle {
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            color: #0d0d10;
+            border-color: transparent;
+            box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
+        }
+
+        .mode-card-chevron {
+            transition: transform 0.25s ease;
+            font-size: 0.7rem;
+            opacity: 0.5;
+        }
+
+        .mode-card.open .mode-card-chevron {
+            transform: rotate(180deg);
+        }
+
+        .mode-card-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: min(100%, 500px);
+            height: 100vh;
+            z-index: 79;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding: 22px 16px;
+            background: radial-gradient(circle at 15% 20%,
+                    rgba(255, 0, 255, 0.15),
+                    transparent 45%),
+                var(--bg);
+            border-left: 1px solid var(--line);
+            transform: translateX(100%);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.28s ease, opacity 0.28s ease;
+            overflow-y: auto;
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .mode-card.open .mode-card-panel {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .mode-diff-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .mode-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: min(100%, 500px);
+            padding: 16px;
+            background: linear-gradient(90deg, var(--pink-2), var(--pink));
+            z-index: 80;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .mode-panel-title {
+            font-weight: 900;
+            font-size: 1.05rem;
+        }
+
+        .mode-close-btn {
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-weight: 700;
+            padding: 8px 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .mode-close-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .mode-start-btn {
+            font-size: 1.3rem;
+            font-weight: 900;
+            padding: 16px 48px;
+            border-radius: 50px;
+            color: #0d0d10;
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: none;
+            margin-top: auto;
+            margin-bottom: 20px;
+            width: fit-content;
+        }
+
+        .mode-start-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 51, 204, 0.65);
+        }
+
+        .mode-start-btn:active {
+            transform: translateY(-1px) scale(1.02);
+        }
+
+        .mode-diff-btn {
+            font-size: 1.1rem;
+            font-weight: 900;
+            padding: 14px 32px;
+            border-radius: 50px;
+            color: #fff;
+            background: rgba(255, 51, 204, 0.18);
+            border: 2px solid rgba(255, 51, 204, 0.5);
+            box-shadow: none;
+            transition: all 0.25s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        .mode-diff-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 51, 204, 0.3);
+            border-color: rgba(255, 51, 204, 0.8);
+            box-shadow: 0 8px 20px rgba(255, 51, 204, 0.2);
+        }
+
+        .mode-diff-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .mode-diff-btn.active {
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            color: #0d0d10;
+            border-color: transparent;
+            box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
+            outline: none;
+        }
+
+        .mode-year-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            align-items: center;
+        }
+
+        .mode-year-label {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .mode-year-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .year-chip {
+            padding: 4px 13px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--muted);
+            font-size: 0.8rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .year-chip:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+
+        .year-chip.active {
+            background: rgba(255, 51, 204, 0.25);
+            border-color: var(--pink);
+            color: #fff;
+        }
+
+        .hints-section {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            text-align: left;
+        }
+
+        .hints-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .hints-header span {
+            font-weight: 800;
+            font-size: 0.95rem;
+            color: var(--pink);
+        }
+
+        .btn-hint-toggle {
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            color: #0d0d10;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-hint-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 51, 204, 0.3);
+        }
+
+        .btn-hint-toggle:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .hint-content {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: var(--muted);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 12px;
+        }
+
+        .hint-content.hidden {
+            display: none;
+        }
+
+        .hint-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            line-height: 1.4;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        .hint-label {
+            font-weight: 800;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .hint-value {
+            color: var(--muted);
+        }
+
+        .hint-thumbnail-container {
+            margin-top: 6px;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 180px;
+            aspect-ratio: 16/9;
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .hint-thumbnail {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: blur(14px);
+            transition: filter 0.3s ease;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="startScreen" class="start-screen">
+        <img class="start-avatar" src="../Avatar Rickyedit.jpg" alt="Avatar Rickyedit" />
+        <h1 class="start-title">Rickyedit Songless</h1>
+        <p class="start-subtitle">
+            Escucha fragmentos aleatorios y adivina el vídeo. ¿Conoces tu
+            propio canal Ricky?
+        </p>
+
+        <div class="mode-cards">
+            <!-- Canal Principal -->
+            <div class="mode-card" id="mainModeCard">
+                <button class="mode-card-toggle" id="mainModeToggle" type="button">
+                    <span>📺 Canal Principal</span>
+                    <span class="mode-card-chevron">▼</span>
+                </button>
+                <div class="mode-card-panel" id="mainModePanel">
+                    <div class="mode-panel-header">
+                        <span class="mode-panel-title">Configuración Canal Principal</span>
+                        <button class="mode-close-btn" type="button" data-close-panel="mainModeCard">Volver</button>
+                    </div>
+                    <div
+                        style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 24px; padding-top: 100px;">
+                        <div class="mode-diff-row">
+                            <button id="startEasyBtn" class="mode-diff-btn" type="button">
+                                😰 Cagado
+                            </button>
+                            <button id="startNormalBtn" class="mode-diff-btn active" type="button">
+                                💪 Normal
+                            </button>
+                        </div>
+                        <div class="mode-year-section">
+                            <span class="mode-year-label">Año</span>
+                            <div class="mode-year-chips" id="mainYearChips"></div>
+                        </div>
+                        <button class="mode-start-btn" id="startMainGameBtn" type="button">Empezar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Canal Secundario -->
+            <div class="mode-card" id="secondaryModeCard">
+                <button class="mode-card-toggle" id="secondaryModeToggle" type="button">
+                    <span>🎬 Canal Secundario</span>
+                    <span class="mode-card-chevron">▼</span>
+                </button>
+                <div class="mode-card-panel" id="secondaryModePanel">
+                    <div class="mode-panel-header">
+                        <span class="mode-panel-title">Configuración Canal Secundario</span>
+                        <button class="mode-close-btn" type="button"
+                            data-close-panel="secondaryModeCard">Volver</button>
+                    </div>
+                    <div
+                        style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 24px; padding-top: 100px;">
+                        <div class="mode-diff-row">
+                            <button id="startSecondaryEasyBtn" class="mode-diff-btn" type="button">
+                                😰 Cagado
+                            </button>
+                            <button id="startSecondaryNormalBtn" class="mode-diff-btn active" type="button">
+                                💪 Normal
+                            </button>
+                        </div>
+                        <div class="mode-year-section">
+                            <span class="mode-year-label">Año</span>
+                            <div class="mode-year-chips" id="secondaryYearChips"></div>
+                        </div>
+                        <button class="mode-start-btn" id="startSecondaryGameBtn" type="button">Empezar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Canciones -->
+            <div class="mode-card" id="songsModeCard">
+                <button class="mode-card-toggle" id="songsModeToggle" type="button">
+                    <span>🎵 Canciones de Rickyedit</span>
+                    <span class="mode-card-chevron">▼</span>
+                </button>
+                <div class="mode-card-panel" id="songsModePanel">
+                    <div class="mode-panel-header">
+                        <span class="mode-panel-title">Configuración Canciones</span>
+                        <button class="mode-close-btn" type="button" data-close-panel="songsModeCard">Volver</button>
+                    </div>
+                    <div
+                        style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 24px; padding-top: 100px;">
+                        <div class="mode-diff-row">
+                            <button id="startSongsEasyBtn" class="mode-diff-btn" type="button">
+                                😰 Cagado
+                            </button>
+                            <button id="startSongsNormalBtn" class="mode-diff-btn active" type="button">
+                                💪 Normal
+                            </button>
+                        </div>
+                        <div class="mode-diff-row">
+                            <button id="startSongsNoRepeatBtn" class="mode-diff-btn active" type="button">
+                                🔁 Sin repetir
+                            </button>
+                            <button id="startSongsRandomBtn" class="mode-diff-btn" type="button">
+                                🎲 Aleatorio
+                            </button>
+                        </div>
+                        <div class="mode-year-section">
+                            <span class="mode-year-label">Año</span>
+                            <div class="mode-year-chips" id="songsYearChips"></div>
+                        </div>
+                        <button class="mode-start-btn" id="startSongsGameBtn" type="button">Empezar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Volver a la web Lobby Button (Standard grey style) -->
+        <a href="../index.html" class="year-chip" style="margin-top: 10px; padding: 10px 24px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.95rem; border-radius: 999px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            VOLVER A LA WEB
+        </a>
+    </div>
+
+    <nav class="topbar">
+        <div class="logo-container">
+            <img class="nav-logo" src="../Rickyedit Games.png" alt="Rickyedit Games Logo"
+                style="max-height: 48px; width: auto; object-fit: contain; filter: brightness(1.25) drop-shadow(0 0 10px var(--pink));" />
+        </div>
+        <div class="nav-actions">
+            <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal
+                Principal</a>
+            <a class="pill-link" href="https://www.youtube.com/@rickyeworld" target="_blank" rel="noreferrer"
+                id="secondaryLink" style="display: none">Canal Secundario</a>
+            <button id="openLetterBtn" class="icon-btn" type="button">
+                Mensaje para Ricky
+            </button>
+            <button id="changeModeBtn" class="icon-btn" type="button" style="display: none">
+                Volver
+            </button>
+        </div>
+    </nav>
+ 
+    <header class="hero">
+        <div class="hero-inner">
+            <div class="hero-copy">
+                <h1>Rickyedit songless</h1>
+                <p id="descriptionText">
+                    Escucha un fragmento aleatorio de cualquier segundo de
+                    una canción del canal y adivina cuál es antes de que llegue
+                    al corte a los 15 segundos.
+                </p>
+            </div>
+            <div class="avatar-card">
+                <img src="../Avatar Rickyedit.jpg" alt="Avatar Rickyedit" />
+            </div>
+        </div>
+    </header>
+
+    <main class="shell">
+        <div class="window glass">
+            <div class="window-header">
+                <div class="window-dots">
+                    <span class="dot dot-red"></span>
+                    <span class="dot dot-yellow"></span>
+                    <span class="dot dot-green"></span>
+                </div>
+                <div class="window-title">Partida</div>
+            </div>
+            <div class="window-content">
+                <section class="game-layout">
+                    <!-- Stats panel (Moved to the beginning/left) -->
+                    <aside class="side glass">
+                        <h2>Panel de partida</h2>
+                        <div class="stats">
+                            <div class="stat">
+                                <span>Puntos</span>
+                                <strong id="score">0</strong>
+                            </div>
+                            <div class="stat">
+                                <span>Racha</span>
+                                <strong id="streak">0</strong>
+                            </div>
+                            <div class="stat">
+                                <span>Racha Máx</span>
+                                <strong id="maxStreak">0</strong>
+                            </div>
+                            <div class="stat">
+                                <span>Rango</span>
+                                <strong id="rank" style="
+                                            font-size: 1.25rem;
+                                            margin-top: 8px;
+                                        ">Novato</strong>
+                            </div>
+                            <div class="stat">
+                                <span>Intento</span>
+                                <strong id="attempt">1/6</strong>
+                            </div>
+                            <div class="stat">
+                                <span>Vídeos</span>
+                                <strong id="videoCount">0</strong>
+                            </div>
+                        </div>
+                        <div class="hint-card">
+                            <strong>Cómo va</strong>
+                            <p>
+                                El vídeo se elige entre la lista local del
+                                canal. El segundo de inicio también es
+                                aleatorio, no solo el minuto.
+                            </p>
+                        </div>
+                        <div class="hint-card">
+                            <strong>Fragmentos</strong>
+                            <p id="segmentsInfo">
+                                1s, 2s, 4s, 8s, 16s y 32s. Si no aciertas,
+                                se revela el vídeo original.
+                            </p>
+                        </div>
+                    </aside>
+
+                    <!-- Gameplay area -->
+                    <div>
+                        <article class="game-card glass">
+                            <div id="mysteryScreen" class="mystery-screen">
+                                <div id="youtube-player"></div>
+                                <div class="curtain">
+                                    <div class="screen-badge">
+                                        <span id="segmentLabel">1 sec</span>
+                                        fragmento
+                                    </div>
+                                    <div id="timer" class="timer">
+                                        00:00
+                                    </div>
+                                    <div class="record" aria-hidden="true"></div>
+                                    <div id="wave" class="sound-wave" aria-hidden="true"></div>
+                                </div>
+                            </div>
+
+                            <div class="controls">
+                                <div id="rounds" class="rounds" aria-label="Rondas del juego"></div>
+                                <div class="guess-row">
+                                    <input id="guessInput" type="text" autocomplete="off"
+                                        placeholder="Escribe el título del vídeo" />
+                                    <button id="guessBtn" class="btn btn-primary" type="button">
+                                        Adivinar
+                                    </button>
+                                    <div id="searchResults" class="search-results" role="listbox"
+                                        aria-label="Resultados por título"></div>
+                                </div>
+                                <div class="actions">
+                                    <button id="playBtn" class="btn btn-pink" type="button">
+                                        Reproducir fragmento
+                                    </button>
+                                    <button id="skipBtn" class="btn btn-dark" type="button">
+                                        Siguiente pista
+                                    </button>
+                                    <button id="newBtn" class="btn btn-blue" type="button">
+                                        Nuevo vídeo
+                                    </button>
+                                </div>
+
+                                <!-- Pistas para cagados -->
+                                <div class="hints-section">
+                                    <div class="hints-header">
+                                        <span>💡 Pistas para cagados</span>
+                                        <button id="hintBtn" class="btn-hint-toggle" type="button">
+                                            Pedir pista
+                                        </button>
+                                    </div>
+                                    <div id="hintContent" class="hint-content hidden"></div>
+                                </div>
+                                <div id="status" class="status" role="status">
+                                    Cargando el reproductor de YouTube...
+                                </div>
+                            </div>
+                        </article>
+
+                        <article id="reveal" class="reveal glass">
+                            <div id="revealMedia" class="reveal-media"></div>
+                            <div class="reveal-body">
+                                <h2 id="answerTitle">Vídeo revelado</h2>
+                                <p id="answerMeta"></p>
+                                <div class="actions">
+                                    <a id="watchLink" class="pill-link" href="#" target="_blank" rel="noreferrer">Abrir
+                                        en YouTube</a>
+                                    <button id="againBtn" class="btn btn-blue" type="button">
+                                        Jugar otra
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <div id="letterModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="letterTitle">
+        <article class="letter">
+            <div class="letter-head">
+                <strong id="letterTitle">Mensaje para Ricky</strong>
+                <button id="closeLetterBtn" class="close-btn" type="button" aria-label="Cerrar mensaje">
+                    ×
+                </button>
+            </div>
+            <div class="letter-body">
+                <p>Hola Ricky, soy Jan.</p>
+                <p>
+                    Te veo casi todos los días desde hace 2 años y siempre
+                    intento entrar a tus directos cuando puedo. Estaba
+                    aburrido en casa y decidí programar este juego con tus
+                    vídeos.
+                </p>
+                <p>
+                    Es muy fácil: suena un trozo aleatorio de un vídeo tuyo
+                    y tienes que adivinar el título.
+                </p>
+                <p>
+                    Ya te hice otra web hace tiempo, que es esta:
+                    <a href="https://janiito-studio.github.io/RickyEdit-Web/" target="_blank" rel="noreferrer">
+                        Rickyedit Web
+                    </a>
+                    . Donde eaccionaste a ella en directo
+                    <a href="https://drive.google.com/file/d/1m52FJeLYQDIRggHLjtThdWDGEIdhUKrv/view?usp=sharing"
+                        target="_blank" rel="noreferrer">
+                        (video de la reacción)
+                    </a>
+
+                    . Por cierto, no, no era un proyecto escolar ni usé Lovable.
+
+
+                    También te hice varios vídeos para la serie de “qué prefieres”, que, por cierto, tienes que seguir
+                    subiéndola.
+
+                    Además, estoy haciendo un juego llamado
+                    <a href="https://janiito-studio.itch.io/no-lo-borres" target="_blank" rel="noreferrer">
+                        "No lo borres"
+                    </a>
+                    donde estoy añadiéndote referencias.
+
+                    Me gustaría que lo jugaras, pero últimamente no tengo mucha motivación para hacerlo...
+                </p>
+                <p>
+                    Puedes hacer un vídeo jugando a esto si quieres (al songless). Me
+                    haría mucha ilusión que saliera en tu canal principal,
+                    pero si no se puede, en el canal secundario también me
+                    pondría muy contento.
+
+                    Por cierto puedes mandarme un saludo (a Jan), por favor. Y si no es mucha molestia, a mis amigos
+                    Marc y Manuel también que son muy fans tuyos desde hace tiempo.
+                </p>
+                <p>
+                    Ya no escribo más. Que sepas que para mí y para todos
+                    los del chat eres una persona válida y valiosa y te
+                    queremos mucho 💜.
+                </p>
+                <p>Muchas gracias,<br />Jan</p>
+            </div>
+        </article>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="https://janiito-studio.github.io/RickyEdit-Web/" target="_blank" rel="noreferrer">Otros Proyectos
+                Relacionados (La web que te hice)</a>
+            <a href="https://janiito-studio.github.io/Janiito-Studio/" target="_blank" rel="noreferrer">Mi
+                Portafolios</a>
+        </div>
+        <p>2026 Rickyedit Songless.
+            Hecho por Jan (Discord: .janiito | Twitch: jasanzo)</p>
+    </footer>
+
+    <script src="../ricky-videos.js"></script>
+    <script src="../ricky-secondary.js"></script>
+    <script src="../ricky-songs.js"></script>
+    <script>
+        const SEGMENTS = [1, 2, 4, 8, 16, 32];
+        const SECONDARY_SEGMENTS = [1, 2, 4, 8, 16, 32];
+        const SONG_SEGMENTS = [0.1, 0.5, 1, 2, 4, 8, 15];
+        const FALLBACK_VIDEOS = [
+            {
+                id: "UASYjb0vl70",
+                title: "si sale cara, respondo a las PEORES PREGUNTAS de mi chat.",
+                duration: 2074,
+            },
+            {
+                id: "FjWQyvNqE4o",
+                title: "el efecto mandela #2",
+                duration: 1137,
+            },
+        ];
+
+        const state = {
+            isEasyMode: false,
+            isSongsMode: false,
+            isSecondaryMode: false,
+            yearFilter: null,
+            noRepeat: true,
+            playedSongs: new Set(),
+            player: null,
+            ready: false,
+            pool: [],
+            current: null,
+            round: 0,
+            startAt: 0,
+            score: 0,
+            streak: 0,
+            maxStreak: parseInt(
+                localStorage.getItem("ricky_max_streak") || "0",
+                10,
+            ),
+            timer: null,
+            tick: null,
+            healthTimer: null,
+            elapsed: 0,
+            revealed: false,
+            playing: false,
+            retryCount: 0,
+            activeSearchIndex: -1,
+            loadedVideoId: null,
+            loadedStartAt: -1,
+            videoError: false,
+            hintsRequested: 0,
+            messageShown: localStorage.getItem("ricky_message_shown") === "true",
+        };
+
+        const $ = (id) => document.getElementById(id);
+        const els = {
+            mysteryScreen: $("mysteryScreen"),
+            segmentLabel: $("segmentLabel"),
+            timer: $("timer"),
+            rounds: $("rounds"),
+            wave: $("wave"),
+            guessInput: $("guessInput"),
+            searchResults: $("searchResults"),
+            guessBtn: $("guessBtn"),
+            playBtn: $("playBtn"),
+            skipBtn: $("skipBtn"),
+            newBtn: $("newBtn"),
+            status: $("status"),
+            reveal: $("reveal"),
+            revealMedia: $("revealMedia"),
+            answerTitle: $("answerTitle"),
+            answerMeta: $("answerMeta"),
+            watchLink: $("watchLink"),
+            againBtn: $("againBtn"),
+            score: $("score"),
+            streak: $("streak"),
+            maxStreak: $("maxStreak"),
+            rank: $("rank"),
+            attempt: $("attempt"),
+            videoCount: $("videoCount"),
+            letterModal: $("letterModal"),
+            openLetterBtn: $("openLetterBtn"),
+            closeLetterBtn: $("closeLetterBtn"),
+            startScreen: $("startScreen"),
+            startNormalBtn: $("startNormalBtn"),
+            startEasyBtn: $("startEasyBtn"),
+            startSongsEasyBtn: $("startSongsEasyBtn"),
+            startSongsNormalBtn: $("startSongsNormalBtn"),
+            startSongsNoRepeatBtn: $("startSongsNoRepeatBtn"),
+            startSongsRandomBtn: $("startSongsRandomBtn"),
+            startSecondaryEasyBtn: $("startSecondaryEasyBtn"),
+            startSecondaryNormalBtn: $("startSecondaryNormalBtn"),
+            startMainGameBtn: $("startMainGameBtn"),
+            startSecondaryGameBtn: $("startSecondaryGameBtn"),
+            startSongsGameBtn: $("startSongsGameBtn"),
+            changeModeBtn: $("changeModeBtn"),
+            hintBtn: $("hintBtn"),
+            hintContent: $("hintContent"),
+            hintsSection: document.querySelector(".hints-section"),
+        };
+
+        window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+
+        init();
+        loadYouTubeApi();
+
+        function onYouTubeIframeAPIReady() {
+            const playerVars = {
+                autoplay: 0,
+                controls: 0,
+                disablekb: 1,
+                enablejsapi: 1,
+                modestbranding: 1,
+                playsinline: 1,
+                rel: 0,
+            };
+
+            if (
+                location.protocol === "http:" ||
+                location.protocol === "https:"
+            ) {
+                playerVars.origin = location.origin;
+            }
+
+            state.player = new YT.Player("youtube-player", {
+                width: "100%",
+                height: "100%",
+                playerVars,
+                events: {
+                    onReady: () => {
+                        const iframe = state.player.getIframe();
+                        iframe.setAttribute(
+                            "allow",
+                            "autoplay; encrypted-media; picture-in-picture; web-share",
+                        );
+                        state.ready = true;
+                        els.playBtn.disabled = false;
+                        els.status.textContent =
+                            "Pulsa reproducir para empezar. El audio necesita ese clic para sonar.";
+                        newRound();
+                    },
+                    onStateChange: (event) => {
+                        state.playing =
+                            event.data === YT.PlayerState.PLAYING;
+                        els.mysteryScreen.classList.toggle(
+                            "playing",
+                            state.playing,
+                        );
+                        if (state.playing) {
+                            try {
+                                state.player.unMute();
+                                state.player.setVolume(100);
+                            } catch (e) {
+                                console.warn(
+                                    "Could not unmute player on state change:",
+                                    e,
+                                );
+                            }
+                        }
+                        if (
+                            state.playing &&
+                            !state.revealed &&
+                            els.playBtn.disabled
+                        ) {
+                            const seconds = getSegments()[state.round];
+                            els.status.textContent = `Sonando ${seconds}s desde un punto aleatorio...`;
+                        }
+                    },
+                    onError: (event) => {
+                        console.warn("YouTube player error:", event.data);
+                        handleVideoPlayError();
+                    },
+                },
+            });
+        }
+
+        function init() {
+            state.pool = sanitizeVideos(
+                window.RICKY_VIDEOS || FALLBACK_VIDEOS,
+            );
+            renderRounds();
+            renderWave();
+            buildYearChips();
+            bindEvents();
+            updateStats();
+            els.playBtn.disabled = true;
+        }
+
+        function loadYouTubeApi() {
+            // YouTube blocks ALL embeds from file:// — show a clear warning immediately
+            if (location.protocol === "file:") {
+                els.status.textContent =
+                    "🚫 Abre el juego desde un servidor HTTP, no desde file://. Arrastra la carpeta a VS Code y usa Live Server, o ejecuta: npx serve .";
+                els.playBtn.disabled = true;
+                // Disable start buttons too
+                [
+                    els.startNormalBtn,
+                    els.startEasyBtn,
+                    els.startSongsEasyBtn,
+                    els.startSongsNormalBtn,
+                    els.startSongsNoRepeatBtn,
+                    els.startSongsRandomBtn,
+                    els.startSecondaryEasyBtn,
+                    els.startSecondaryNormalBtn,
+                ].forEach((btn) => {
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.title = "Abre el juego desde un servidor HTTP";
+                    }
+                });
+                // Show warning on the start screen
+                const warn = document.createElement("p");
+                warn.style.cssText =
+                    "color:#ff5555;font-weight:bold;margin-top:16px;padding:12px;background:rgba(255,85,85,0.15);border-radius:8px;max-width:400px;text-align:center";
+                warn.textContent =
+                    "🚫 YouTube no permite embeds desde file://. Sirve la carpeta con un servidor local (VS Code Live Server, npx serve ., etc.)";
+                els.startScreen.appendChild(warn);
+                return;
+            }
+
+            if (window.YT && window.YT.Player) {
+                onYouTubeIframeAPIReady();
+                return;
+            }
+
+            const script = document.createElement("script");
+            script.src = "https://www.youtube.com/iframe_api";
+            script.async = true;
+            script.onerror = () => {
+                els.status.textContent =
+                    "No se pudo cargar YouTube. Comprueba tu conexión a internet.";
+            };
+            document.head.appendChild(script);
+
+            setTimeout(() => {
+                if (!state.ready) {
+                    els.status.textContent =
+                        "YouTube tarda en responder. Comprueba tu conexión o recarga la página.";
+                }
+            }, 8000);
+        }
+
+        function bindEvents() {
+            els.playBtn.addEventListener("click", playSegment);
+            els.skipBtn.addEventListener("click", nextSegment);
+            els.newBtn.addEventListener("click", newRound);
+            els.againBtn.addEventListener("click", newRound);
+            els.guessBtn.addEventListener("click", submitGuess);
+            els.hintBtn.addEventListener("click", requestHint);
+            els.guessInput.addEventListener("keydown", (event) => {
+                const buttons =
+                    els.searchResults.querySelectorAll(".search-option");
+                if (
+                    buttons.length > 0 &&
+                    (event.key === "ArrowDown" ||
+                        event.key === "ArrowUp" ||
+                        event.key === "Enter")
+                ) {
+                    if (event.key === "ArrowDown") {
+                        event.preventDefault();
+                        state.activeSearchIndex =
+                            (state.activeSearchIndex + 1) % buttons.length;
+                        updateSearchHighlight(buttons);
+                        return;
+                    }
+                    if (event.key === "ArrowUp") {
+                        event.preventDefault();
+                        state.activeSearchIndex =
+                            (state.activeSearchIndex - 1 + buttons.length) %
+                            buttons.length;
+                        updateSearchHighlight(buttons);
+                        return;
+                    }
+                    if (
+                        event.key === "Enter" &&
+                        state.activeSearchIndex >= 0
+                    ) {
+                        event.preventDefault();
+                        buttons[state.activeSearchIndex].click();
+                        return;
+                    }
+                }
+
+                if (event.key === "Enter") submitGuess();
+                if (event.key === "Escape") hideSearchResults();
+            });
+            els.guessInput.addEventListener("input", renderSearchResults);
+            document.addEventListener("click", (event) => {
+                if (!event.target.closest(".guess-row"))
+                    hideSearchResults();
+            });
+            els.openLetterBtn.addEventListener("click", showLetter);
+            els.closeLetterBtn.addEventListener("click", hideLetter);
+            els.letterModal.addEventListener("click", (event) => {
+                if (event.target === els.letterModal) hideLetter();
+            });
+
+            // Close panels when clicking outside
+            document.addEventListener("click", (event) => {
+                const isCardClick = event.target.closest(".mode-card");
+                const isPanelClick = event.target.closest(".mode-card-panel");
+                if (!isCardClick && !isPanelClick) {
+                    document
+                        .querySelectorAll(".mode-card.open")
+                        .forEach((card) => card.classList.remove("open"));
+                }
+            });
+
+            // ---- Accordion toggles ----
+            let mainYear = null;
+            let songsYear = null;
+            let secondaryYear = null;
+
+            function setupAccordion(
+                toggleId,
+                cardId,
+                chipsId,
+                onYearChange,
+            ) {
+                const card = document.getElementById(cardId);
+                const toggle = document.getElementById(toggleId);
+                const chipsEl = document.getElementById(chipsId);
+                if (toggle && card) {
+                    toggle.addEventListener("click", () => {
+                        document
+                            .querySelectorAll(".mode-card.open")
+                            .forEach((openCard) => {
+                                if (openCard !== card)
+                                    openCard.classList.remove("open");
+                            });
+                        card.classList.add("open");
+                        // Update state and render segments for correct display
+                        state.isSongsMode = cardId === "songsModeCard";
+                        state.isSecondaryMode = cardId === "secondaryModeCard";
+                        renderRounds();
+
+                        // Update description text based on mode
+                        const descText = document.getElementById("descriptionText");
+                        if (descText) {
+                            if (cardId === "songsModeCard") {
+                                descText.textContent = "Escucha un fragmento aleatorio de cualquier segundo de una canción del canal y adivina cuál es antes de que llegue al corte a los 15 segundos.";
+                            } else {
+                                descText.textContent = "Escucha un fragmento aleatorio de cualquier segundo de un vídeo del canal y adivina cuál es antes de que llegue al corte a los 32 segundos.";
+                            }
+                        }
+                    });
+                }
+                if (chipsEl) {
+                    chipsEl.addEventListener("click", (e) => {
+                        const chip = e.target.closest(".year-chip");
+                        if (!chip) return;
+                        chipsEl
+                            .querySelectorAll(".year-chip")
+                            .forEach((c) => c.classList.remove("active"));
+                        chip.classList.add("active");
+                        onYearChange(
+                            chip.dataset.year
+                                ? Number(chip.dataset.year)
+                                : null,
+                        );
+                    });
+                }
+            }
+
+            setupAccordion(
+                "mainModeToggle",
+                "mainModeCard",
+                "mainYearChips",
+                (y) => {
+                    mainYear = y;
+                },
+            );
+            setupAccordion(
+                "secondaryModeToggle",
+                "secondaryModeCard",
+                "secondaryYearChips",
+                (y) => {
+                    secondaryYear = y;
+                },
+            );
+            setupAccordion(
+                "songsModeToggle",
+                "songsModeCard",
+                "songsYearChips",
+                (y) => {
+                    songsYear = y;
+                },
+            );
+
+            document
+                .querySelectorAll(".mode-close-btn")
+                .forEach((closeBtn) => {
+                    closeBtn.addEventListener("click", () => {
+                        stopPlayback();
+                        const cardId = closeBtn.dataset.closePanel;
+                        const card = cardId
+                            ? document.getElementById(cardId)
+                            : closeBtn.closest(".mode-card");
+                        if (card) card.classList.remove("open");
+                    });
+                });
+
+            // ---- Start game helper ----
+            const startGame = (
+                isEasy,
+                customPool,
+                yearFilter,
+                noRepeat,
+            ) => {
+                window.scrollTo(0, 0);
+                document
+                    .querySelectorAll(".mode-card.open")
+                    .forEach((card) => card.classList.remove("open"));
+                state.isEasyMode = isEasy;
+                state.isSecondaryMode = customPool === window.RICKY_SECONDARY;
+                state.isSongsMode = customPool === window.RICKY_SONGS;
+                state.yearFilter = yearFilter || null;
+                state.noRepeat = !!noRepeat;
+                state.playedSongs.clear();
+
+                // Set the appropriate pool based on mode
+                const selectedPool = customPool || window.RICKY_VIDEOS || [];
+                state.pool = sanitizeVideos(selectedPool);
+                renderRounds();
+                updateStats();
+                newRound();
+
+                if (!isEasy) {
+                    els.hintsSection.style.display = "none";
+                } else {
+                    els.hintsSection.style.display = "";
+                }
+
+                try {
+                    const doc = document.documentElement;
+                    if (doc.requestFullscreen) doc.requestFullscreen();
+                    else if (doc.webkitRequestFullscreen)
+                        doc.webkitRequestFullscreen();
+                    else if (doc.msRequestFullscreen)
+                        doc.msRequestFullscreen();
+                } catch (err) { }
+
+                if (
+                    state.player &&
+                    typeof state.player.unMute === "function"
+                ) {
+                    try {
+                        state.player.unMute();
+                        state.player.setVolume(100);
+                    } catch (e) { }
+                }
+
+                // Update topbar links
+                const principalLink = document.querySelector("a[href*='rickyedit']");
+                const secondaryLink = document.getElementById("secondaryLink");
+                if (state.isSecondaryMode) {
+                    if (principalLink) principalLink.style.display = "none";
+                    if (secondaryLink) secondaryLink.style.display = "";
+                } else {
+                    if (principalLink) principalLink.style.display = "";
+                    if (secondaryLink) secondaryLink.style.display = "none";
+                }
+
+                els.startScreen.classList.add("hide");
+
+                // Comprobación automática del mensaje para Ricky
+                if (!state.messageShown) {
+                    showLetter();
+                }
+
+                document.body.style.overflow = "auto";
+                if (els.changeModeBtn) els.changeModeBtn.style.display = "";
+            };
+
+            // ---- Difficulty tracking (false = Normal, true = Easy) ----
+            let mainEasyMode = false; // Default: Normal
+            let secondaryEasyMode = false; // Default: Normal
+            let songsEasyMode = false; // Default: Normal
+
+            // ---- Canal Principal buttons ----
+            els.startEasyBtn.addEventListener("click", () => {
+                mainEasyMode = true;
+                els.startEasyBtn.classList.add("active");
+                els.startNormalBtn.classList.remove("active");
+            });
+            els.startNormalBtn.addEventListener("click", () => {
+                mainEasyMode = false;
+                els.startNormalBtn.classList.add("active");
+                els.startEasyBtn.classList.remove("active");
+            });
+            els.startMainGameBtn.addEventListener("click", () =>
+                startGame(mainEasyMode, null, mainYear, false),
+            );
+
+            // ---- Canal Secundario buttons ----
+            els.startSecondaryEasyBtn.addEventListener("click", () => {
+                secondaryEasyMode = true;
+                els.startSecondaryEasyBtn.classList.add("active");
+                els.startSecondaryNormalBtn.classList.remove("active");
+            });
+            els.startSecondaryNormalBtn.addEventListener("click", () => {
+                secondaryEasyMode = false;
+                els.startSecondaryNormalBtn.classList.add("active");
+                els.startSecondaryEasyBtn.classList.remove("active");
+            });
+            els.startSecondaryGameBtn.addEventListener("click", () =>
+                startGame(secondaryEasyMode, window.RICKY_SECONDARY, secondaryYear, false),
+            );
+
+            // ---- Canciones buttons ----
+            let songsNoRepeat = true;
+
+            els.startSongsEasyBtn.addEventListener("click", () => {
+                songsEasyMode = true;
+                els.startSongsEasyBtn.classList.add("active");
+                els.startSongsNormalBtn.classList.remove("active");
+            });
+            els.startSongsNormalBtn.addEventListener("click", () => {
+                songsEasyMode = false;
+                els.startSongsNormalBtn.classList.add("active");
+                els.startSongsEasyBtn.classList.remove("active");
+            });
+            els.startSongsNoRepeatBtn.addEventListener("click", () => {
+                songsNoRepeat = true;
+                els.startSongsNoRepeatBtn.classList.add("active");
+                els.startSongsRandomBtn.classList.remove("active");
+            });
+            els.startSongsRandomBtn.addEventListener("click", () => {
+                songsNoRepeat = false;
+                els.startSongsRandomBtn.classList.add("active");
+                els.startSongsNoRepeatBtn.classList.remove("active");
+            });
+            els.startSongsGameBtn.addEventListener("click", () =>
+                startGame(songsEasyMode, window.RICKY_SONGS, songsYear, songsNoRepeat),
+            );
+
+            // ---- Cambiar modo ----
+            if (els.changeModeBtn) {
+                els.changeModeBtn.addEventListener("click", () => {
+                    stopPlayback();
+                    // Clear reveal media to stop any playing video
+                    els.revealMedia.innerHTML = "";
+                    els.reveal.classList.remove("show");
+                    document
+                        .querySelectorAll(".mode-card.open")
+                        .forEach((card) => card.classList.remove("open"));
+
+                    // Reset songs difficulty to default (Normal)
+                    songsEasyMode = false;
+                    els.startSongsNormalBtn.classList.add("active");
+                    els.startSongsEasyBtn.classList.remove("active");
+
+                    els.startScreen.classList.remove("hide");
+                    document.body.style.overflow = "hidden";
+                    els.changeModeBtn.style.display = "none";
+                });
+            }
+        }
+
+        function sanitizeVideos(videos) {
+            const seen = new Set();
+            const filtered = videos.filter(
+                (video) =>
+                    video &&
+                    /^[a-zA-Z0-9_-]{11}$/.test(video.id) &&
+                    !seen.has(video.id) &&
+                    seen.add(video.id),
+            );
+            return filtered.map((video, index) => ({
+                id: video.id,
+                title: video.title || "Vídeo de Rickyedit",
+                duration: Math.max(0, Number(video.duration) || 0),
+                year: video.year
+                    ? Number(video.year)
+                    : Number(
+                        estimateUploadDate(index, filtered.length)
+                            .split(" ")
+                            .pop(),
+                    ),
+            }));
+        }
+
+        function buildYearChips() {
+            // ---- Canal Principal ----
+            const yearSet = new Set();
+            state.pool.forEach((v) => yearSet.add(v.year));
+            const mainYears = [...yearSet].sort((a, b) => b - a);
+            const mainEl = document.getElementById("mainYearChips");
+            if (mainEl) {
+                mainEl.innerHTML =
+                    `<button class="year-chip active" data-year="">Todos</button>` +
+                    mainYears
+                        .map(
+                            (y) =>
+                                `<button class="year-chip" data-year="${y}">${y}</button>`,
+                        )
+                        .join("");
+            }
+
+            // ---- Canal Secundario ----
+            const secondaryPool = sanitizeVideos(
+                window.RICKY_SECONDARY || [],
+            );
+            const secondaryYearSet = new Set();
+            secondaryPool.forEach((v) => secondaryYearSet.add(v.year));
+            const secondaryYears = [...secondaryYearSet].sort(
+                (a, b) => b - a,
+            );
+            const secondaryEl =
+                document.getElementById("secondaryYearChips");
+            if (secondaryEl) {
+                secondaryEl.innerHTML =
+                    `<button class="year-chip active" data-year="">Todos</button>` +
+                    secondaryYears
+                        .map(
+                            (y) =>
+                                `<button class="year-chip" data-year="${y}">${y}</button>`,
+                        )
+                        .join("");
+            }
+
+            // ---- Canciones ----
+            const songPool = sanitizeVideos(window.RICKY_SONGS || []);
+            const songYearSet = new Set();
+            songPool.forEach((v) => songYearSet.add(v.year));
+            const songYears = [...songYearSet].sort((a, b) => b - a);
+            const songsEl = document.getElementById("songsYearChips");
+            if (songsEl) {
+                songsEl.innerHTML =
+                    `<button class="year-chip active" data-year="">Todos</button>` +
+                    songYears
+                        .map(
+                            (y) =>
+                                `<button class="year-chip" data-year="${y}">${y}</button>`,
+                        )
+                        .join("");
+            }
+        }
+
+        function getSegments() {
+            if (state.isSongsMode) return SONG_SEGMENTS;
+            if (state.isSecondaryMode) return SECONDARY_SEGMENTS;
+            return SEGMENTS;
+        }
+
+        function renderRounds() {
+            const segs = getSegments();
+            els.rounds.innerHTML = "";
+            segs.forEach((seconds) => {
+                const item = document.createElement("div");
+                item.className = "round-step";
+                item.textContent = `${seconds}s`;
+                els.rounds.appendChild(item);
+            });
+            const info = document.getElementById("segmentsInfo");
+            if (info) {
+                const list = segs.map((s) => `${s}s`).join(", ");
+                const label = state.isSongsMode ? "canción" : "vídeo";
+                info.textContent = `${list}. Si no aciertas, se revela la ${label} original.`;
+            }
+        }
+
+        function renderWave() {
+            els.wave.innerHTML = "";
+            for (let i = 0; i < 32; i += 1) {
+                const bar = document.createElement("div");
+                bar.className = "wave-bar";
+                bar.style.setProperty("--i", i);
+                bar.style.setProperty(
+                    "--h",
+                    12 + Math.round(Math.abs(Math.sin(i * 1.7)) * 48),
+                );
+                els.wave.appendChild(bar);
+            }
+        }
+
+        function estimateUploadDate(index, total) {
+            const ratio = index / total;
+            const totalMonths = 100;
+            const targetMonthOffset = Math.floor(ratio * totalMonths);
+
+            let year = 2026;
+            let month = 5 - (targetMonthOffset % 12);
+            const yearOffset = Math.floor(targetMonthOffset / 12);
+            year -= yearOffset;
+            if (month <= 0) {
+                month += 12;
+                year -= 1;
+            }
+
+            const monthNames = [
+                "Enero",
+                "Febrero",
+                "Marzo",
+                "Abril",
+                "Mayo",
+                "Junio",
+                "Julio",
+                "Agosto",
+                "Septiembre",
+                "Octubre",
+                "Noviembre",
+                "Diciembre",
+            ];
+            return `${monthNames[month - 1]} de ${year}`;
+        }
+
+        function requestHint() {
+            if (!state.current) return;
+
+            state.hintsRequested += 1;
+            els.hintContent.classList.remove("hidden");
+
+            const video = state.current;
+            const index = state.pool.findIndex((v) => v.id === video.id);
+            const total = state.pool.length;
+
+            let html = "";
+
+            if (state.hintsRequested >= 1) {
+                const minutes = Math.floor(video.duration / 60);
+                const seconds = Math.floor(video.duration % 60);
+                const words = video.title
+                    .split(/\s+/)
+                    .filter(Boolean).length;
+                html += `
+          <div class="hint-item">
+            <span class="hint-label">Pista 1:</span>
+            <span class="hint-value">Vídeo de <strong>${minutes} min y ${seconds} s</strong>. El título contiene <strong>${words} palabras</strong>.</span>
+          </div>
+        `;
+            }
+
+            if (state.hintsRequested >= 2) {
+                const dateStr = estimateUploadDate(
+                    index >= 0 ? index : 50,
+                    total || 100,
+                );
+                const cleanTitle = video.title.trim();
+                const firstChar = cleanTitle.charAt(0).toUpperCase();
+                html += `
+          <div class="hint-item">
+            <span class="hint-label">Pista 2:</span>
+            <span class="hint-value">Subido en <strong>${dateStr}</strong>. Empieza por la letra <strong>"${firstChar}"</strong>.</span>
+          </div>
+        `;
+            }
+
+            if (state.hintsRequested >= 3) {
+                const masked = video.title
+                    .split("")
+                    .map((char) => {
+                        if (/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/.test(char)) {
+                            return "_";
+                        }
+                        return char;
+                    })
+                    .join(" ");
+                html += `
+          <div class="hint-item">
+            <span class="hint-label">Pista 3:</span>
+            <span class="hint-value" style="letter-spacing: 2px; font-family: monospace; font-size: 0.95rem;">${masked}</span>
+          </div>
+        `;
+            }
+
+            if (state.hintsRequested >= 4) {
+                const thumbUrl = `https://img.youtube.com/vi/${video.id}/hqdefault.jpg`;
+                html += `
+          <div class="hint-item" style="flex-direction: column; gap: 4px;">
+            <div>
+              <span class="hint-label">Pista 4:</span>
+              <span class="hint-value">Miniatura del vídeo (borrosa):</span>
+            </div>
+            <div class="hint-thumbnail-container">
+              <img class="hint-thumbnail" src="${thumbUrl}" alt="Miniatura borrosa">
+            </div>
+          </div>
+        `;
+                els.hintBtn.disabled = true;
+            }
+
+            els.hintContent.innerHTML = html;
+
+            if (state.hintsRequested < 4) {
+                els.hintBtn.textContent = `Siguiente pista (${state.hintsRequested}/4)`;
+            } else {
+                els.hintBtn.textContent = "No hay más pistas";
+            }
+        }
+
+        function newRound() {
+            stopPlayback();
+            if (state.current && !state.revealed && !state.videoError) {
+                state.streak = 0;
+            }
+            state.videoError = false;
+
+            // Reset hints UI
+            state.hintsRequested = 0;
+            els.hintContent.classList.add("hidden");
+            els.hintContent.innerHTML = "";
+            els.hintBtn.textContent = "Pedir pista";
+            els.hintBtn.disabled = false;
+
+            chooseRandomVideo();
+            state.round = 0;
+            state.revealed = false;
+            state.retryCount = 0;
+            state.startAt = pickRandomSecond(state.current);
+            state.loadedVideoId = null;
+            state.loadedStartAt = -1;
+            els.reveal.classList.remove("show");
+            els.revealMedia.innerHTML = "";
+            els.guessInput.value = "";
+            hideSearchResults();
+            els.guessInput.disabled = false;
+            els.guessBtn.disabled = false;
+            els.skipBtn.disabled = false;
+            els.playBtn.disabled = !state.ready;
+            els.status.textContent = state.ready
+                ? "Nuevo vídeo listo. Dale a reproducir y escucha bien."
+                : "Cargando reproductor de YouTube...";
+            updateStats();
+
+            // Pre-load the video silently so playback starts instantly (critical for 0.1s)
+            if (state.ready && state.player && state.current) {
+                try {
+                    state.player.mute();
+                    state.player.loadVideoById({
+                        videoId: state.current.id,
+                        startSeconds: state.startAt,
+                    });
+                    state.loadedVideoId = state.current.id;
+                    state.loadedStartAt = state.startAt;
+                    // Pause immediately after cue so it doesn't autoplay silently
+                    setTimeout(() => {
+                        try {
+                            state.player.pauseVideo();
+                        } catch (e) { }
+                    }, 80);
+                } catch (e) { }
+            }
+        }
+
+        function chooseRandomVideo(excludeId = "") {
+            let candidates = state.pool;
+
+            // Year filter (only for songs mode)
+            if (state.isSongsMode && state.yearFilter) {
+                const byYear = candidates.filter(
+                    (v) => v.year === state.yearFilter,
+                );
+                if (byYear.length > 0) candidates = byYear;
+            }
+
+            // No-repeat mode (songs)
+            if (state.isSongsMode && state.noRepeat) {
+                const unplayed = candidates.filter(
+                    (v) =>
+                        !state.playedSongs.has(v.id) && v.id !== excludeId,
+                );
+                if (unplayed.length > 0) {
+                    candidates = unplayed;
+                } else {
+                    // All played — reset and start over
+                    state.playedSongs.clear();
+                    candidates = candidates.filter(
+                        (v) => v.id !== excludeId,
+                    );
+                    if (candidates.length === 0) candidates = state.pool;
+                }
+            } else {
+                if (excludeId) {
+                    const filtered = candidates.filter(
+                        (v) => v.id !== excludeId,
+                    );
+                    if (filtered.length > 0) candidates = filtered;
+                }
+            }
+
+            state.current =
+                candidates[Math.floor(Math.random() * candidates.length)] ||
+                state.pool[0];
+
+            // Track played songs for no-repeat
+            if (state.isSongsMode && state.noRepeat && state.current) {
+                state.playedSongs.add(state.current.id);
+            }
+        }
+
+        function pickRandomSecond(video) {
+            const segs = getSegments();
+            const maxSegment = segs[segs.length - 1];
+            const playable = Math.max(
+                1,
+                (video.duration || 600) - maxSegment - 2,
+            );
+            return Math.floor(Math.random() * playable);
+        }
+
+        function playSegment(isRetry = false) {
+            if (!state.ready || !state.current || state.revealed) return;
+
+            // Unmute immediately while in click context (browser audio policy)
+            if (state.player && typeof state.player.unMute === "function") {
+                try {
+                    state.player.unMute();
+                    state.player.setVolume(100);
+                } catch (e) { }
+            }
+
+            stopPlayback();
+
+            const segs = getSegments();
+            const seconds = segs[state.round];
+            if (!isRetry) state.retryCount = 0;
+            state.elapsed = 0;
+            els.playBtn.disabled = true;
+            els.status.textContent = isRetry
+                ? "Cargando otro vídeo..."
+                : `Sonando ${seconds}s desde un punto aleatorio...`;
+            els.mysteryScreen.classList.add("playing");
+
+            const isPreloaded =
+                state.loadedVideoId === state.current.id &&
+                state.loadedStartAt === state.startAt;
+
+            if (isPreloaded) {
+                // Video already buffered — seek and play instantly (no lag, works for 0.1s)
+                try {
+                    state.player.unMute();
+                    state.player.setVolume(100);
+                    state.player.seekTo(state.startAt, true);
+                    state.player.playVideo();
+                } catch (e) {
+                    doLoad();
+                }
+            } else {
+                doLoad();
+            }
+
+            function doLoad() {
+                try {
+                    state.player.loadVideoById({
+                        videoId: state.current.id,
+                        startSeconds: state.startAt,
+                    });
+                    state.loadedVideoId = state.current.id;
+                    state.loadedStartAt = state.startAt;
+                    setTimeout(() => {
+                        try {
+                            state.player.unMute();
+                            state.player.setVolume(100);
+                            state.player.playVideo();
+                        } catch (e) { }
+                    }, 120);
+                } catch (e) {
+                    handleVideoPlayError();
+                }
+            }
+
+            state.healthTimer = setTimeout(() => {
+                try {
+                    const pState = state.player.getPlayerState();
+                    if (
+                        pState !== YT.PlayerState.PLAYING &&
+                        pState !== YT.PlayerState.BUFFERING
+                    ) {
+                        console.warn(
+                            "Playback health check failed, retrying...",
+                        );
+                        handleVideoPlayError();
+                    }
+                } catch {
+                    handleVideoPlayError();
+                }
+            }, 2000);
+
+            state.tick = setInterval(() => {
+                state.elapsed += 100;
+                els.timer.textContent = formatClock(
+                    Math.min(seconds, state.elapsed / 1000),
+                );
+            }, 100);
+
+            state.timer = setTimeout(
+                () => {
+                    stopPlayback();
+                    els.playBtn.disabled = false;
+                    els.status.textContent =
+                        "¿Lo tienes? Escribe el título o pide la siguiente pista.";
+                },
+                seconds * 1000 + 180,
+            );
+        }
+
+        function stopPlayback() {
+            clearTimeout(state.timer);
+            clearInterval(state.tick);
+            clearTimeout(state.healthTimer);
+            state.timer = null;
+            state.tick = null;
+            state.healthTimer = null;
+            state.elapsed = 0;
+            els.timer.textContent = "00:00";
+            els.mysteryScreen.classList.remove("playing");
+            if (state.player && state.ready) {
+                try {
+                    state.player.pauseVideo();
+                } catch { }
+            }
+        }
+
+        function handleVideoPlayError() {
+            stopPlayback();
+            if (state.retryCount < 5) {
+                state.retryCount++;
+                chooseRandomVideo();
+                state.startAt = pickRandomSecond(state.current);
+                console.warn(
+                    `Retry ${state.retryCount} due to playback error`,
+                );
+                playSegment(true);
+            } else {
+                state.videoError = true;
+                els.playBtn.disabled = false;
+                els.mysteryScreen.classList.remove("playing");
+                els.status.textContent =
+                    "Varios vídeos fallaron. Prueba con 'Nuevo vídeo' o cambia de modo.";
+            }
+        }
+
+        function submitGuess() {
+            if (!state.current || state.revealed) return;
+            hideSearchResults();
+            const guess = normalize(els.guessInput.value);
+            const answer = normalize(state.current.title);
+            if (!guess) {
+                els.status.textContent = "Escribe algo antes de adivinar.";
+                return;
+            }
+            if (
+                answer.includes(guess) ||
+                tokenScore(guess, answer) >= 0.68
+            ) {
+                const points = Math.max(10, 80 - state.round * 12);
+                state.score += points;
+                state.streak += 1;
+                if (state.streak > state.maxStreak) {
+                    state.maxStreak = state.streak;
+                    localStorage.setItem(
+                        "ricky_max_streak",
+                        state.maxStreak,
+                    );
+                }
+                reveal(true, `Acertaste. +${points} puntos.`);
+                return;
+            }
+            els.status.textContent =
+                "No era ese. Te subo al siguiente fragmento.";
+            nextSegment(false);
+        }
+
+        function nextSegment(showMessage = true) {
+            if (state.revealed) return;
+            const segs = getSegments();
+            stopPlayback();
+            els.playBtn.disabled = false;
+            if (state.round >= segs.length - 1) {
+                state.streak = 0;
+                reveal(false, "Se acabaron las pistas.");
+                return;
+            }
+            state.round += 1;
+            updateStats();
+            if (showMessage) {
+                els.status.textContent = `Siguiente pista: ${segs[state.round]}s.`;
+            }
+        }
+
+        function reveal(won, message) {
+            stopPlayback();
+            state.revealed = true;
+            els.guessInput.disabled = true;
+            els.guessBtn.disabled = true;
+            els.playBtn.disabled = true;
+            els.skipBtn.disabled = true;
+            els.status.textContent = message;
+            els.answerTitle.textContent = won
+                ? `Correcto: ${state.current.title}`
+                : state.current.title;
+            els.answerMeta.textContent = `El audio empezaba en ${formatLongTime(state.startAt)}.`;
+            els.watchLink.href = `https://www.youtube.com/watch?v=${state.current.id}&t=${state.startAt}s`;
+            els.revealMedia.innerHTML = `<iframe title="Vídeo revelado" src="https://www.youtube.com/embed/${state.current.id}?start=${state.startAt}&rel=0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+            els.reveal.classList.add("show");
+            updateStats();
+        }
+
+        function updateStats() {
+            els.score.textContent = state.score;
+            els.streak.textContent = state.streak;
+            els.maxStreak.textContent = state.maxStreak;
+            els.rank.textContent = getRank(state.streak);
+            const segs = getSegments();
+            els.attempt.textContent = `${Math.min(state.round + 1, segs.length)}/${segs.length}`;
+            els.videoCount.textContent = state.pool.length;
+            els.segmentLabel.textContent = `${segs[Math.min(state.round, segs.length - 1)]} sec`;
+            [...els.rounds.children].forEach((step, index) => {
+                step.classList.toggle("active", index === state.round);
+                step.classList.toggle("done", index < state.round);
+            });
+        }
+
+        function getRank(streak) {
+            if (streak >= 12) return "RickyLord";
+            if (streak >= 9) return "Élite";
+            if (streak >= 6) return "Experto";
+            if (streak >= 4) return "Ultra Fan";
+            if (streak >= 2) return "Fan";
+            return "Novato";
+        }
+
+        function renderSearchResults() {
+            state.activeSearchIndex = -1;
+            const query = normalize(els.guessInput.value);
+            if (query.length < 2) {
+                hideSearchResults();
+                return;
+            }
+
+            const terms = query.split(" ").filter(Boolean);
+            const matches = state.pool.filter((video) => {
+                const title = normalize(video.title);
+                return terms.every((term) => title.includes(term));
+            });
+
+            matches.sort((a, b) => {
+                const titleA = normalize(a.title);
+                const titleB = normalize(b.title);
+                const aStarts = titleA.startsWith(query) ? 1 : 0;
+                const bStarts = titleB.startsWith(query) ? 1 : 0;
+                return bStarts - aStarts || titleA.length - titleB.length;
+            });
+
+            if (!matches.length) {
+                els.searchResults.innerHTML = `<div class="search-summary">No hay títulos con "${escapeHtml(els.guessInput.value)}"</div>`;
+                els.searchResults.classList.add("show");
+                return;
+            }
+
+            const maxResults = 8;
+            const visibleMatches = matches.slice(0, maxResults);
+
+            els.searchResults.innerHTML = `
+        <div class="search-summary">
+          ${matches.length} título${matches.length === 1 ? "" : "s"} encontrado${matches.length === 1 ? "" : "s"}
+          ${matches.length > maxResults ? ` (mostrando los primeros ${maxResults})` : ""}
+        </div>
+        ${visibleMatches
+                    .map((video) => {
+                        const vIndex = state.pool.findIndex((v) => v.id === video.id);
+                        const vYear = estimateUploadDate(
+                            vIndex >= 0 ? vIndex : 50,
+                            state.pool.length || 100,
+                        )
+                            .split(" ")
+                            .pop();
+                        return `
+            <button class="search-option" type="button" data-video-id="${video.id}">
+              <span>${escapeHtml(video.title)}</span>
+              <small>${formatLongTime(video.duration || 0)} · Año ${vYear}</small>
+            </button>
+          `;
+                    })
+                    .join("")}
+      `;
+            els.searchResults.classList.add("show");
+            els.searchResults
+                .querySelectorAll(".search-option")
+                .forEach((button) => {
+                    button.addEventListener("click", () => {
+                        const selected = state.pool.find(
+                            (video) => video.id === button.dataset.videoId,
+                        );
+                        if (!selected) return;
+                        els.guessInput.value = selected.title;
+                        hideSearchResults();
+                        els.guessInput.focus();
+                    });
+                });
+        }
+
+        function updateSearchHighlight(buttons) {
+            buttons.forEach((btn, idx) => {
+                if (idx === state.activeSearchIndex) {
+                    btn.classList.add("selected");
+                    btn.scrollIntoView({ block: "nearest" });
+                } else {
+                    btn.classList.remove("selected");
+                }
+            });
+        }
+
+        function hideSearchResults() {
+            els.searchResults.classList.remove("show");
+            els.searchResults.innerHTML = "";
+        }
+
+        function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function normalize(text) {
+            return String(text)
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-z0-9ñ ]+/g, " ")
+                .replace(/\s+/g, " ")
+                .trim();
+        }
+
+        function tokenScore(guess, answer) {
+            const guessWords = new Set(guess.split(" ").filter(Boolean));
+            const answerWords = new Set(answer.split(" ").filter(Boolean));
+            let hits = 0;
+            guessWords.forEach((word) => {
+                if (answerWords.has(word)) hits += 1;
+            });
+            return (
+                hits /
+                Math.max(1, Math.min(6, answerWords.size), guessWords.size)
+            );
+        }
+
+        function formatClock(seconds) {
+            return `00:${String(Math.floor(seconds)).padStart(2, "0")}`;
+        }
+
+        function formatLongTime(totalSeconds) {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            return `${minutes}:${String(seconds).padStart(2, "0")}`;
+        }
+
+        function showLetter() {
+            els.letterModal.classList.add("show");
+            localStorage.setItem("ricky_message_shown", "true");
+            state.messageShown = true;
+        }
+
+        function hideLetter() {
+            els.letterModal.classList.remove("show");
+        }
+    </script>
+</body>
+
+</html>
