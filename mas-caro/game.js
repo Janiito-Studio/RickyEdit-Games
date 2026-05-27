@@ -271,7 +271,7 @@ const items = [
         description: "Acceso a la zona de hospitalidad exclusiva, catering y la mejor perspectiva del estadio."
     },
     {
-        name: "Refresco de Lata en el Cine",
+        name: "Refresco en el Cine",
         price: 4,
         type: "real",
         image: "images/real/refresco_cine.png",
