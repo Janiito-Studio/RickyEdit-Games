@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Rickyedit Emojless - By Jan</title>
+    <title>Rickyedit Emojless</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap"
@@ -88,6 +88,7 @@
             color: #fff;
             font-weight: 800;
             white-space: nowrap;
+            text-decoration: none;
             transition: transform 0.2s ease, background 0.2s ease;
         }
 
@@ -528,6 +529,13 @@
             color: var(--yellow);
             font-weight: 900;
             box-shadow: 0 6px 0 rgba(255, 51, 204, 0.42);
+            text-decoration: none;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            transform: translateY(-2px);
+            background: rgba(0, 0, 0, 0.32);
         }
 
         footer p { margin: 0; color: rgba(255, 255, 255, 0.5); font-weight: 700; }
@@ -553,14 +561,13 @@
 <body>
     <nav class="topbar">
         <div class="logo-container">
-            <img class="nav-logo" src="../Rickyedit Games.png" alt="Rickyedit Games Logo"
-                style="max-height: 48px; width: auto; object-fit: contain; filter: brightness(1.25) drop-shadow(0 0 10px var(--pink));" />
+            <img class="nav-logo" src="../Rickyedit Games.png" alt="Rickyedit Games Logo" />
         </div>
         <div class="nav-actions">
             <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal
                 Principal</a>
             <button class="icon-btn" type="button" onclick="location.href='../index.html'">
-                Volver al Lobby
+                Volver
             </button>
         </div>
     </nav>
@@ -656,6 +663,9 @@
                                     <button id="newBtn" class="btn btn-blue" type="button">
                                         Nueva Canción
                                     </button>
+                                    <button id="skipBtn" class="btn btn-dark" type="button">
+                                        Siguiente pista
+                                    </button>
                                 </div>
                                 <div id="status" class="status" role="status">
                                     Listo para jugar
@@ -668,6 +678,13 @@
                             <div class="reveal-body">
                                 <h2 id="revealTitle">Título</h2>
                                 <p id="revealLinkText">Escucha la canción aquí</p>
+                                <div class="actions">
+                                    <a id="watchLink" class="pill-link" href="#" target="_blank" rel="noreferrer">Abrir
+                                        en YouTube</a>
+                                    <button id="againBtn" class="btn btn-blue" type="button">
+                                        Jugar otra
+                                    </button>
+                                </div>
                             </div>
                         </article>
                     </div>
@@ -678,7 +695,10 @@
 
     <footer>
         <div class="footer-links">
-            <a href="https://www.youtube.com/@rickyedit" target="_blank">Canal Principal</a>
+            <a href="https://janiito-studio.github.io/RickyEdit-Web/" target="_blank" rel="noreferrer">Otros Proyectos
+                Relacionados (La web que te hice)</a>
+            <a href="https://janiito-studio.github.io/Janiito-Studio/" target="_blank" rel="noreferrer">Mi
+                Portafolios</a>
         </div>
         <p>© 2026 Rickyedit Games. Hecho por Jan (Discord: .janiito | Twitch: jasanzo)</p>
     </footer>

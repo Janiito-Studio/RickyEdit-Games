@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Rickyedit Songless - By Jan</title>
+    <title>Rickyedit Songless</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap"
@@ -114,6 +114,7 @@
             color: #fff;
             font-weight: 800;
             white-space: nowrap;
+            text-decoration: none;
             transition:
                 transform 0.2s ease,
                 background 0.2s ease;
@@ -932,20 +933,23 @@
             width: 100vw;
             height: 100vh;
             background:
-                radial-gradient(circle at 50% 50%,
-                    rgba(255, 51, 204, 0.25),
-                    #0d0d10 80%),
+                linear-gradient(135deg,
+                    rgba(255, 51, 204, 0.15),
+                    transparent 32rem),
+                radial-gradient(circle at 78% 12%,
+                    rgba(56, 212, 255, 0.18),
+                    transparent 24rem),
                 var(--bg);
             z-index: 1000;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            overflow-y: auto;
             gap: 24px;
             transition:
                 opacity 0.4s ease,
                 visibility 0.4s ease;
-            padding: 24px;
+            padding: 80px 24px 40px;
             text-align: center;
         }
 
@@ -955,85 +959,72 @@
             pointer-events: none;
         }
 
-        .start-title {
-            font-size: clamp(2.2rem, 8vw, 4rem);
-            font-weight: 900;
-            line-height: 1.1;
-            background: linear-gradient(135deg, var(--yellow), var(--pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 0;
-            filter: drop-shadow(0 4px 15px rgba(255, 51, 204, 0.35));
+        .hero-section {
+            text-align: center;
+            margin-bottom: 50px;
+            max-width: 700px;
         }
 
-        .start-subtitle {
-            color: var(--muted);
-            font-size: clamp(1rem, 4vw, 1.25rem);
-            max-width: 480px;
+        .hero-avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid var(--pink);
+            box-shadow: 0 0 25px rgba(255, 51, 204, 0.45);
+            object-fit: cover;
+            margin-bottom: 20px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        .hero-section h1 {
+            font-size: clamp(2.4rem, 7vw, 6.8rem);
+            font-weight: 900;
+            line-height: 0.86;
+            letter-spacing: 0;
+            text-transform: lowercase;
+            margin: 0 0 12px;
+            text-shadow: 0 10px 36px rgba(0, 0, 0, 0.65);
+            color: #fff;
+        }
+
+        .hero-section p {
             margin: 0;
+            max-width: 700px;
+            color: var(--muted);
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
             font-weight: 600;
         }
 
-        .start-avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 4px solid var(--pink);
-            box-shadow: 0 0 30px rgba(255, 51, 204, 0.5);
-            object-fit: cover;
-            margin-bottom: 8px;
-            animation: pulseAvatar 3s infinite alternate;
-        }
-
-        @keyframes pulseAvatar {
-            from {
-                transform: scale(1);
-                box-shadow: 0 0 20px rgba(255, 51, 204, 0.4);
-            }
-
-            to {
-                transform: scale(1.05);
-                box-shadow: 0 0 35px rgba(255, 51, 204, 0.7);
-            }
-        }
-
-        .start-btn {
-            font-size: 1.3rem;
-            font-weight: 900;
-            padding: 16px 44px;
-            border-radius: 50px;
-            color: #0d0d10;
-            background: linear-gradient(135deg, var(--yellow), var(--pink));
-            box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 16px;
-        }
-
-        .start-btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 15px 40px rgba(255, 51, 204, 0.65);
-        }
-
-        .start-btn:active {
-            transform: translateY(-1px) scale(1.02);
-        }
-
         .mode-cards {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
             width: 100%;
-            max-width: 500px;
-            margin-top: 24px;
+            max-width: 960px;
+            margin-top: 16px;
+            align-items: start;
         }
 
         .mode-card {
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(0, 0, 0, 0.3);
-            overflow: hidden;
+            border-radius: 24px;
+            border: 1px solid var(--line);
+            background: var(--card);
+            overflow: visible;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .mode-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 30px 60px rgba(255, 51, 204, 0.15);
+            border-color: rgba(255, 51, 204, 0.25);
         }
 
         .mode-card-toggle {
@@ -1041,32 +1032,28 @@
             justify-content: space-between;
             align-items: center;
             width: 100%;
-            padding: 16px 24px;
-            background: rgba(255, 51, 204, 0.15);
+            padding: 20px 24px;
+            background: rgba(255, 51, 204, 0.08);
             color: #fff;
             font-size: 1.15rem;
             font-weight: 900;
             text-align: left;
-            border: 2px solid rgba(255, 51, 204, 0.4);
-            border-radius: 16px;
-            box-shadow: 0 10px 35px rgba(255, 51, 204, 0.15);
-            transition: all 0.2s ease;
-            letter-spacing: 0.5px;
+            border: none;
+            border-bottom: 1px solid var(--line);
+            border-radius: 24px;
             cursor: pointer;
+            transition: background 0.2s ease, border-radius 0.2s ease, color 0.2s ease;
         }
 
         .mode-card-toggle:hover {
-            transform: translateY(-2px);
-            background: rgba(255, 51, 204, 0.25);
-            border-color: rgba(255, 51, 204, 0.7);
-            box-shadow: 0 12px 40px rgba(255, 51, 204, 0.25);
+            background: rgba(255, 51, 204, 0.15);
         }
 
         .mode-card.open .mode-card-toggle {
             background: linear-gradient(135deg, var(--yellow), var(--pink));
             color: #0d0d10;
-            border-color: transparent;
-            box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
+            border-radius: 24px 24px 0 0;
+            border-bottom-color: transparent;
         }
 
         .mode-card-chevron {
@@ -1080,33 +1067,30 @@
         }
 
         .mode-card-panel {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: min(100%, 500px);
-            height: 100vh;
-            z-index: 79;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            padding: 22px 16px;
-            background: radial-gradient(circle at 15% 20%,
-                    rgba(255, 0, 255, 0.15),
-                    transparent 45%),
-                var(--bg);
-            border-left: 1px solid var(--line);
-            transform: translateX(100%);
-            opacity: 0;
-            pointer-events: none;
-            transition: transform 0.28s ease, opacity 0.28s ease;
-            overflow-y: auto;
-            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            display: none;
+            background: var(--card);
+            border-top: 1px solid var(--line);
+            border-radius: 0 0 24px 24px;
         }
 
         .mode-card.open .mode-card-panel {
-            transform: translateX(0);
-            opacity: 1;
-            pointer-events: auto;
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mode-panel-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
         }
 
         .mode-diff-row {
@@ -1117,42 +1101,6 @@
             gap: 16px;
             width: 100%;
             flex-wrap: wrap;
-        }
-
-        .mode-panel-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 100%;
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: min(100%, 500px);
-            padding: 16px;
-            background: linear-gradient(90deg, var(--pink-2), var(--pink));
-            z-index: 80;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .mode-panel-title {
-            font-weight: 900;
-            font-size: 1.05rem;
-        }
-
-        .mode-close-btn {
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 999px;
-            background: rgba(0, 0, 0, 0.3);
-            color: #fff;
-            font-weight: 700;
-            padding: 8px 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .mode-close-btn:hover {
-            background: rgba(0, 0, 0, 0.5);
-            border-color: rgba(255, 255, 255, 0.5);
         }
 
         .mode-start-btn {
@@ -1366,12 +1314,24 @@
 
 <body>
     <div id="startScreen" class="start-screen">
-        <img class="start-avatar" src="../Avatar Rickyedit.jpg" alt="Avatar Rickyedit" />
-        <h1 class="start-title">Rickyedit Songless</h1>
-        <p class="start-subtitle">
-            Escucha fragmentos aleatorios y adivina el vídeo. ¿Conoces tu
-            propio canal Ricky?
-        </p>
+        <nav class="topbar" style="position: fixed; top: 0; left: 0; right: 0; z-index: 1001;">
+            <div class="logo-container">
+                <img class="nav-logo" src="../Rickyedit Games.png" alt="Rickyedit Games Logo" />
+            </div>
+            <div class="nav-actions" id="startNavActions">
+                <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer"
+                    id="startPrincipalLink">Canal Principal</a>
+                <button class="icon-btn" type="button" onclick="location.href='../index.html'">
+                    Volver
+                </button>
+            </div>
+        </nav>
+
+        <section class="hero-section">
+            <img class="hero-avatar" src="../Avatar Rickyedit.jpg" alt="Avatar Rickyedit" />
+            <h1>Rickyedit Songless</h1>
+            <p>Escucha fragmentos aleatorios y adivina el vídeo. ¿Conoces tu propio canal Ricky?</p>
+        </section>
 
         <div class="mode-cards">
             <!-- Canal Principal -->
@@ -1381,12 +1341,7 @@
                     <span class="mode-card-chevron">▼</span>
                 </button>
                 <div class="mode-card-panel" id="mainModePanel">
-                    <div class="mode-panel-header">
-                        <span class="mode-panel-title">Configuración Canal Principal</span>
-                        <button class="mode-close-btn" type="button" data-close-panel="mainModeCard">Volver</button>
-                    </div>
-                    <div
-                        style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 24px; padding-top: 100px;">
+                    <div class="mode-panel-content">
                         <div class="mode-diff-row">
                             <button id="startEasyBtn" class="mode-diff-btn" type="button">
                                 😰 Cagado
@@ -1394,10 +1349,6 @@
                             <button id="startNormalBtn" class="mode-diff-btn active" type="button">
                                 💪 Normal
                             </button>
-                        </div>
-                        <div class="mode-year-section">
-                            <span class="mode-year-label">Año</span>
-                            <div class="mode-year-chips" id="mainYearChips"></div>
                         </div>
                         <button class="mode-start-btn" id="startMainGameBtn" type="button">Empezar</button>
                     </div>
@@ -1411,13 +1362,7 @@
                     <span class="mode-card-chevron">▼</span>
                 </button>
                 <div class="mode-card-panel" id="secondaryModePanel">
-                    <div class="mode-panel-header">
-                        <span class="mode-panel-title">Configuración Canal Secundario</span>
-                        <button class="mode-close-btn" type="button"
-                            data-close-panel="secondaryModeCard">Volver</button>
-                    </div>
-                    <div
-                        style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 24px; padding-top: 100px;">
+                    <div class="mode-panel-content">
                         <div class="mode-diff-row">
                             <button id="startSecondaryEasyBtn" class="mode-diff-btn" type="button">
                                 😰 Cagado
@@ -1425,10 +1370,6 @@
                             <button id="startSecondaryNormalBtn" class="mode-diff-btn active" type="button">
                                 💪 Normal
                             </button>
-                        </div>
-                        <div class="mode-year-section">
-                            <span class="mode-year-label">Año</span>
-                            <div class="mode-year-chips" id="secondaryYearChips"></div>
                         </div>
                         <button class="mode-start-btn" id="startSecondaryGameBtn" type="button">Empezar</button>
                     </div>
@@ -1442,12 +1383,7 @@
                     <span class="mode-card-chevron">▼</span>
                 </button>
                 <div class="mode-card-panel" id="songsModePanel">
-                    <div class="mode-panel-header">
-                        <span class="mode-panel-title">Configuración Canciones</span>
-                        <button class="mode-close-btn" type="button" data-close-panel="songsModeCard">Volver</button>
-                    </div>
-                    <div
-                        style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 24px; padding-top: 100px;">
+                    <div class="mode-panel-content">
                         <div class="mode-diff-row">
                             <button id="startSongsEasyBtn" class="mode-diff-btn" type="button">
                                 😰 Cagado
@@ -1473,28 +1409,24 @@
                 </div>
             </div>
         </div>
-
-        <!-- Volver a la web Lobby Button (Standard grey style) -->
-        <a href="../index.html" class="year-chip" style="margin-top: 10px; padding: 10px 24px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.95rem; border-radius: 999px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            VOLVER A LA WEB
-        </a>
     </div>
 
     <nav class="topbar">
         <div class="logo-container">
-            <img class="nav-logo" src="../Rickyedit Games.png" alt="Rickyedit Games Logo"
-                style="max-height: 48px; width: auto; object-fit: contain; filter: brightness(1.25) drop-shadow(0 0 10px var(--pink));" />
+            <img class="nav-logo" src="../Rickyedit Games.png" alt="Rickyedit Games Logo" />
         </div>
         <div class="nav-actions">
-            <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal
-                Principal</a>
+            <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer"
+                id="gamePrincipalLink">Canal Principal</a>
             <a class="pill-link" href="https://www.youtube.com/@rickyeworld" target="_blank" rel="noreferrer"
                 id="secondaryLink" style="display: none">Canal Secundario</a>
             <button id="openLetterBtn" class="icon-btn" type="button">
                 Mensaje para Ricky
             </button>
             <button id="changeModeBtn" class="icon-btn" type="button" style="display: none">
+                Elegir Otro
+            </button>
+            <button class="icon-btn" type="button" onclick="location.href='../index.html'">
                 Volver
             </button>
         </div>
@@ -1610,6 +1542,9 @@
                                     <button id="playBtn" class="btn btn-pink" type="button">
                                         Reproducir fragmento
                                     </button>
+                                    <button id="stopBtn" class="btn btn-dark" type="button">
+                                        Parar
+                                    </button>
                                     <button id="skipBtn" class="btn btn-dark" type="button">
                                         Siguiente pista
                                     </button>
@@ -1679,7 +1614,7 @@
                     <a href="https://janiito-studio.github.io/RickyEdit-Web/" target="_blank" rel="noreferrer">
                         Rickyedit Web
                     </a>
-                    . Donde eaccionaste a ella en directo
+                    . Donde reaccionaste a ella en directo
                     <a href="https://drive.google.com/file/d/1m52FJeLYQDIRggHLjtThdWDGEIdhUKrv/view?usp=sharing"
                         target="_blank" rel="noreferrer">
                         (video de la reacción)
@@ -1725,8 +1660,7 @@
             <a href="https://janiito-studio.github.io/Janiito-Studio/" target="_blank" rel="noreferrer">Mi
                 Portafolios</a>
         </div>
-        <p>2026 Rickyedit Songless.
-            Hecho por Jan (Discord: .janiito | Twitch: jasanzo)</p>
+        <p>© 2026 Rickyedit Games. Hecho por Jan (Discord: .janiito | Twitch: jasanzo)</p>
     </footer>
 
     <script src="../ricky-videos.js"></script>
@@ -1794,6 +1728,7 @@
             searchResults: $("searchResults"),
             guessBtn: $("guessBtn"),
             playBtn: $("playBtn"),
+            stopBtn: $("stopBtn"),
             skipBtn: $("skipBtn"),
             newBtn: $("newBtn"),
             status: $("status"),
@@ -2053,19 +1988,24 @@
                 const chipsEl = document.getElementById(chipsId);
                 if (toggle && card) {
                     toggle.addEventListener("click", () => {
+                        const wasOpen = card.classList.contains("open");
                         document
                             .querySelectorAll(".mode-card.open")
                             .forEach((openCard) => {
-                                if (openCard !== card)
-                                    openCard.classList.remove("open");
+                                openCard.classList.remove("open");
                             });
-                        card.classList.add("open");
-                        // Update state and render segments for correct display
+                        if (!wasOpen) {
+                            card.classList.add("open");
+                        }
                         state.isSongsMode = cardId === "songsModeCard";
                         state.isSecondaryMode = cardId === "secondaryModeCard";
                         renderRounds();
 
-                        // Update description text based on mode
+                        const startPrincipalLink = document.getElementById("startPrincipalLink");
+                        if (startPrincipalLink) {
+                            startPrincipalLink.style.display = (cardId === "secondaryModeCard" && !wasOpen) ? "none" : "";
+                        }
+
                         const descText = document.getElementById("descriptionText");
                         if (descText) {
                             if (cardId === "songsModeCard") {
@@ -2118,19 +2058,6 @@
                 },
             );
 
-            document
-                .querySelectorAll(".mode-close-btn")
-                .forEach((closeBtn) => {
-                    closeBtn.addEventListener("click", () => {
-                        stopPlayback();
-                        const cardId = closeBtn.dataset.closePanel;
-                        const card = cardId
-                            ? document.getElementById(cardId)
-                            : closeBtn.closest(".mode-card");
-                        if (card) card.classList.remove("open");
-                    });
-                });
-
             // ---- Start game helper ----
             const startGame = (
                 isEasy,
@@ -2182,7 +2109,7 @@
                 }
 
                 // Update topbar links
-                const principalLink = document.querySelector("a[href*='rickyedit']");
+                const principalLink = document.getElementById("gamePrincipalLink");
                 const secondaryLink = document.getElementById("secondaryLink");
                 if (state.isSecondaryMode) {
                     if (principalLink) principalLink.style.display = "none";

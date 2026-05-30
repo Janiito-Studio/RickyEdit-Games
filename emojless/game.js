@@ -1,35 +1,42 @@
 const EMOJI_DATA = {
-    "ir": "🚶🛣️🌃💨🖤🌙",
-    "si mañana": "🌅☁️⏳🤔💭🌤️",
-    "diva virtual": "👩📱💿✨💔🌐",
-    "lo siento": "😔🥀🖤🌧️💭💔",
-    "rango superior": "👑⬆️💸🔥🚀💎",
-    "hoa": "🌺☀️😵‍💫🌴✨🌈",
-    "priority": "📲⚡❤️🕒💭🔥",
-    "otra vida": "🌌🪐🕊️✨🌠💭",
-    "quema": "🔥🚬🫀🌑💥🥀",
-    "paqué": "❓🤷🌀💭😵🌫️",
-    "caliente": "🥵🔥🌡️☀️💦❤️",
-    "noche": "🌙🌃🚬✨🖤🌧️",
-    "badabadún": "🥁🎺🎉🕺🔥⚡",
-    "y más allá": "🚀🌌⭐🪐✨🌠",
-    "casa": "🏠🛏️🌧️🖤💭☕",
-    "gourmet": "🍷🍽️🧀💎✨🥂",
-    "en verdad": "🗣️👀🫀💭🖤⚡",
-    "por ti": "❤️🌹🫶✨🥀💌",
-    "mi habitación": "🛏️💻🌑🎧🖤🌧️",
-    "era": "⏳📼🌫️🥀💭🖤",
-    "u banned": "🚫💻🔨💀⚠️🖤",
-    "4k/mes": "💸📈🤑🔥💻🚗",
-    "mamisabesqno": "😵‍💫🎶❤️🌙🌀💭",
-    "navimal": "🎄❄️😈🎁🖤🔔",
-    "quelamamen": "😈🍑🔥🖤💋⚡",
-    "blu": "🔵🌊🫧🌌💙🌙",
-    "COVID-AD (Villancico RickyEdit)": "🦠🎄😷🔔❄️🧪"
+    "ir": "🚶🛣️🌃🌙💨🖤",
+    "si mañana": "🌅☁️⏳🤔🌧️💭",
+    "diva virtual": "👩📱💻💬📸🌐",
+    "lo siento": "😔💔🥀😭🌧️🖤",
+    "rango superior": "👑📈🚀💸🔥🏆",
+    "hoa": "🌺🌴☀️🌊🍹✨",
+    "prioridad": "❤️📲💬⏰⚡📞",
+    "otra vida": "🌌🕊️🪐🌠✨🌙",
+    "quema": "🔥🚬💔🖤⚡🥀",
+    "paqué": "❓🤷😵‍💫💭🌀🙃",
+    "caliente": "🥵🔥☀️💋❤️🌡️",
+    "noche": "🌙🌃🌧️🚬✨🖤",
+    "badabadún": "🥁🎺🎵🎉🕺🔥",
+    "y más allá": "🚀🌌⭐🪐🌠✨",
+    "casa": "🏠🛋️📺☕🚪🪟",
+    "gourmet": "🍔🍕🌮🍟🍣🍰",
+    "en verdad": "🗣️👀❤️💭🖤⚖️",
+    "por ti": "❤️🌹💌🫶🥀✨",
+    "mi habitación": "🛏️🎧💻📱🏡🪑",
+    "era": "⏳📼🕰️🥀💭🖤",
+    "u banned": "🚫🔨💻⚠️😡💀",
+    "4k/mes": "💸📈🤑💰💻🏦",
+    "mamisabesqno": "🎶❤️🌙😵‍💫💭🌀",
+    "navimal": "🎄🎁🔔❄️☃️🦌",
+    "quelamamen": "😈💋🔥🖤⚡🌹",
+    "blu": "🔵🌊💙🫧🐟🌙",
+    "COVID-AD": "🦠😷🧻🎄🔔❄️"
 };
 
 const SONGS = window.RICKY_SONGS || [];
 const MAX_ATTEMPTS = 6;
+
+const SONG_MAP = {};
+Object.keys(EMOJI_DATA).forEach(key => {
+    const normalizedKey = normalize(key);
+    const found = SONGS.find(s => normalize(s.title).startsWith(normalizedKey));
+    if (found) SONG_MAP[key] = found;
+});
 
 const state = {
     current: null,
@@ -47,6 +54,7 @@ const els = {
     guessInput: $("guessInput"),
     guessBtn: $("guessBtn"),
     newBtn: $("newBtn"),
+    skipBtn: $("skipBtn"),
     status: $("status"),
     score: $("score"),
     streak: $("streak"),
@@ -59,6 +67,8 @@ const els = {
     revealMedia: $("revealMedia"),
     revealTitle: $("revealTitle"),
     revealLinkText: $("revealLinkText"),
+    watchLink: $("watchLink"),
+    againBtn: $("againBtn"),
     searchResults: $("searchResults"),
 };
 
@@ -168,7 +178,9 @@ function submitGuess() {
         return;
     }
 
-    if (answer.includes(guess) || tokenScore(guess, answer) >= 0.68) {
+    const songInfo = SONG_MAP[state.current.title];
+    const fullTitle = songInfo ? normalize(songInfo.title) : answer;
+    if (fullTitle.includes(guess) || answer.includes(guess) || tokenScore(guess, answer) >= 0.68) {
         const points = Math.max(10, 60 - state.round * 10);
         state.score += points;
         state.streak += 1;
@@ -208,13 +220,16 @@ function reveal(won, message) {
         ? `Correcto: ${state.current.title}`
         : state.current.title;
 
-    const songInfo = SONGS.find(s => normalize(s.title).includes(normalize(state.current.title)));
+    const songInfo = SONG_MAP[state.current.title];
     if (songInfo) {
         els.revealMedia.innerHTML = `<iframe title="Canción revelada" src="https://www.youtube.com/embed/${songInfo.id}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
-        els.revealLinkText.innerHTML = `<a href="https://www.youtube.com/watch?v=${songInfo.id}" target="_blank">Ver en YouTube</a>`;
+        els.watchLink.href = `https://www.youtube.com/watch?v=${songInfo.id}`;
+        els.watchLink.style.display = "";
+        els.revealLinkText.textContent = "";
     } else {
         els.revealMedia.innerHTML = "No disponible";
         els.revealLinkText.textContent = "Enlace no disponible";
+        els.watchLink.style.display = "none";
     }
 
     els.reveal.classList.add("show");
@@ -302,6 +317,8 @@ function hideSearchResults() {
 
 els.guessBtn.addEventListener("click", submitGuess);
 els.newBtn.addEventListener("click", newRound);
+els.againBtn.addEventListener("click", newRound);
+els.skipBtn.addEventListener("click", () => nextRound());
 
 els.guessInput.addEventListener("keydown", (event) => {
     const buttons = els.searchResults.querySelectorAll(".search-option");

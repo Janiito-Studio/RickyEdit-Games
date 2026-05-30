@@ -239,7 +239,7 @@ const items = [
         name: "Billete de Metro Sencillo",
         price: 1,
         type: "real",
-        image: "images/real/billete_metro.png",
+        image: "images/real/billete_metro_sencillo.png",
         description: "Un billete de ida simple para viajar en la red metropolitana de Madrid. Con bonificación."
     },
     {
@@ -281,7 +281,7 @@ const items = [
         name: "Lamborghini Huracán Evo",
         price: 220000,
         type: "real",
-        image: "images/real/lamborghini_huracan.png",
+        image: "images/real/lamborghini_huracan_evo.png",
         description: "Superdeportivo italiano con motor V10 atmosférico de 640 CV y espectacular aceleración."
     },
     {
@@ -363,6 +363,8 @@ let highestStreak = parseInt(localStorage.getItem('max-streak') || '0', 10);
 let currentPair = [];
 let gameActive = true;
 let roundCount = 0;
+let correctCount = 0;
+let incorrectCount = 0;
 const TOTAL_ROUNDS = 50;
 
 // Colas de mezcla para garantizar que no se repitan los ítems hasta mostrar todos
@@ -420,6 +422,13 @@ function formatPrice(value) {
     return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(value);
 }
 
+// Actualizar contadores del HUD
+function updateCounters() {
+    document.getElementById('round-counter').textContent = `${roundCount}/${TOTAL_ROUNDS}`;
+    document.getElementById('correct-count').textContent = correctCount;
+    document.getElementById('incorrect-count').textContent = incorrectCount;
+}
+
 // Obtener un par aleatorio asegurando que:
 // 1. Uno sea Skin de CS2 y otro sea de la Vida Real.
 // 2. No sean obvios (los precios deben estar en un rango de magnitud comparable, factor máx 15x).
@@ -466,12 +475,8 @@ function getRandomPair() {
         realCandidate = realQueue.pop() || realLife[0];
     }
 
-    // Decidir aleatoriamente el orden (izquierda/derecha) para que varíe la posición
-    if (Math.random() < 0.5) {
-        return [skinCandidate, realCandidate];
-    } else {
-        return [realCandidate, skinCandidate];
-    }
+    // Skin siempre a la izquierda, vida real siempre a la derecha
+    return [skinCandidate, realCandidate];
 }
 
 // Generar una nueva ronda
@@ -480,12 +485,18 @@ function nextRound() {
         // Victoria!
         document.getElementById('victory-overlay').classList.add('show');
         document.getElementById('final-score').textContent = score;
+        document.getElementById('final-correct').textContent = correctCount;
+        document.getElementById('final-incorrect').textContent = incorrectCount;
+        const total = correctCount + incorrectCount;
+        const pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+        document.getElementById('final-pct').textContent = `${pct}%`;
         return;
     }
     
     roundCount++;
     gameActive = true;
     currentPair = getRandomPair();
+    updateCounters();
 
     // Resetear clases de animación y estados
     const cardLeft = document.getElementById('card-left');
@@ -552,6 +563,7 @@ function selectOption(selectedIdx) {
     const vsIcon = document.getElementById('vs-icon');
 
     if (isCorrect) {
+        correctCount++;
         streak++;
         score += 100 + streak * 10;
         if (streak > highestStreak) {
@@ -564,6 +576,7 @@ function selectOption(selectedIdx) {
         vsIcon.classList.add('success');
         setTimeout(() => playSound('success'), 200);
     } else {
+        incorrectCount++;
         streak = 0;
         selectedBtn.classList.add('wrong');
         otherBtn.classList.add('correct');
@@ -574,6 +587,7 @@ function selectOption(selectedIdx) {
     // Actualizar marcadores
     document.getElementById('score').textContent = score;
     document.getElementById('streak').textContent = streak;
+    updateCounters();
 
     // Mostrar botón de siguiente ronda
     setTimeout(() => {
@@ -622,6 +636,8 @@ document.addEventListener('DOMContentLoaded', () => {
         score = 0;
         streak = 0;
         roundCount = 0;
+        correctCount = 0;
+        incorrectCount = 0;
         skinQueue = [];
         realQueue = [];
         document.getElementById('score').textContent = '0';

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Rickyedit Games | Minijuegos</title>
+    <title>Rickyedit Games</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap"
@@ -13,18 +13,19 @@
     <style>
         :root {
             color-scheme: dark;
-            --bg: #0d0d10;
-            --card: rgba(22, 23, 27, 0.65);
-            --card-strong: #16171b;
+            --bg: #18191c;
+            --card: rgba(34, 35, 41, 0.78);
+            --card-strong: #222329;
+            --dark: #0d0d10;
             --pink: #ff33cc;
             --pink-2: #ff168c;
             --yellow: #f1c40f;
             --cyan: #38d4ff;
-            --green: #2ecc71;
+            --green: #36e28a;
             --text: #fff;
-            --muted: #95a5a6;
-            --line: rgba(255, 255, 255, 0.08);
-            --shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+            --muted: #b9bbbe;
+            --line: rgba(255, 255, 255, 0.1);
+            --shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
         }
 
         * {
@@ -52,13 +53,16 @@
 
         /* Header stylings */
         header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
             background: linear-gradient(90deg, var(--pink-2), var(--pink));
-            padding: 16px clamp(16px, 4vw, 44px);
+            padding: 8px clamp(16px, 4vw, 44px);
+            min-height: 62px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 8px 30px rgba(255, 51, 204, 0.3);
-            z-index: 10;
         }
 
         .logo-container {
@@ -67,7 +71,35 @@
             gap: 12px;
         }
 
-        .logo-img {
+        .nav-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: end;
+            gap: 10px;
+        }
+
+        .pill-link, .icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 40px;
+            border-radius: 999px;
+            padding: 0 14px;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            background: rgba(0, 0, 0, 0.18);
+            color: #fff;
+            font-weight: 800;
+            white-space: nowrap;
+            text-decoration: none;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .pill-link:hover, .icon-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(0, 0, 0, 0.32);
+        }
+
+        .nav-logo {
             width: min(220px, 48vw);
             max-height: 48px;
             object-fit: contain;
@@ -111,15 +143,13 @@
         }
 
         .hero-section h1 {
-            font-size: clamp(2.4rem, 6vw, 4.5rem);
+            font-size: clamp(2.4rem, 7vw, 6.8rem);
             font-weight: 900;
-            line-height: 0.95;
-            text-transform: uppercase;
+            line-height: 0.86;
+            letter-spacing: 0;
+            text-transform: lowercase;
             margin-bottom: 12px;
-            background: linear-gradient(135deg, var(--yellow), var(--pink));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            text-shadow: 0 10px 36px rgba(0, 0, 0, 0.65);
         }
 
         .hero-section p {
@@ -175,6 +205,10 @@
             filter: drop-shadow(0 0 10px var(--pink));
         }
 
+        .emojless-card .card-icon-img {
+            filter: drop-shadow(0 0 10px var(--pink));
+        }
+
         .mascaro-card .card-icon-img {
             filter: drop-shadow(0 0 10px var(--yellow));
         }
@@ -218,6 +252,12 @@
             border: 1px solid rgba(255, 51, 204, 0.3);
         }
 
+        .emojless-card .card-badge {
+            background: rgba(255, 51, 204, 0.15);
+            color: var(--pink);
+            border: 1px solid rgba(255, 51, 204, 0.3);
+        }
+
         .mascaro-card .card-badge {
             background: rgba(241, 196, 15, 0.15);
             color: var(--yellow);
@@ -256,6 +296,10 @@
         }
 
         .songless-card .card-action {
+            color: var(--pink);
+        }
+
+        .emojless-card .card-action {
             color: var(--pink);
         }
 
@@ -424,23 +468,45 @@
 
         /* Footer */
         footer {
-            padding: 40px 20px;
-            border-top: 1px solid var(--line);
+            margin-top: 42px;
+            padding: 38px 18px 52px;
+            background: #111214;
             text-align: center;
-            background: rgba(0, 0, 0, 0.25);
-            width: 100%;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .footer-links a {
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 18px;
+            border-radius: 999px;
+            background: #1a1b1e;
+            border: 1px solid var(--line);
+            color: var(--yellow);
+            font-weight: 900;
+            box-shadow: 0 6px 0 rgba(255, 51, 204, 0.42);
+            text-decoration: none;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            transform: translateY(-2px);
+            background: rgba(0, 0, 0, 0.32);
         }
 
         footer p {
-            font-size: 0.9rem;
-            color: var(--muted);
-            font-weight: 600;
-        }
-
-        footer a {
-            color: var(--pink);
-            text-decoration: none;
-            font-weight: 800;
+            margin: 0;
+            color: rgba(255, 255, 255, 0.5);
+            font-weight: 700;
         }
     </style>
 </head>
@@ -448,7 +514,11 @@
 <body>
     <header>
         <div class="logo-container">
-            <img class="logo-img" src="Rickyedit Games.png" alt="Rickyedit Games" />
+            <img class="nav-logo" src="Rickyedit Games.png" alt="Rickyedit Games" />
+        </div>
+        <div class="nav-actions">
+            <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal
+                Principal</a>
         </div>
     </header>
 
@@ -506,6 +576,29 @@
                 </div>
             </a>
 
+            <!-- Tarjeta Emojless -->
+            <a href="emojless/index.html" class="arcade-card emojless-card">
+                <div class="card-image-header">
+                    <img class="card-icon-img" src="icon_emojless.png" alt="Emojless Icon">
+                </div>
+                <div class="card-body">
+                    <div>
+                        <span class="card-badge">Adivinar</span>
+                        <h2>Emojless</h2>
+                        <p>Adivina la canción basándote en los emojis. ¡Pon a prueba tus conocimientos de la
+                            discografía de Ricky!</p>
+                    </div>
+                    <div class="card-action">
+                        JUGAR AHORA
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
             <!-- Tarjeta Próximamente -->
             <div class="arcade-card soon-card">
                 <div class="card-image-header">
@@ -550,8 +643,13 @@
     </main>
 
     <footer>
-        <p>Hecho por Jan &copy; 2026. Todos los derechos a <a href="https://www.youtube.com/@rickyedit" target="_blank"
-                rel="noreferrer">Rickyedit</a>.</p>
+        <div class="footer-links">
+            <a href="https://janiito-studio.github.io/RickyEdit-Web/" target="_blank" rel="noreferrer">Otros Proyectos
+                Relacionados (La web que te hice)</a>
+            <a href="https://janiito-studio.github.io/Janiito-Studio/" target="_blank" rel="noreferrer">Mi
+                Portafolios</a>
+        </div>
+        <p>© 2026 Rickyedit Games. Hecho por Jan (Discord: .janiito | Twitch: jasanzo)</p>
     </footer>
 
     <script>
