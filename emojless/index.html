@@ -28,50 +28,25 @@
             --shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
         }
 
-        * {
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
 
         body {
             margin: 0;
             min-height: 100vh;
             font-family: Outfit, system-ui, sans-serif;
             background:
-                linear-gradient(135deg,
-                    rgba(255, 51, 204, 0.15),
-                    transparent 32rem),
-                radial-gradient(circle at 78% 12%,
-                    rgba(56, 212, 255, 0.18),
-                    transparent 24rem),
+                linear-gradient(135deg, rgba(255, 51, 204, 0.15), transparent 32rem),
+                radial-gradient(circle at 78% 12%, rgba(56, 212, 255, 0.18), transparent 24rem),
                 var(--bg);
             color: var(--text);
             overflow-x: hidden;
         }
 
-        a {
-            color: inherit;
-            text-decoration: none;
-        }
-
-        button,
-        input {
-            font: inherit;
-        }
-
-        button {
-            border: 0;
-            cursor: pointer;
-        }
-
-        button:disabled {
-            cursor: not-allowed;
-            filter: grayscale(0.8);
-            opacity: 0.55;
-        }
+        a { color: inherit; text-decoration: none; }
+        button, input { font: inherit; }
+        button { border: 0; cursor: pointer; }
+        button:disabled { cursor: not-allowed; filter: grayscale(0.8); opacity: 0.55; }
 
         .topbar {
             position: sticky;
@@ -101,8 +76,7 @@
             gap: 10px;
         }
 
-        .pill-link,
-        .icon-btn {
+        .pill-link, .icon-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -114,13 +88,10 @@
             color: #fff;
             font-weight: 800;
             white-space: nowrap;
-            transition:
-                transform 0.2s ease,
-                background 0.2s ease;
+            transition: transform 0.2s ease, background 0.2s ease;
         }
 
-        .pill-link:hover,
-        .icon-btn:hover {
+        .pill-link:hover, .icon-btn:hover {
             transform: translateY(-2px);
             background: rgba(0, 0, 0, 0.32);
         }
@@ -144,11 +115,7 @@
                 linear-gradient(-45deg, var(--pink) 25%, transparent 25%),
                 linear-gradient(45deg, transparent 75%, var(--pink) 75%),
                 linear-gradient(-45deg, transparent 75%, var(--pink) 75%);
-            background-position:
-                0 0,
-                0 32px,
-                32px -32px,
-                -32px 0;
+            background-position: 0 0, 0 32px, 32px -32px, -32px 0;
             background-size: 64px 64px;
             opacity: 0.78;
             animation: pattern 18s linear infinite;
@@ -159,18 +126,11 @@
             position: absolute;
             inset: 0;
             background:
-                linear-gradient(90deg,
-                    rgba(0, 0, 0, 0.78),
-                    rgba(0, 0, 0, 0.18) 55%,
-                    rgba(0, 0, 0, 0.72)),
+                linear-gradient(90deg, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.18) 55%, rgba(0, 0, 0, 0.72)),
                 linear-gradient(180deg, transparent 0%, var(--bg) 100%);
         }
 
-        @keyframes pattern {
-            to {
-                transform: translate(-128px, 128px);
-            }
-        }
+        @keyframes pattern { to { transform: translate(-128px, 128px); } }
 
         .hero-inner {
             position: relative;
@@ -183,10 +143,7 @@
             margin: 0 auto;
         }
 
-        .hero-copy {
-            display: grid;
-            gap: 18px;
-        }
+        .hero-copy { display: grid; gap: 18px; }
 
         .logo-title {
             width: min(520px, 90vw);
@@ -194,11 +151,7 @@
             animation: float 4s ease-in-out infinite;
         }
 
-        @keyframes float {
-            50% {
-                transform: translateY(-10px);
-            }
-        }
+        @keyframes float { 50% { transform: translateY(-10px); } }
 
         h1 {
             margin: 0;
@@ -264,29 +217,11 @@
             overflow: hidden;
         }
 
-        .window-dots {
-            display: flex;
-            gap: 8px;
-        }
-
-        .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        .dot-red {
-            background: #ff5f56;
-        }
-
-        .dot-yellow {
-            background: #ffbd2e;
-        }
-
-        .dot-green {
-            background: #27c93f;
-        }
+        .window-dots { display: flex; gap: 8px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
 
         .window-title {
             font-size: 0.85rem;
@@ -299,9 +234,7 @@
             margin-right: 48px;
         }
 
-        .window-content {
-            padding: 24px;
-        }
+        .window-content { padding: 24px; }
 
         .game-layout {
             display: grid;
@@ -337,55 +270,20 @@
             place-items: center;
             padding: 24px;
             background:
-                linear-gradient(90deg,
-                    rgba(255, 51, 204, 0.1) 1px,
-                    transparent 1px) 0 0 / 34px 34px,
-                linear-gradient(180deg,
-                    rgba(255, 255, 255, 0.06) 1px,
-                    transparent 1px) 0 0 / 34px 34px,
-                radial-gradient(circle at 50% 44%,
-                    rgba(255, 51, 204, 0.45),
-                    transparent 14rem),
+                linear-gradient(90deg, rgba(255, 51, 204, 0.1) 1px, transparent 1px) 0 0 / 34px 34px,
+                linear-gradient(180deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px) 0 0 / 34px 34px,
+                radial-gradient(circle at 50% 44%, rgba(255, 51, 204, 0.45), transparent 14rem),
                 #101014;
         }
 
         .emoji-display {
-            font-size: clamp(3rem, 10vw, 5rem);
+            font-size: clamp(1.8rem, 5vw, 3.2rem);
             z-index: 2;
             text-align: center;
             filter: drop-shadow(0 0 20px rgba(255, 51, 204, 0.5));
             animation: float 4s ease-in-out infinite;
-        }
-
-        .screen-badge,
-        .timer {
-            position: absolute;
-            top: 18px;
-            min-height: 42px;
-            display: inline-flex;
-            align-items: center;
-            border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            background: rgba(0, 0, 0, 0.48);
-            backdrop-filter: blur(10px);
-            font-weight: 900;
-        }
-
-        .screen-badge {
-            left: 18px;
-            gap: 8px;
-            padding: 0 14px;
-        }
-
-        .screen-badge span {
-            color: var(--yellow);
-        }
-
-        .timer {
-            right: 18px;
-            padding: 0 16px;
-            font-variant-numeric: tabular-nums;
-            color: #fff;
+            line-height: 1.4;
+            white-space: nowrap;
         }
 
         .controls {
@@ -414,8 +312,7 @@
             overflow: hidden;
         }
 
-        .round-step.active,
-        .round-step.done {
+        .round-step.active, .round-step.done {
             color: #111;
             border-color: transparent;
             background: linear-gradient(135deg, var(--yellow), var(--pink));
@@ -445,18 +342,14 @@
             backdrop-filter: blur(20px);
         }
 
-        .search-results.show {
-            display: block;
-        }
+        .search-results.show { display: block; }
 
         .search-summary {
             position: sticky;
             top: 0;
             padding: 8px 14px;
             background:
-                linear-gradient(90deg,
-                    rgba(255, 51, 204, 0.22),
-                    rgba(241, 196, 15, 0.12)),
+                linear-gradient(90deg, rgba(255, 51, 204, 0.22), rgba(241, 196, 15, 0.12)),
                 #15151a;
             color: var(--muted);
             font-size: 0.82rem;
@@ -480,8 +373,7 @@
             transition: background 0.12s ease;
         }
 
-        .search-option:hover,
-        .search-option.selected {
+        .search-option:hover, .search-option.selected {
             background: rgba(255, 51, 204, 0.18);
             outline: none;
         }
@@ -543,9 +435,7 @@
             color: #111;
             font-weight: 900;
             box-shadow: 0 8px 0 rgba(0, 0, 0, 0.3);
-            transition:
-                transform 0.16s ease,
-                box-shadow 0.16s ease;
+            transition: transform 0.16s ease, box-shadow 0.16s ease;
             white-space: nowrap;
         }
 
@@ -554,57 +444,18 @@
             box-shadow: 0 5px 0 rgba(0, 0, 0, 0.32);
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, var(--yellow), var(--pink));
-            color: #111;
-        }
+        .btn-primary { background: linear-gradient(135deg, var(--yellow), var(--pink)); color: #111; }
+        .btn-pink { background: var(--pink-2); color: #fff; }
+        .btn-blue { background: linear-gradient(135deg, var(--pink-2), var(--pink)); color: #fff; }
+        .btn-dark { background: rgba(255, 51, 204, 0.1); color: #fff; border: 1px solid var(--pink); }
 
-        .btn-pink {
-            background: var(--pink-2);
-            color: #fff;
-        }
+        .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+        .status { min-height: 26px; color: var(--muted); font-weight: 700; }
 
-        .btn-blue {
-            background: linear-gradient(135deg, var(--pink-2), var(--pink));
-            color: #fff;
-        }
+        .side { display: grid; gap: 18px; padding: 20px; }
+        .side h2, .reveal h2 { margin: 0; font-size: 1.35rem; letter-spacing: 0; }
 
-        .btn-dark {
-            background: rgba(255, 51, 204, 0.1);
-            color: #fff;
-            border: 1px solid var(--pink);
-        }
-
-        .actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .status {
-            min-height: 26px;
-            color: var(--muted);
-            font-weight: 700;
-        }
-
-        .side {
-            display: grid;
-            gap: 18px;
-            padding: 20px;
-        }
-
-        .side h2,
-        .reveal h2 {
-            margin: 0;
-            font-size: 1.35rem;
-            letter-spacing: 0;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
+        .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 
         .stat {
             padding: 14px;
@@ -630,38 +481,17 @@
         .hint-card {
             padding: 16px;
             border-radius: 16px;
-            background: linear-gradient(135deg,
-                    rgba(255, 51, 204, 0.18),
-                    rgba(241, 196, 15, 0.13));
+            background: linear-gradient(135deg, rgba(255, 51, 204, 0.18), rgba(241, 196, 15, 0.13));
             border: 1px solid rgba(255, 255, 255, 0.12);
             color: #f3f3f3;
         }
 
-        .hint-card p {
-            margin: 8px 0 0;
-            color: var(--muted);
-        }
+        .hint-card p { margin: 8px 0 0; color: var(--muted); }
 
-        .reveal {
-            display: none;
-            margin-top: 22px;
-            overflow: hidden;
-        }
-
-        .reveal.show {
-            display: block;
-        }
-
-        .reveal-media {
-            aspect-ratio: 16 / 9;
-            background: #000;
-        }
-
-        .reveal-media iframe {
-            width: 100%;
-            height: 100%;
-            border: 0;
-        }
+        .reveal { display: none; margin-top: 22px; overflow: hidden; border-radius: 22px; }
+        .reveal.show { display: block; }
+        .reveal-media { aspect-ratio: 16 / 9; background: #000; }
+        .reveal-media iframe { width: 100%; height: 100%; border: 0; }
 
         .reveal-body {
             display: grid;
@@ -669,11 +499,7 @@
             padding: 18px 20px 20px;
         }
 
-        .reveal-body p {
-            margin: 0;
-            color: var(--muted);
-            font-weight: 700;
-        }
+        .reveal-body p { margin: 0; color: var(--muted); font-weight: 700; }
 
         footer {
             margin-top: 42px;
@@ -704,57 +530,22 @@
             box-shadow: 0 6px 0 rgba(255, 51, 204, 0.42);
         }
 
-        footer p {
-            margin: 0;
-            color: rgba(255, 255, 255, 0.5);
-            font-weight: 700;
-        }
+        footer p { margin: 0; color: rgba(255, 255, 255, 0.5); font-weight: 700; }
 
         @media (max-width: 900px) {
-            .hero-inner {
-                grid-template-columns: 1fr;
-            }
-
-            .avatar-card {
-                justify-self: start;
-                width: 210px;
-            }
-
-            .game-layout {
-                grid-template-columns: 1fr;
-            }
-
-            .mystery-screen {
-                min-height: 360px;
-            }
+            .hero-inner { grid-template-columns: 1fr; }
+            .avatar-card { justify-self: start; width: 210px; }
+            .game-layout { grid-template-columns: 1fr; }
+            .mystery-screen { min-height: 360px; }
         }
 
         @media (max-width: 640px) {
-            .hero {
-                padding-bottom: 70px;
-            }
-
-            .topbar {
-                align-items: flex-start;
-                flex-direction: column;
-            }
-
-            .nav-actions {
-                justify-content: start;
-            }
-
-            .guess-row {
-                grid-template-columns: 1fr;
-            }
-
-            .rounds {
-                grid-template-columns: repeat(3, 1fr);
-            }
-
-            .actions .btn,
-            .guess-row .btn {
-                width: 100%;
-            }
+            .hero { padding-bottom: 70px; }
+            .topbar { align-items: flex-start; flex-direction: column; }
+            .nav-actions { justify-content: start; }
+            .guess-row { grid-template-columns: 1fr; }
+            .rounds { grid-template-columns: repeat(3, 1fr); }
+            .actions .btn, .guess-row .btn { width: 100%; }
         }
     </style>
 </head>
@@ -764,16 +555,16 @@
         <div class="logo-container">
             <img class="nav-logo" src="../Rickyedit Games.png" alt="Rickyedit Games Logo"
                 style="max-height: 48px; width: auto; object-fit: contain; filter: brightness(1.25) drop-shadow(0 0 10px var(--pink));" />
-        </div]
+        </div>
         <div class="nav-actions">
             <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal
-                Principal</a
+                Principal</a>
             <button class="icon-btn" type="button" onclick="location.href='../index.html'">
                 Volver al Lobby
             </button>
         </div>
-    </nav> 
- 
+    </nav>
+
     <header class="hero">
         <div class="hero-inner">
             <div class="hero-copy">
@@ -781,23 +572,23 @@
                 <p id="descriptionText">
                     Adivina la canción basándote en los emojis. ¡Pon a prueba tus conocimientos de la discografía de Ricky!
                 </p>
-            </div]
+            </div>
             <div class="avatar-card">
                 <img src="../Avatar Rickyedit.jpg" alt="Avatar Rickyedit" />
-            </div]
-        </div]
+            </div>
+        </div>
     </header>
 
     <main class="shell">
         <div class="window glass">
             <div class="window-header">
                 <div class="window-dots">
-                    <span class="dot dot-red"></span
-                    <span class="dot dot-yellow"></span
-                    <span class="dot dot-green"></span
-                </div]
-                <div class="window-title">Partida</div]
-            </div]
+                    <span class="dot dot-red"></span>
+                    <span class="dot dot-yellow"></span>
+                    <span class="dot dot-green"></span>
+                </div>
+                <div class="window-title">Partida</div>
+            </div>
             <div class="window-content">
                 <section class="game-layout">
                     <aside class="side glass">
@@ -805,47 +596,53 @@
                         <div class="stats">
                             <div class="stat">
                                 <span>Puntos</span>
-                                <strong id="score">0</strong
-                            </div]
+                                <strong id="score">0</strong>
+                            </div>
                             <div class="stat">
                                 <span>Racha</span>
-                                <strong id="streak">0</strong
-                            </div]
+                                <strong id="streak">0</strong>
+                            </div>
                             <div class="stat">
                                 <span>Racha Máx</span>
-                                <strong id="maxStreak">0</strong
-                            </div]
+                                <strong id="maxStreak">0</strong>
+                            </div>
                             <div class="stat">
                                 <span>Rango</span>
-                                <strong id="rank" style="font-size: 1.25rem; margin-top: 8px;">Novato</strong
-                            </div]
+                                <strong id="rank" style="font-size: 1.25rem; margin-top: 8px;">Novato</strong>
+                            </div>
                             <div class="stat">
                                 <span>Intento</span>
-                                <strong id="attempt">1/6</strong
-                            </div]
+                                <strong id="attempt">1/6</strong>
+                            </div>
                             <div class="stat">
                                 <span>Canciones</span>
-                                <strong id="videoCount">0</strong
-                            </div]
-                        </div]
+                                <strong id="videoCount">0</strong>
+                            </div>
+                        </div>
                         <div class="hint-card">
                             <strong>Cómo va</strong>
                             <p>
-                                Aparecerán emojis que representan la canción. ¡Adivina el título correcto!
+                                Aparecerán 6 emojis que representan la canción. ¡Adivina el título antes de quedarte sin intentos!
                             </p>
-                        </div]
+                        </div>
+                        <div class="hint-card">
+                            <strong>Emojis</strong>
+                            <p id="segmentsInfo">
+                                Empiezas con 1 emoji visible. Cada fallo revela uno más.
+                            </p>
+                        </div>
                     </aside>
 
                     <div>
                         <article class="game-card glass">
                             <div id="mysteryScreen" class="mystery-screen">
                                 <div class="curtain">
-                                    <div id="emojiDisplay" class="emoji-display">❓</div>
+                                    <div id="emojiDisplay" class="emoji-display">❓ ❓ ❓ ❓ ❓ ❓</div>
                                 </div>
-                            </div]
+                            </div>
 
                             <div class="controls">
-                                <div id="rounds" class="rounds" aria-label="Rondas del juego"></div]
+                                <div id="rounds" class="rounds" aria-label="Rondas del juego"></div>
                                 <div class="guess-row">
                                     <input id="guessInput" type="text" autocomplete="off"
                                         placeholder="Escribe el título de la canción" />
@@ -853,8 +650,8 @@
                                         Adivinar
                                     </button>
                                     <div id="searchResults" class="search-results" role="listbox"
-                                        aria-label="Resultados por título"></div]
-                                </div]
+                                        aria-label="Resultados por título"></div>
+                                </div>
                                 <div class="actions">
                                     <button id="newBtn" class="btn btn-blue" type="button">
                                         Nueva Canción
@@ -863,30 +660,31 @@
                                 <div id="status" class="status" role="status">
                                     Listo para jugar
                                 </div>
-                            </div]
+                            </div>
                         </article>
 
                         <article id="reveal" class="reveal glass">
-                            <div id="revealMedia" class="reveal-media"></div]
+                            <div id="revealMedia" class="reveal-media"></div>
                             <div class="reveal-body">
                                 <h2 id="revealTitle">Título</h2>
                                 <p id="revealLinkText">Escucha la canción aquí</p>
-                            </div]
+                            </div>
                         </article>
                     </div>
                 </section>
-            </div]
-        </div]
+            </div>
+        </div>
     </main>
 
     <footer>
         <div class="footer-links">
             <a href="https://www.youtube.com/@rickyedit" target="_blank">Canal Principal</a>
-        </div]
-        <p>© 2026 Rickyedit Games</p>
+        </div>
+        <p>© 2026 Rickyedit Games. Hecho por Jan (Discord: .janiito | Twitch: jasanzo)</p>
     </footer>
 
     <script src="../ricky-songs.js"></script>
     <script src="game.js"></script>
 </body>
+
 </html>

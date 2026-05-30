@@ -1,210 +1,340 @@
 const EMOJI_DATA = {
-    "ir": "🚶🛣️🌆",
-    "si mañana": "☁️⏳🌅",
-    "diva virtual": "👩📱💿",
-    "lo siento": "😔🥀💔",
-    "rango superior": "👑📈🔥",
-    "hoa": "🌺🌴✨",
-    "priority": "❗📞⚡",
-    "otra vida": "🌌🪐🕊️",
-    "quema": "🔥🚬💣",
-    "paqué": "🤷❓🌀",
-    "caliente": "🌡️🔥🥵",
-    "noche": "🌙🌃✨",
-    "badabadún": "🥁🎺🎉",
-    "y más allá": "🚀🌌⭐",
-    "casa": "🏠🛋️🌧️",
-    "gourmet": "🍷🍽️🧀",
-    "en verdad": "🗣️👀💭",
-    "por ti": "❤️🫶🌹",
-    "mi habitación": "🛏️💻🌑",
-    "era": "⏳📼🌫️",
-    "u banned": "🚫🔨💀",
-    "4k/mes": "💸📈🤑",
-    "mamisabesqno": "😵🎶🌀",
-    "navimal": "🎄❄️🎁",
-    "quelamamen": "😈🍑🔥",
-    "blu": "🔵🌊🫧",
-    "COVID-AD (Villancico RickyEdit)": "🦠🎄😷"
+    "ir": "🚶🛣️🌃💨🖤🌙",
+    "si mañana": "🌅☁️⏳🤔💭🌤️",
+    "diva virtual": "👩📱💿✨💔🌐",
+    "lo siento": "😔🥀🖤🌧️💭💔",
+    "rango superior": "👑⬆️💸🔥🚀💎",
+    "hoa": "🌺☀️😵‍💫🌴✨🌈",
+    "priority": "📲⚡❤️🕒💭🔥",
+    "otra vida": "🌌🪐🕊️✨🌠💭",
+    "quema": "🔥🚬🫀🌑💥🥀",
+    "paqué": "❓🤷🌀💭😵🌫️",
+    "caliente": "🥵🔥🌡️☀️💦❤️",
+    "noche": "🌙🌃🚬✨🖤🌧️",
+    "badabadún": "🥁🎺🎉🕺🔥⚡",
+    "y más allá": "🚀🌌⭐🪐✨🌠",
+    "casa": "🏠🛏️🌧️🖤💭☕",
+    "gourmet": "🍷🍽️🧀💎✨🥂",
+    "en verdad": "🗣️👀🫀💭🖤⚡",
+    "por ti": "❤️🌹🫶✨🥀💌",
+    "mi habitación": "🛏️💻🌑🎧🖤🌧️",
+    "era": "⏳📼🌫️🥀💭🖤",
+    "u banned": "🚫💻🔨💀⚠️🖤",
+    "4k/mes": "💸📈🤑🔥💻🚗",
+    "mamisabesqno": "😵‍💫🎶❤️🌙🌀💭",
+    "navimal": "🎄❄️😈🎁🖤🔔",
+    "quelamamen": "😈🍑🔥🖤💋⚡",
+    "blu": "🔵🌊🫧🌌💙🌙",
+    "COVID-AD (Villancico RickyEdit)": "🦠🎄😷🔔❄️🧪"
 };
 
-let currentSong = null;
-let score = 0;
-let streak = 0;
-let maxStreak = 0;
-let attempts = 1;
+const SONGS = window.RICKY_SONGS || [];
 const MAX_ATTEMPTS = 6;
 
-const elements = {
-    emojiDisplay: document.getElementById('emojiDisplay'),
-    guessInput: document.getElementById('guessInput'),
-    guessBtn: document.getElementById('guessBtn'),
-    scoreEl: document.getElementById('score'),
-    streakEl: document.getElementById('streak'),
-    maxStreakEl: document.getElementById('maxStreak'),
-    attemptEl: document.getElementById('attempt'),
-    videoCountEl: document.getElementById('videoCount'),
-    roundsEl: document.getElementById('rounds'),
-    statusEl: document.getElementById('status'),
-    newBtn: document.getElementById('newBtn'),
-    reveal: document.getElementById('reveal'),
-    revealMedia: document.getElementById('revealMedia'),
-    revealTitle: document.getElementById('revealTitle'),
-    revealLinkText: document.getElementById('revealLinkText'),
-    searchResults: document.getElementById('searchResults')
+const state = {
+    current: null,
+    score: 0,
+    streak: 0,
+    maxStreak: parseInt(localStorage.getItem("emojless_max_streak") || "0", 10),
+    round: 0,
+    revealed: false,
+    activeSearchIndex: -1,
 };
 
-function updateStats() {
-    elements.scoreEl.textContent = score;
-    elements.streakEl.textContent = streak;
-    elements.maxStreakEl.textContent = maxStreak;
-    elements.attemptEl.textContent = `${attempts}/${MAX_ATTEMPTS}`;
-    elements.videoCountEl.textContent = currentSong ? 1 : 0;
+const $ = (id) => document.getElementById(id);
+const els = {
+    emojiDisplay: $("emojiDisplay"),
+    guessInput: $("guessInput"),
+    guessBtn: $("guessBtn"),
+    newBtn: $("newBtn"),
+    status: $("status"),
+    score: $("score"),
+    streak: $("streak"),
+    maxStreak: $("maxStreak"),
+    rank: $("rank"),
+    attempt: $("attempt"),
+    videoCount: $("videoCount"),
+    rounds: $("rounds"),
+    reveal: $("reveal"),
+    revealMedia: $("revealMedia"),
+    revealTitle: $("revealTitle"),
+    revealLinkText: $("revealLinkText"),
+    searchResults: $("searchResults"),
+};
+
+function normalize(text) {
+    return String(text)
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9ñ ]+/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
 }
 
-function getRank() {
-    if (score >= 50) return "Leyenda";
-    if (score >= 30) return "Experto";
-    if (score >= 15) return "Conocedor";
-    if (score >= 5) return "Aprendiz";
+function tokenScore(guess, answer) {
+    const guessWords = new Set(guess.split(" ").filter(Boolean));
+    const answerWords = new Set(answer.split(" ").filter(Boolean));
+    let hits = 0;
+    guessWords.forEach((word) => {
+        if (answerWords.has(word)) hits += 1;
+    });
+    return hits / Math.max(1, Math.min(6, answerWords.size), guessWords.size);
+}
+
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function splitEmojis(str) {
+    return [...str].filter(ch => ch !== "\uFE0F" && ch !== "\u200D");
+}
+
+function getRank(streak) {
+    if (streak >= 12) return "RickyLord";
+    if (streak >= 9) return "\u00c9lite";
+    if (streak >= 6) return "Experto";
+    if (streak >= 4) return "Ultra Fan";
+    if (streak >= 2) return "Fan";
     return "Novato";
 }
 
-function updateRank() {
-    document.getElementById('rank').textContent = getRank();
+function updateStats() {
+    els.score.textContent = state.score;
+    els.streak.textContent = state.streak;
+    els.maxStreak.textContent = state.maxStreak;
+    els.rank.textContent = getRank(state.streak);
+    els.attempt.textContent = `${Math.min(state.round + 1, MAX_ATTEMPTS)}/${MAX_ATTEMPTS}`;
+    els.videoCount.textContent = SONGS.length;
+    [...els.rounds.children].forEach((step, index) => {
+        step.classList.toggle("active", index === state.round);
+        step.classList.toggle("done", index < state.round);
+    });
 }
 
-function selectRandomSong() {
-    const songs = Object.keys(EMOJI_DATA);
-    const randomSong = songs[Math.floor(Math.random() * songs.length)];
-    return {
-        title: randomSong,
-        emojis: EMOJI_DATA[randomSong]
-    };
-}
-
-function startNewGame() {
-    currentSong = selectRandomSong();
-    attempts = 1;
-    elements.emojiDisplay.textContent = currentSong.emojis;
-    elements.guessInput.value = '';
-    elements.reveal.classList.remove('show');
-    elements.statusEl.textContent = '¿Qué canción es?';
-    
-    renderRounds();
-    updateStats();
-    updateRank();
+function updateEmojiDisplay() {
+    if (!state.current) return;
+    const allEmojis = splitEmojis(state.current.emojis);
+    const visible = allEmojis.slice(0, state.round + 1);
+    const hidden = allEmojis.slice(state.round + 1).map(() => "\u2753");
+    els.emojiDisplay.textContent = [...visible, ...hidden].join(" ");
 }
 
 function renderRounds() {
-    elements.roundsEl.innerHTML = '';
-    for (let i = 1; i <= MAX_ATTEMPTS; i++) {
-        const div = document.createElement('div');
-        div.className = `round-step ${i === attempts ? 'active' : (i < attempts ? 'done' : '')}`;
-        div.textContent = i;
-        elements.roundsEl.appendChild(div);
+    els.rounds.innerHTML = "";
+    for (let i = 0; i < MAX_ATTEMPTS; i++) {
+        const item = document.createElement("div");
+        item.className = "round-step";
+        item.textContent = `${i + 1}`;
+        els.rounds.appendChild(item);
     }
 }
 
-function checkGuess() {
-    const guess = elements.guessInput.value.trim().toLowerCase();
-    const correct = currentSong.title.toLowerCase();
+function selectRandomSong() {
+    const keys = Object.keys(EMOJI_DATA);
+    const key = keys[Math.floor(Math.random() * keys.length)];
+    return { title: key, emojis: EMOJI_DATA[key] };
+}
 
-    if (!guess) return;
+function newRound() {
+    state.current = selectRandomSong();
+    state.round = 0;
+    state.revealed = false;
+    els.reveal.classList.remove("show");
+    els.revealMedia.innerHTML = "";
+    els.guessInput.value = "";
+    hideSearchResults();
+    els.guessInput.disabled = false;
+    els.guessBtn.disabled = false;
+    els.newBtn.disabled = false;
+    els.status.textContent = "Adivina la canción. Tienes 6 intentos.";
+    renderRounds();
+    updateEmojiDisplay();
+    updateStats();
+}
 
-    if (guess === correct) {
-        handleWin();
-    } else {
-        handleWrong();
+function submitGuess() {
+    if (!state.current || state.revealed) return;
+    hideSearchResults();
+    const guess = normalize(els.guessInput.value);
+    const answer = normalize(state.current.title);
+    if (!guess) {
+        els.status.textContent = "Escribe algo antes de adivinar.";
+        return;
+    }
+
+    if (answer.includes(guess) || tokenScore(guess, answer) >= 0.68) {
+        const points = Math.max(10, 60 - state.round * 10);
+        state.score += points;
+        state.streak += 1;
+        if (state.streak > state.maxStreak) {
+            state.maxStreak = state.streak;
+            localStorage.setItem("emojless_max_streak", state.maxStreak);
+        }
+        reveal(true, `Acertaste. +${points} puntos.`);
+        return;
+    }
+
+    els.status.textContent = "No era ese. Te revelo otro emoji.";
+    nextRound(false);
+}
+
+function nextRound(showMessage = true) {
+    if (state.revealed) return;
+    state.round += 1;
+    if (state.round >= MAX_ATTEMPTS) {
+        state.streak = 0;
+        reveal(false, "Se acabaron los intentos.");
+        return;
+    }
+    updateEmojiDisplay();
+    updateStats();
+    if (showMessage) {
+        els.status.textContent = `Siguiente intento: ${state.round + 1}/${MAX_ATTEMPTS}.`;
     }
 }
 
-function handleWin() {
-    score += (MAX_ATTEMPTS - attempts + 1) * 10;
-    streak++;
-    maxStreak = Math.max(maxStreak, streak);
-    
-    elements.statusEl.textContent = '¡Correcto! 🎉';
-    elements.guessBtn.disabled = true;
-    
-    revealSong();
-}
+function reveal(won, message) {
+    state.revealed = true;
+    els.guessInput.disabled = true;
+    els.guessBtn.disabled = true;
+    els.status.textContent = message;
+    els.revealTitle.textContent = won
+        ? `Correcto: ${state.current.title}`
+        : state.current.title;
 
-function handleWrong() {
-    attempts++;
-    if (attempts > MAX_ATTEMPTS) {
-        streak = 0;
-        elements.statusEl.textContent = '¡Has perdido!';
-        revealSong();
-    } else {
-        elements.statusEl.textContent = 'Incorrecto ❌';
-        renderRounds();
-        updateStats();
-    }
-}
-
-function revealSong() {
-    elements.reveal.classList.add('show');
-    elements.revealTitle.textContent = currentSong.title;
-    
-    // Find song in ricky-songs.js list to get YouTube link
-    const songInfo = rickySongs.find(s => s.title.toLowerCase() === currentSong.title.toLowerCase());
+    const songInfo = SONGS.find(s => normalize(s.title).includes(normalize(state.current.title)));
     if (songInfo) {
-        elements.revealMedia.innerHTML = `<iframe src="https://www.youtube.com/embed/${songInfo.id}" frameborder="0" allowfullscreen></iframe>`;
-        elements.revealLinkText.innerHTML = `<a href="https://www.youtube.com/watch?v=${songInfo.id}" target="_blank">Ver en YouTube</a>`;
+        els.revealMedia.innerHTML = `<iframe title="Canción revelada" src="https://www.youtube.com/embed/${songInfo.id}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+        els.revealLinkText.innerHTML = `<a href="https://www.youtube.com/watch?v=${songInfo.id}" target="_blank">Ver en YouTube</a>`;
     } else {
-        elements.revealMedia.innerHTML = 'No disponible';
-        elements.revealLinkText.textContent = 'Enlace no disponible';
+        els.revealMedia.innerHTML = "No disponible";
+        els.revealLinkText.textContent = "Enlace no disponible";
     }
-    
-    elements.guessBtn.disabled = false;
+
+    els.reveal.classList.add("show");
+    updateEmojiDisplay();
+    updateStats();
 }
 
-document.getElementById('guessBtn').addEventListener('click', checkGuess);
-elements.newBtn.addEventListener('click', startNewGame);
-elements.guessInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') checkGuess();
-});
+function renderSearchResults() {
+    state.activeSearchIndex = -1;
+    const query = normalize(els.guessInput.value);
+    if (query.length < 1) {
+        hideSearchResults();
+        return;
+    }
 
-// Search logic using ricky-songs.js
-function initSearch() {
-    elements.guessInput.addEventListener('input', () => {
-        const query = elements.guessInput.value.toLowerCase();
-        if (!query) {
-            elements.searchResults.classList.remove('show');
+    const terms = query.split(" ").filter(Boolean);
+    const matches = SONGS.filter((song) => {
+        const title = normalize(song.title);
+        return terms.every((term) => title.includes(term));
+    });
+
+    matches.sort((a, b) => {
+        const titleA = normalize(a.title);
+        const titleB = normalize(b.title);
+        const aStarts = titleA.startsWith(query) ? 1 : 0;
+        const bStarts = titleB.startsWith(query) ? 1 : 0;
+        return bStarts - aStarts || titleA.length - titleB.length;
+    });
+
+    if (!matches.length) {
+        els.searchResults.innerHTML = `<div class="search-summary">No hay resultados para "${escapeHtml(els.guessInput.value)}"</div>`;
+        els.searchResults.classList.add("show");
+        return;
+    }
+
+    const maxResults = 8;
+    const visibleMatches = matches.slice(0, maxResults);
+
+    els.searchResults.innerHTML = `
+        <div class="search-summary">
+          ${matches.length} resultado${matches.length === 1 ? "" : "s"}
+          ${matches.length > maxResults ? ` (mostrando los primeros ${maxResults})` : ""}
+        </div>
+        ${visibleMatches
+            .map((song) => {
+                return `
+            <button class="search-option" type="button" data-title="${escapeHtml(song.title)}">
+              <img class="search-option-thumb" src="https://img.youtube.com/vi/${song.id}/mqdefault.jpg" alt="">
+              <div class="search-option-info">
+                <div class="search-option-title">${escapeHtml(song.title)}</div>
+                <div class="search-option-meta">${song.year}</div>
+              </div>
+            </button>
+          `;
+            })
+            .join("")}
+      `;
+    els.searchResults.classList.add("show");
+    els.searchResults
+        .querySelectorAll(".search-option")
+        .forEach((button) => {
+            button.addEventListener("click", () => {
+                els.guessInput.value = button.dataset.title;
+                hideSearchResults();
+                els.guessInput.focus();
+            });
+        });
+}
+
+function updateSearchHighlight(buttons) {
+    buttons.forEach((btn, idx) => {
+        if (idx === state.activeSearchIndex) {
+            btn.classList.add("selected");
+            btn.scrollIntoView({ block: "nearest" });
+        } else {
+            btn.classList.remove("selected");
+        }
+    });
+}
+
+function hideSearchResults() {
+    els.searchResults.classList.remove("show");
+    els.searchResults.innerHTML = "";
+}
+
+els.guessBtn.addEventListener("click", submitGuess);
+els.newBtn.addEventListener("click", newRound);
+
+els.guessInput.addEventListener("keydown", (event) => {
+    const buttons = els.searchResults.querySelectorAll(".search-option");
+    if (
+        buttons.length > 0 &&
+        (event.key === "ArrowDown" || event.key === "ArrowUp" || event.key === "Enter")
+    ) {
+        if (event.key === "ArrowDown") {
+            event.preventDefault();
+            state.activeSearchIndex = (state.activeSearchIndex + 1) % buttons.length;
+            updateSearchHighlight(buttons);
             return;
         }
-
-        const matches = rickySongs.filter(s => s.title.toLowerCase().includes(query));
-        
-        elements.searchResults.innerHTML = `
-            <div class="search-summary">Resultados encontrados: ${matches.length}</div>
-            ${matches.map(s => `
-                <div class="search-option" data-title="${s.title}">
-                    <img class="search-option-thumb" src="${s.thumb}" alt="${s.title}">
-                    <div class="search-option-info">
-                        <div class="search-option-title">${s.title}</div>
-                        <div class="search-option-meta">${s.year}</div>
-                    </div>
-                </div>
-            `).join('')}
-        `;
-        elements.searchResults.classList.add('show');
-    });
-
-    document.addEventListener('addEventListener', (e) => {
-        // Note: This is a BUG in my code, should be document.addEventListener('click', ...)
-    });
-}
-
-// Correcting search click handler
-document.addEventListener('click', (e) => {
-    if (e.target.closest('.search-option')) {
-        const option = e.target.closest('.search-option');
-        elements.guessInput.value = option.dataset.title;
-        elements.searchResults.classList.remove('show');
+        if (event.key === "ArrowUp") {
+            event.preventDefault();
+            state.activeSearchIndex = (state.activeSearchIndex - 1 + buttons.length) % buttons.length;
+            updateSearchHighlight(buttons);
+            return;
+        }
+        if (event.key === "Enter" && state.activeSearchIndex >= 0) {
+            event.preventDefault();
+            buttons[state.activeSearchIndex].click();
+            return;
+        }
     }
+    if (event.key === "Enter") submitGuess();
+    if (event.key === "Escape") hideSearchResults();
 });
 
-initSearch();
-startNewGame();
+els.guessInput.addEventListener("input", renderSearchResults);
+
+document.addEventListener("click", (event) => {
+    if (!event.target.closest(".guess-row")) hideSearchResults();
+});
+
+newRound();
