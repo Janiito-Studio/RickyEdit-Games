@@ -29,7 +29,36 @@ const EMOJI_DATA = {
 };
 
 const SONGS = window.RICKY_SONGS || [];
-const MAX_ATTEMPTS = 6;
+let MAX_ATTEMPTS = 6;
+
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playSound(type) {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    const now = audioCtx.currentTime;
+    if (type === 'success') {
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.35);
+        osc.start(now); osc.stop(now + 0.35);
+    } else if (type === 'fail') {
+        osc.frequency.setValueAtTime(330, now);
+        osc.frequency.linearRampToValueAtTime(165, now + 0.25);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.4);
+        osc.start(now); osc.stop(now + 0.4);
+    } else if (type === 'click') {
+        osc.frequency.setValueAtTime(600, now);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.08);
+        osc.start(now); osc.stop(now + 0.08);
+    }
+}
 
 const SONG_MAP = {};
 Object.keys(EMOJI_DATA).forEach(key => {
@@ -189,10 +218,12 @@ function submitGuess() {
             localStorage.setItem("emojless_max_streak", state.maxStreak);
         }
         reveal(true, `Acertaste. +${points} puntos.`);
+        setTimeout(() => playSound('success'), 100);
         return;
     }
 
     els.status.textContent = "No era ese. Te revelo otro emoji.";
+    setTimeout(() => playSound('fail'), 100);
     nextRound(false);
 }
 
@@ -354,4 +385,50 @@ document.addEventListener("click", (event) => {
     if (!event.target.closest(".guess-row")) hideSearchResults();
 });
 
-newRound();
+// Start screen
+let easyMode = false;
+
+const startScreen = document.getElementById("startScreen");
+const normalToggle = document.getElementById("normalModeToggle");
+const normalCard = document.getElementById("normalModeCard");
+const startEasyBtn = document.getElementById("startEasyBtn");
+const startNormalBtn = document.getElementById("startNormalBtn");
+const startGameBtn = document.getElementById("startGameBtn");
+
+if (normalToggle && normalCard) {
+    normalToggle.addEventListener("click", () => {
+        const wasOpen = normalCard.classList.contains("open");
+        document.querySelectorAll(".mode-card.open").forEach(c => c.classList.remove("open"));
+        if (!wasOpen) normalCard.classList.add("open");
+    });
+}
+
+if (startEasyBtn) {
+    startEasyBtn.addEventListener("click", () => {
+        easyMode = true;
+        startEasyBtn.classList.add("active");
+        startNormalBtn.classList.remove("active");
+    });
+}
+
+if (startNormalBtn) {
+    startNormalBtn.addEventListener("click", () => {
+        easyMode = false;
+        startNormalBtn.classList.add("active");
+        startEasyBtn.classList.remove("active");
+    });
+}
+
+if (startGameBtn) {
+    startGameBtn.addEventListener("click", () => {
+        startScreen.classList.add("hide");
+        document.body.style.overflow = "auto";
+        if (easyMode) {
+            MAX_ATTEMPTS = 4;
+        } else {
+            MAX_ATTEMPTS = 6;
+        }
+        renderRounds();
+        newRound();
+    });
+}

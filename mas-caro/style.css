@@ -3,7 +3,6 @@
     --bg: #18191c;
     --card: rgba(34, 35, 41, 0.78);
     --card-strong: #222329;
-    --dark: #0d0d10;
     --pink: #ff33cc;
     --pink-2: #ff168c;
     --yellow: #f1c40f;
@@ -26,17 +25,44 @@ body {
     min-height: 100vh;
     font-family: 'Outfit', system-ui, sans-serif;
     background:
-        linear-gradient(135deg,
-            rgba(255, 51, 204, 0.15),
-            transparent 32rem),
-        radial-gradient(circle at 78% 12%,
-            rgba(56, 212, 255, 0.18),
-            transparent 24rem),
+        linear-gradient(135deg, rgba(255, 51, 204, 0.15), transparent 32rem),
+        radial-gradient(circle at 78% 12%, rgba(56, 212, 255, 0.18), transparent 24rem),
         var(--bg);
     color: var(--text);
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
+}
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: linear-gradient(90deg, var(--pink-2), var(--pink));
+    padding: 8px clamp(16px, 4vw, 44px);
+    min-height: 62px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 8px 30px rgba(255, 51, 204, 0.3);
+}
+
+.logo-container { display: flex; align-items: center; gap: 12px; }
+.nav-actions { display: flex; flex-wrap: wrap; justify-content: end; gap: 10px; }
+
+.pill-link, .icon-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 40px; border-radius: 999px; padding: 0 14px;
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    background: rgba(0, 0, 0, 0.18); color: #fff; font-weight: 800;
+    white-space: nowrap; text-decoration: none;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+.pill-link:hover, .icon-btn:hover { transform: translateY(-2px); background: rgba(0, 0, 0, 0.32); }
+
+.nav-logo {
+    width: min(220px, 48vw); max-height: 48px; object-fit: contain;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.55));
 }
 
 /* Header style aligned with RickyEdit */
@@ -241,7 +267,7 @@ main {
 
 .glass {
     background: var(--card);
-    border: 1px solid var(--line);
+    border: none;
     backdrop-filter: blur(20px);
     box-shadow: var(--shadow);
 }
@@ -296,7 +322,7 @@ main {
     align-items: center;
     justify-content: center;
     padding: 24px;
-    background: radial-gradient(circle, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0.4) 100%);
+    background: none;
     position: relative;
     min-height: 280px;
     max-height: 280px;
@@ -309,7 +335,7 @@ main {
     height: 200px;
     object-fit: contain;
     border-radius: 16px;
-    filter: drop-shadow(0 16px 32px rgba(0, 0, 0, 0.6)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
     transition: transform 0.3s ease, filter 0.3s ease;
 }
 

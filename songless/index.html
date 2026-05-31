@@ -1683,6 +1683,35 @@
             },
         ];
 
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+            if (type === 'success') {
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.35);
+                osc.start(now); osc.stop(now + 0.35);
+            } else if (type === 'fail') {
+                osc.frequency.setValueAtTime(330, now);
+                osc.frequency.linearRampToValueAtTime(165, now + 0.25);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.4);
+                osc.start(now); osc.stop(now + 0.4);
+            } else if (type === 'click') {
+                osc.frequency.setValueAtTime(600, now);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.08);
+                osc.start(now); osc.stop(now + 0.08);
+            }
+        }
+
         const state = {
             isEasyMode: false,
             isSongsMode: false,
@@ -1907,7 +1936,12 @@
         }
 
         function bindEvents() {
-            els.playBtn.addEventListener("click", playSegment);
+            els.playBtn.addEventListener("click", () => { playSound('click'); playSegment(); });
+            els.stopBtn.addEventListener("click", () => {
+                stopPlayback();
+                els.playBtn.disabled = false;
+                els.status.textContent = "Música parada. Dale a reproducir para continuar.";
+            });
             els.skipBtn.addEventListener("click", nextSegment);
             els.newBtn.addEventListener("click", newRound);
             els.againBtn.addEventListener("click", newRound);
@@ -2088,15 +2122,6 @@
                 } else {
                     els.hintsSection.style.display = "";
                 }
-
-                try {
-                    const doc = document.documentElement;
-                    if (doc.requestFullscreen) doc.requestFullscreen();
-                    else if (doc.webkitRequestFullscreen)
-                        doc.webkitRequestFullscreen();
-                    else if (doc.msRequestFullscreen)
-                        doc.msRequestFullscreen();
-                } catch (err) { }
 
                 if (
                     state.player &&
@@ -2713,6 +2738,7 @@
                     );
                 }
                 reveal(true, `Acertaste. +${points} puntos.`);
+                setTimeout(() => playSound('success'), 100);
                 return;
             }
             els.status.textContent =
@@ -2728,6 +2754,7 @@
             if (state.round >= segs.length - 1) {
                 state.streak = 0;
                 reveal(false, "Se acabaron las pistas.");
+                setTimeout(() => playSound('fail'), 100);
                 return;
             }
             state.round += 1;

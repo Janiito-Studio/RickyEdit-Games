@@ -429,6 +429,13 @@ function updateCounters() {
     document.getElementById('incorrect-count').textContent = incorrectCount;
 }
 
+// Actualizar contadores del HUD
+function updateCounters() {
+    document.getElementById('round-counter').textContent = `${roundCount}/${TOTAL_ROUNDS}`;
+    document.getElementById('correct-count').textContent = correctCount;
+    document.getElementById('incorrect-count').textContent = incorrectCount;
+}
+
 // Obtener un par aleatorio asegurando que:
 // 1. Uno sea Skin de CS2 y otro sea de la Vida Real.
 // 2. No sean obvios (los precios deben estar en un rango de magnitud comparable, factor máx 15x).
@@ -496,6 +503,7 @@ function nextRound() {
     roundCount++;
     gameActive = true;
     currentPair = getRandomPair();
+    updateCounters();
     updateCounters();
 
     // Resetear clases de animación y estados

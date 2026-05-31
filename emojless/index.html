@@ -555,10 +555,222 @@
             .rounds { grid-template-columns: repeat(3, 1fr); }
             .actions .btn, .guess-row .btn { width: 100%; }
         }
+
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background:
+                linear-gradient(135deg, rgba(255, 51, 204, 0.15), transparent 32rem),
+                radial-gradient(circle at 78% 12%, rgba(56, 212, 255, 0.18), transparent 24rem),
+                var(--bg);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+            gap: 24px;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            padding: 80px 24px 40px;
+            text-align: center;
+        }
+
+        .start-screen.hide {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .mode-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            width: 100%;
+            max-width: 960px;
+            margin-top: 16px;
+            align-items: start;
+        }
+
+        .mode-card {
+            border-radius: 24px;
+            border: 1px solid var(--line);
+            background: var(--card);
+            overflow: visible;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .mode-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 30px 60px rgba(255, 51, 204, 0.15);
+            border-color: rgba(255, 51, 204, 0.25);
+        }
+
+        .mode-card-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 20px 24px;
+            background: rgba(255, 51, 204, 0.08);
+            color: #fff;
+            font-size: 1.15rem;
+            font-weight: 900;
+            text-align: left;
+            border: none;
+            border-bottom: 1px solid var(--line);
+            border-radius: 24px;
+            cursor: pointer;
+            transition: background 0.2s ease, border-radius 0.2s ease, color 0.2s ease;
+        }
+
+        .mode-card-toggle:hover {
+            background: rgba(255, 51, 204, 0.15);
+        }
+
+        .mode-card.open .mode-card-toggle {
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            color: #0d0d10;
+            border-radius: 24px 24px 0 0;
+            border-bottom-color: transparent;
+        }
+
+        .mode-card-chevron {
+            transition: transform 0.25s ease;
+            font-size: 0.7rem;
+            opacity: 0.5;
+        }
+
+        .mode-card.open .mode-card-chevron {
+            transform: rotate(180deg);
+        }
+
+        .mode-card-panel {
+            width: 100%;
+            display: none;
+            background: var(--card);
+            border-top: 1px solid var(--line);
+            border-radius: 0 0 24px 24px;
+        }
+
+        .mode-card.open .mode-card-panel {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mode-panel-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .mode-diff-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .mode-diff-btn {
+            font-size: 1.1rem;
+            font-weight: 900;
+            padding: 14px 32px;
+            border-radius: 50px;
+            color: #fff;
+            background: rgba(255, 51, 204, 0.18);
+            border: 2px solid rgba(255, 51, 204, 0.5);
+            transition: all 0.25s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        .mode-diff-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 51, 204, 0.3);
+            border-color: rgba(255, 51, 204, 0.8);
+        }
+
+        .mode-diff-btn.active {
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            color: #0d0d10;
+            border-color: transparent;
+            box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
+        }
+
+        .mode-start-btn {
+            font-size: 1.3rem;
+            font-weight: 900;
+            padding: 16px 48px;
+            border-radius: 50px;
+            color: #0d0d10;
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .mode-start-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 51, 204, 0.65);
+        }
     </style>
 </head>
 
 <body>
+    <div id="startScreen" class="start-screen">
+        <nav class="topbar" style="position: fixed; top: 0; left: 0; right: 0; z-index: 1001;">
+            <div class="logo-container">
+                <img class="nav-logo" src="../Rickyedit Games.png" alt="Rickyedit Games Logo" />
+            </div>
+            <div class="nav-actions">
+                <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
+                <button class="icon-btn" type="button" onclick="location.href='../index.html'">Volver</button>
+            </div>
+        </nav>
+
+        <section class="hero-section">
+            <img class="hero-avatar" src="../Avatar Rickyedit.jpg" alt="Avatar Rickyedit" />
+            <h1>Rickyedit emojless</h1>
+            <p>Adivina la canción basándote en los emojis. ¿Conoces la discografía de Ricky?</p>
+        </section>
+
+        <div class="mode-cards">
+            <div class="mode-card" id="normalModeCard">
+                <button class="mode-card-toggle" id="normalModeToggle" type="button">
+                    <span>🎵 Normal</span>
+                    <span class="mode-card-chevron">▼</span>
+                </button>
+                <div class="mode-card-panel" id="normalModePanel">
+                    <div class="mode-panel-content">
+                        <div class="mode-diff-row">
+                            <button id="startEasyBtn" class="mode-diff-btn" type="button">😰 Cagado</button>
+                            <button id="startNormalBtn" class="mode-diff-btn active" type="button">💪 Normal</button>
+                        </div>
+                        <button class="mode-start-btn" id="startGameBtn" type="button">Empezar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <nav class="topbar">
         <div class="logo-container">
             <img class="nav-logo" src="../Rickyedit Games.png" alt="Rickyedit Games Logo" />
