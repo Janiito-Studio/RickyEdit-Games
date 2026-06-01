@@ -15,6 +15,44 @@
 
 <body>
 
+    <!-- Start Screen -->
+    <div id="startScreen" class="start-screen">
+        <nav class="topbar">
+            <div class="logo-container">
+                <img class="nav-logo" src="../Rickyedit Games.png" alt="Rickyedit Games Logo" />
+            </div>
+            <div class="nav-actions">
+                <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
+                <button class="icon-btn" type="button" onclick="location.href='../index.html'">Volver</button>
+            </div>
+        </nav>
+
+        <section class="hero-section">
+            <img class="hero-avatar" src="../Avatar Rickyedit.jpg" alt="Avatar Rickyedit" />
+            <h1>¿Qué es más caro?</h1>
+            <p>Compara precios de skins de CS2 vs objetos reales. ¿Puedes adivinar cuál cuesta más?</p>
+        </section>
+
+        <div class="mode-cards">
+            <div class="mode-card" id="normalModeCard">
+                <button class="mode-card-toggle" id="normalModeToggle" type="button">
+                    <span>🎮 Normal</span>
+                    <span class="mode-card-chevron">▼</span>
+                </button>
+                <div class="mode-card-panel" id="normalModePanel">
+                    <div class="mode-panel-content">
+                        <div class="mode-diff-row">
+                            <button id="startEasyBtn" class="mode-diff-btn" type="button">😰 Cagado</button>
+                            <button id="startNormalBtn" class="mode-diff-btn active" type="button">💪 Normal</button>
+                        </div>
+                        <button class="info-toggle-btn" type="button">ℹ️ Info dificultades</button>
+                        <button class="mode-start-btn" id="startGameBtn" type="button">Empezar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Victory Overlay -->
     <div id="victory-overlay" class="victory-overlay">
         <div class="victory-content glass">
@@ -31,18 +69,20 @@
             <div style="font-size: 1.8rem; font-weight: 900; color: #fff; margin-bottom: 10px;">
                 PUNTOS TOTALES: <span id="final-score" style="color: var(--yellow);">0</span>
             </div>
-            <div id="victory-stats" style="display: flex; justify-content: center; gap: 30px; margin-bottom: 30px; font-weight: 800; font-size: 1.1rem;">
+            <div id="victory-stats" style="display: flex; justify-content: center; gap: 30px; margin-bottom: 20px; font-weight: 800; font-size: 1.1rem;">
                 <span style="color: var(--green);">Correctas: <span id="final-correct">0</span></span>
                 <span style="color: var(--red);">Incorrectas: <span id="final-incorrect">0</span></span>
                 <span style="color: var(--yellow);">Aciertos: <span id="final-pct">0%</span></span>
             </div>
+            <p style="color: var(--muted); font-size: 0.9rem; font-style: italic; margin-bottom: 20px;">
+                No soy como MateoZ y no te puedo dar nada, no tengo dinero, srry.</p>
             <button id="btn-restart" class="btn-next"
                 style="display: inline-block; animation: none; position: static; transform: none;">Jugar de
                 Nuevo</button>
         </div>
     </div>
 
-    <header>
+    <nav class="topbar">
         <div class="logo-container">
             <img class="nav-logo" src="../Rickyedit Games.png" alt="Rickyedit Games Logo">
         </div>
@@ -53,10 +93,11 @@
                 Volver
             </button>
         </div>
-    </header>
+    </nav>
 
     <main>
         <section class="game-title-section">
+            <img class="game-avatar" src="../Avatar Rickyedit.jpg" alt="Rickyedit" />
             <h1>¿Qué es más caro?</h1>
             <p class="game-subtitle">Skin de CS2 vs Vida Real</p>
             <p class="game-disclaimer" style="font-size: 0.8rem; color: var(--muted); margin-top: 5px; opacity: 0.8;">
@@ -179,6 +220,22 @@
         </div>
         <p>© 2026 Rickyedit Games. Hecho por Jan (Discord: .janiito | Twitch: jasanzo)</p>
     </footer>
+
+    <!-- Info Modal -->
+    <div id="infoModal" class="modal" role="dialog" aria-modal="true">
+        <article class="letter">
+            <div class="letter-head">
+                <strong>Info Dificultades</strong>
+                <button class="close-btn" type="button" onclick="document.getElementById('infoModal').classList.remove('show')" aria-label="Cerrar">×</button>
+            </div>
+            <div class="letter-body">
+                <p><strong style="color:var(--yellow);">😰 Cagado</strong><br>
+                Se te da una pista: el rango de precio del objeto más caro. Solo 20 rondas para hacerlo más corto.</p>
+                <p><strong style="color:var(--pink);">💪 Normal</strong><br>
+                Sin pistas. 50 rondas de comparación pura. El modo clásico.</p>
+            </div>
+        </article>
+    </div>
 
     <script src="game.js"></script>
 </body>

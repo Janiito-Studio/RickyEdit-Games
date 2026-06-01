@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rickyedit Miniatura Borrosa</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="icon" href="../icon_miniatura_borrosa.png" type="image/png" />
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #18191c;
+            --card: rgba(34, 35, 41, 0.78);
+            --card-strong: #222329;
+            --dark: #0d0d10;
+            --pink: #ff33cc;
+            --pink-2: #ff168c;
+            --yellow: #f1c40f;
+            --cyan: #38d4ff;
+            --green: #36e28a;
+            --red: #e74c3c;
+            --text: #fff;
+            --muted: #b9bbbe;
+            --line: rgba(255, 255, 255, 0.1);
+            --shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+        }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0; min-height: 100vh;
+            font-family: Outfit, system-ui, sans-serif;
+            background: linear-gradient(135deg, rgba(255,51,204,0.15), transparent 32rem),
+                var(--bg);
+            color: var(--text); overflow-x: hidden;
+        }
+        a { color: inherit; text-decoration: none; }
+        button, input { font: inherit; }
+        button { border: 0; cursor: pointer; }
+        button:disabled { cursor: not-allowed; filter: grayscale(0.8); opacity: 0.55; }
+
+        .topbar {
+            position: sticky; top: 0; z-index: 20;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 16px; min-height: 62px;
+            padding: 8px clamp(16px, 4vw, 44px);
+            background: linear-gradient(90deg, var(--pink-2), var(--pink));
+            box-shadow: 0 8px 30px rgba(255, 51, 204, 0.3);
+        }
+        .logo-container { display: flex; align-items: center; gap: 12px; }
+        .nav-logo { width: min(220px, 48vw); max-height: 48px; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.55)); }
+        .nav-actions { display: flex; flex-wrap: wrap; justify-content: end; gap: 10px; }
+        .pill-link, .icon-btn {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-height: 40px; border-radius: 999px; padding: 0 14px;
+            border: 1px solid rgba(255,255,255,0.24); background: rgba(0,0,0,0.18);
+            color: #fff; font-weight: 800; white-space: nowrap; text-decoration: none;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .pill-link:hover, .icon-btn:hover { transform: translateY(-2px); background: rgba(0,0,0,0.32); }
+
+        .hero {
+            position: relative; min-height: 330px; display: grid; align-items: end;
+            overflow: hidden; padding: 54px clamp(16px,5vw,68px) 86px;
+            background:
+                linear-gradient(135deg, rgba(255, 51, 204, 0.15), transparent 32rem),
+                var(--bg);
+        }
+        .hero::before {
+            content: ""; position: absolute; inset: -50%;
+            background-image: linear-gradient(45deg, var(--pink) 25%, transparent 25%),
+                linear-gradient(-45deg, var(--pink) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, var(--pink) 75%),
+                linear-gradient(-45deg, transparent 75%, var(--pink) 75%);
+            background-position: 0 0, 0 32px, 32px -32px, -32px 0;
+            background-size: 64px 64px; opacity: 0.78;
+            animation: pattern 18s linear infinite;
+        }
+        .hero::after {
+            content: ""; position: absolute; inset: 0;
+            background:
+                linear-gradient(180deg, transparent 0%, var(--bg) 100%);
+            pointer-events: none;
+        }
+        @keyframes pattern { to { transform: translate(-128px, 128px); } }
+        .hero-inner {
+            position: relative; z-index: 1; display: grid;
+            grid-template-columns: minmax(0,1fr) minmax(180px,320px);
+            gap: clamp(24px,5vw,58px); align-items: end;
+            width: min(1180px, 100%); margin: 0 auto;
+        }
+        .hero-copy { display: grid; gap: 18px; }
+        h1 { margin: 0; max-width: 780px; font-size: clamp(2.4rem,7vw,6.8rem); line-height: 0.86; letter-spacing: 0; text-transform: lowercase; text-shadow: 0 10px 36px rgba(0,0,0,0.65); }
+        .hero-copy p { margin: 0; max-width: 700px; color: #f2edf4; font-size: clamp(1rem,2.4vw,1.35rem); font-weight: 600; }
+        .avatar-card { justify-self: end; width: min(100%,290px); padding: 8px; border-radius: 22px; background: linear-gradient(135deg, var(--pink), #ff9bdc); box-shadow: 0 22px 58px rgba(0,0,0,0.55); transform: rotate(2deg); }
+        .avatar-card img { display: block; width: 100%; border-radius: 16px; }
+
+        .shell { position: relative; z-index: 1; width: min(1080px, calc(100% - 32px)); margin: -52px auto 40px; }
+        .window { border: 1px solid var(--line); border-radius: 22px; background: rgba(14,14,18,0.45); box-shadow: var(--shadow); backdrop-filter: blur(20px); overflow: visible; display: flex; flex-direction: column; width: 100%; }
+        .window-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: rgba(0,0,0,0.32); border-bottom: 1px solid var(--line); border-radius: 22px 22px 0 0; }
+        .window-dots { display: flex; gap: 8px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+        .dot-red { background: #ff5f56; } .dot-yellow { background: #ffbd2e; } .dot-green { background: #27c93f; }
+        .window-title { font-size: 0.85rem; font-weight: 800; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; flex-grow: 1; text-align: center; margin-right: 48px; }
+        .window-content { padding: 24px; }
+        .game-layout { display: grid; grid-template-columns: 290px minmax(0,1fr); gap: 22px; align-items: start; }
+        .glass { border: 1px solid var(--line); border-radius: 22px; background: var(--card); box-shadow: var(--shadow); backdrop-filter: blur(18px); }
+
+        .thumbnail-screen { position: relative; min-height: 360px; overflow: hidden; background: #000; border-radius: 22px 22px 0 0; display: grid; place-items: center; }
+        .thumbnail-screen img { width: 100%; height: 100%; object-fit: cover; user-select: none; -webkit-user-select: none; pointer-events: none; }
+        .screen-badge { position: absolute; top: 18px; right: 18px; min-height: 42px; display: inline-flex; align-items: center; border-radius: 999px; border: 1px solid rgba(255,255,255,0.14); background: rgba(0,0,0,0.48); backdrop-filter: blur(10px); font-weight: 900; padding: 0 16px; color: #fff; }
+
+        .filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+        .filter-tab { padding: 8px 16px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,0.04); color: var(--muted); font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: all 0.2s ease; }
+        .filter-tab:hover { background: rgba(255,51,204,0.15); color: #fff; }
+        .filter-tab.active { background: linear-gradient(135deg, var(--yellow), var(--pink)); color: #111; border-color: transparent; }
+
+        .controls { display: grid; gap: 18px; padding: 22px; background: rgba(14,14,18,0.56); }
+        .rounds { display: grid; grid-template-columns: repeat(6,1fr); gap: 8px; }
+        .round-step { position: relative; min-height: 44px; display: grid; place-items: center; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,0.04); color: var(--muted); font-weight: 900; overflow: hidden; }
+        .round-step.active, .round-step.done { color: #111; border-color: transparent; background: linear-gradient(135deg, var(--yellow), var(--pink)); }
+        .guess-row { position: relative; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 10px; }
+        .search-results { position: absolute; left: 0; right: 0; top: calc(100% + 8px); z-index: 200; display: none; max-height: 380px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.14); border-radius: 16px; background: rgba(13,13,17,0.98); box-shadow: 0 28px 60px rgba(0,0,0,0.65); backdrop-filter: blur(20px); }
+        .search-results.show { display: block; }
+        .search-summary { position: sticky; top: 0; padding: 8px 14px; background: linear-gradient(90deg, rgba(255,51,204,0.22), rgba(241,196,15,0.12)), #15151a; color: var(--muted); font-size: 0.82rem; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; z-index: 1; }
+        .search-option { display: flex; align-items: center; gap: 12px; width: 100%; padding: 8px 12px; border-top: 1px solid rgba(255,255,255,0.07); background: transparent; color: #fff; text-align: left; cursor: pointer; transition: background 0.12s ease; }
+        .search-option:hover, .search-option.selected { background: rgba(255,51,204,0.18); outline: none; }
+        .search-option-thumb { flex-shrink: 0; width: 88px; aspect-ratio: 16/9; border-radius: 6px; object-fit: cover; background: #111; border: 1px solid rgba(255,255,255,0.07); }
+        .search-option-info { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+        .search-option-title { font-weight: 800; font-size: 0.88rem; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .search-option-meta { color: var(--muted); font-size: 0.75rem; font-weight: 700; margin-top: 3px; }
+        input { min-width: 0; min-height: 54px; border: 1px solid var(--line); border-radius: 14px; padding: 0 16px; outline: 0; background: rgba(0,0,0,0.3); color: #fff; font-weight: 700; }
+        input:focus { border-color: var(--pink); box-shadow: 0 0 0 4px rgba(255,51,204,0.16); }
+        .btn { min-height: 54px; border-radius: 14px; padding: 0 18px; color: #111; font-weight: 900; box-shadow: 0 8px 0 rgba(0,0,0,0.3); transition: transform 0.16s ease, box-shadow 0.16s ease; white-space: nowrap; }
+        .btn:hover:not(:disabled) { transform: translateY(3px); box-shadow: 0 5px 0 rgba(0,0,0,0.32); }
+        .btn-primary { background: linear-gradient(135deg, var(--yellow), var(--pink)); color: #111; }
+        .btn-pink { background: var(--pink-2); color: #fff; }
+        .btn-blue { background: linear-gradient(135deg, var(--pink-2), var(--pink)); color: #fff; }
+        .btn-dark { background: rgba(255,51,204,0.1); color: #fff; border: 1px solid var(--pink); }
+        .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+        .status { min-height: 26px; color: var(--muted); font-weight: 700; }
+        .side { display: grid; gap: 18px; padding: 20px; }
+        .side h2 { margin: 0; font-size: 1.35rem; letter-spacing: 0; }
+        .stats { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+        .stat { padding: 14px; border-radius: 16px; border: 1px solid var(--line); background: rgba(255,255,255,0.045); }
+        .stat span { display: block; color: var(--muted); font-size: 0.88rem; font-weight: 700; }
+        .stat strong { display: block; margin-top: 4px; font-size: 1.7rem; line-height: 1; }
+        .hint-card { padding: 16px; border-radius: 16px; background: linear-gradient(135deg, rgba(255,51,204,0.18), rgba(241,196,15,0.13)); border: 1px solid rgba(255,255,255,0.12); color: #f3f3f3; }
+        .hint-card p { margin: 8px 0 0; color: var(--muted); }
+
+        .reveal { display: none; margin-top: 22px; overflow: hidden; border-radius: 22px; }
+        .reveal.show { display: block; }
+        .reveal-media { aspect-ratio: 16/9; background: #000; }
+        .reveal-media iframe { width: 100%; height: 100%; border: 0; }
+        .reveal-body { display: grid; gap: 12px; padding: 18px 20px 20px; }
+        .reveal-body p { margin: 0; color: var(--muted); font-weight: 700; }
+
+        .start-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, rgba(255,51,204,0.15), transparent 32rem), radial-gradient(circle at 78% 12%, rgba(56,212,255,0.18), transparent 24rem), var(--bg); z-index: 1000; display: flex; flex-direction: column; align-items: center; overflow-y: auto; gap: 24px; transition: opacity 0.4s ease, visibility 0.4s ease; padding: 80px 24px 40px; text-align: center; }
+        .start-screen.hide { opacity: 0; visibility: hidden; pointer-events: none; }
+        .hero-section { text-align: center; margin-bottom: 50px; max-width: 700px; }
+        .hero-avatar { width: 110px; height: 110px; border-radius: 50%; border: 4px solid var(--pink); box-shadow: 0 0 25px rgba(255,51,204,0.45); object-fit: cover; margin-bottom: 20px; animation: float 4s ease-in-out infinite; }
+        @keyframes float { 50% { transform: translateY(-8px); } }
+        .hero-section h1 { font-size: clamp(2.4rem,7vw,6.8rem); font-weight: 900; line-height: 0.86; letter-spacing: 0; text-transform: lowercase; margin: 0 0 12px; text-shadow: 0 10px 36px rgba(0,0,0,0.65); color: #fff; }
+        .hero-section p { margin: 0; max-width: 700px; color: var(--muted); font-size: clamp(1rem,2.5vw,1.25rem); font-weight: 600; }
+        .mode-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 24px; width: 100%; max-width: 960px; margin-top: 16px; align-items: start; }
+        .mode-card { border-radius: 24px; border: 1px solid var(--line); background: var(--card); overflow: visible; backdrop-filter: blur(20px); box-shadow: var(--shadow); transition: all 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
+        .mode-card:hover { transform: translateY(-6px); box-shadow: 0 30px 60px rgba(255,51,204,0.15); border-color: rgba(255,51,204,0.25); }
+        .mode-card-toggle { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 20px 24px; background: rgba(255,51,204,0.08); color: #fff; font-size: 1.15rem; font-weight: 900; text-align: left; border: none; border-bottom: 1px solid var(--line); border-radius: 24px; cursor: pointer; transition: background 0.2s ease, border-radius 0.2s ease, color 0.2s ease; }
+        .mode-card-toggle:hover { background: rgba(255,51,204,0.15); }
+        .mode-card.open .mode-card-toggle { background: linear-gradient(135deg, var(--yellow), var(--pink)); color: #0d0d10; border-radius: 24px 24px 0 0; border-bottom-color: transparent; }
+        .mode-card-chevron { transition: transform 0.25s ease; font-size: 0.7rem; opacity: 0.5; }
+        .mode-card.open .mode-card-chevron { transform: rotate(180deg); }
+        .mode-card-panel { width: 100%; display: none; background: var(--card); border-top: 1px solid var(--line); border-radius: 0 0 24px 24px; }
+        .mode-card.open .mode-card-panel { display: block; animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        .mode-panel-content { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; }
+        .mode-diff-row { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 16px; width: 100%; flex-wrap: wrap; }
+        .mode-diff-btn { font-size: 1.1rem; font-weight: 900; padding: 14px 32px; border-radius: 50px; color: #fff; background: rgba(255,51,204,0.18); border: 2px solid rgba(255,51,204,0.5); transition: all 0.25s ease; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; }
+        .mode-diff-btn:hover { transform: translateY(-2px); background: rgba(255,51,204,0.3); border-color: rgba(255,51,204,0.8); }
+        .mode-diff-btn.active { background: linear-gradient(135deg, var(--yellow), var(--pink)); color: #0d0d10; border-color: transparent; box-shadow: 0 10px 35px rgba(255,51,204,0.45); }
+        .mode-start-btn { font-size: 1.3rem; font-weight: 900; padding: 16px 48px; border-radius: 50px; color: #0d0d10; background: linear-gradient(135deg, var(--yellow), var(--pink)); box-shadow: 0 10px 35px rgba(255,51,204,0.45); transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; border: none; }
+        .mode-start-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 15px 40px rgba(255,51,204,0.65); }
+
+        .info-toggle-btn {
+            background: rgba(255,255,255,0.06); border: 1px solid var(--line);
+            border-radius: 12px; color: var(--muted); font-weight: 700;
+            padding: 10px 20px; cursor: pointer; font-size: 0.85rem;
+            transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px;
+            position: relative; z-index: 1;
+        }
+        .info-toggle-btn:hover {
+            background: rgba(255,51,204,0.12); color: #fff;
+            border-color: rgba(255,51,204,0.3); transform: translateY(-1px);
+        }
+
+        .modal {
+            position: fixed; inset: 0; z-index: 1100;
+            display: none; align-items: center; justify-content: center;
+            padding: 20px; background: rgba(0,0,0,0.68); backdrop-filter: blur(8px);
+        }
+        .modal.show { display: flex; }
+
+        .letter {
+            width: min(720px, 100%); max-height: min(760px, calc(100vh - 40px));
+            overflow: auto; border-radius: 22px;
+            border: 1px solid rgba(255,255,255,0.16);
+            background: linear-gradient(135deg, rgba(255,51,204,0.12), rgba(241,196,15,0.08)), #18191c;
+            box-shadow: var(--shadow);
+        }
+        .letter-head {
+            position: sticky; top: 0;
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: 18px 20px;
+            background: linear-gradient(90deg, var(--pink-2), var(--pink));
+        }
+        .letter-head strong { font-size: 1.15rem; }
+        .close-btn {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: rgba(0,0,0,0.26); color: #fff;
+            font-size: 1.3rem; font-weight: 900; border: none; cursor: pointer;
+        }
+        .letter-body {
+            padding: 22px 22px 6px; color: #f7f2f7;
+            font-size: 1.05rem; line-height: 1.65;
+        }
+        .letter-body p { margin: 0 0 16px; }
+
+        footer { margin-top: 42px; padding: 38px 18px 52px; background: #111214; text-align: center; }
+        .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-bottom: 18px; }
+        .footer-links a { min-height: 48px; display: inline-flex; align-items: center; justify-content: center; padding: 0 18px; border-radius: 999px; background: #1a1b1e; border: 1px solid var(--line); color: var(--yellow); font-weight: 900; box-shadow: 0 6px 0 rgba(255,51,204,0.42); text-decoration: none; transition: transform 0.2s ease, background 0.2s ease; }
+        .footer-links a:hover { transform: translateY(-2px); background: rgba(0,0,0,0.32); }
+        footer p { margin: 0; color: rgba(255,255,255,0.5); font-weight: 700; }
+
+        @media (max-width: 900px) { .hero-inner { grid-template-columns: 1fr; } .avatar-card { justify-self: start; width: 210px; } .game-layout { grid-template-columns: 1fr; } .thumbnail-screen { min-height: 300px; } }
+        @media (max-width: 640px) { .hero { padding-bottom: 70px; } .topbar { align-items: flex-start; flex-direction: column; } .nav-actions { justify-content: start; } .guess-row { grid-template-columns: 1fr; } .rounds { grid-template-columns: repeat(3,1fr); } .actions .btn, .guess-row .btn { width: 100%; } }
+    </style>
+</head>
+
+<body>
+    <div id="startScreen" class="start-screen">
+        <nav class="topbar" style="position: fixed; top: 0; left: 0; right: 0; z-index: 1001;">
+            <div class="logo-container">
+                <img class="nav-logo" src="../Rickyedit Games.png" alt="Rickyedit Games Logo" />
+            </div>
+            <div class="nav-actions">
+                <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
+                <button class="icon-btn" type="button" onclick="location.href='../index.html'">Volver</button>
+            </div>
+        </nav>
+
+        <section class="hero-section">
+            <img class="hero-avatar" src="../Avatar Rickyedit.jpg" alt="Avatar Rickyedit" />
+            <h1>Miniatura Borrosa</h1>
+            <p>Se te muestra una miniatura borrosa de un vídeo de Ricky. ¿Puedes adivinar cuál es?</p>
+        </section>
+
+        <div class="mode-cards">
+            <div class="mode-card" id="principalModeCard">
+                <button class="mode-card-toggle" id="principalModeToggle" type="button">
+                    <span>📺 Canal Principal</span>
+                    <span class="mode-card-chevron">▼</span>
+                </button>
+                <div class="mode-card-panel" id="principalModePanel">
+                    <div class="mode-panel-content">
+                        <div class="mode-diff-row">
+                            <button id="startEasyBtn" class="mode-diff-btn start-easy-btn" type="button">😰 Cagado</button>
+                            <button id="startNormalBtn" class="mode-diff-btn active start-normal-btn" type="button">💪 Normal</button>
+                            <button id="startExtremeBtn" class="mode-diff-btn start-extreme-btn" type="button">💀 Extremo</button>
+                        </div>
+                        <button class="info-toggle-btn" type="button">ℹ️ Info dificultades</button>
+                        <button class="mode-start-btn" id="startGameBtn" type="button">Empezar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mode-card" id="secondaryModeCard">
+                <button class="mode-card-toggle" id="secondaryModeToggle" type="button">
+                    <span>🎬 Canal Secundario</span>
+                    <span class="mode-card-chevron">▼</span>
+                </button>
+                <div class="mode-card-panel" id="secondaryModePanel">
+                    <div class="mode-panel-content">
+                        <div class="mode-diff-row">
+                            <button class="mode-diff-btn start-easy-btn" type="button">😰 Cagado</button>
+                            <button class="mode-diff-btn active start-normal-btn" type="button">💪 Normal</button>
+                            <button class="mode-diff-btn start-extreme-btn" type="button">💀 Extremo</button>
+                        </div>
+                        <button class="info-toggle-btn" type="button">ℹ️ Info dificultades</button>
+                        <button class="mode-start-btn" id="startSecondaryGameBtn" type="button">Empezar</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mode-card" id="bothModeCard">
+                <button class="mode-card-toggle" id="bothModeToggle" type="button">
+                    <span>📺🎬 Los 2 canales</span>
+                    <span class="mode-card-chevron">▼</span>
+                </button>
+                <div class="mode-card-panel" id="bothModePanel">
+                    <div class="mode-panel-content">
+                        <div class="mode-diff-row">
+                            <button class="mode-diff-btn start-easy-btn" type="button">😰 Cagado</button>
+                            <button class="mode-diff-btn active start-normal-btn" type="button">💪 Normal</button>
+                            <button class="mode-diff-btn start-extreme-btn" type="button">💀 Extremo</button>
+                        </div>
+                        <button class="info-toggle-btn" type="button">ℹ️ Info dificultades</button>
+                        <button class="mode-start-btn" id="startBothGameBtn" type="button">Empezar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="topbar">
+        <div class="logo-container">
+            <img class="nav-logo" src="../Rickyedit Games.png" alt="Rickyedit Games Logo" />
+        </div>
+        <div class="nav-actions">
+            <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
+            <button id="changeModeBtn" class="icon-btn" type="button" style="display: none">Elegir Otro</button>
+            <button class="icon-btn" type="button" onclick="location.href='../index.html'">Volver</button>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-inner">
+            <div class="hero-copy">
+                <h1>Miniatura Borrosa</h1>
+                <p id="descriptionText">
+                    Se te muestra una miniatura borrosa de un vídeo de Ricky. ¿Puedes adivinar cuál es antes de que se revele completamente?
+                </p>
+            </div>
+            <div class="avatar-card">
+                <img src="../Avatar Rickyedit.jpg" alt="Avatar Rickyedit" />
+            </div>
+        </div>
+    </header>
+
+    <main class="shell">
+        <div class="window glass">
+            <div class="window-header">
+                <div class="window-dots">
+                    <span class="dot dot-red"></span>
+                    <span class="dot dot-yellow"></span>
+                    <span class="dot dot-green"></span>
+                </div>
+                <div class="window-title">Partida</div>
+            </div>
+            <div class="window-content">
+                <section class="game-layout">
+                    <aside class="side glass">
+                        <h2>Panel de partida</h2>
+                        <div class="stats">
+                            <div class="stat"><span>Puntos</span><strong id="score">0</strong></div>
+                            <div class="stat"><span>Racha</span><strong id="streak">0</strong></div>
+                            <div class="stat"><span>Racha Máx</span><strong id="maxStreak">0</strong></div>
+                            <div class="stat"><span>Rango</span><strong id="rank" style="font-size:1.25rem;margin-top:8px;">Novato</strong></div>
+                            <div class="stat"><span>Intento</span><strong id="attempt">1/6</strong></div>
+                            <div class="stat"><span>Vídeos</span><strong id="videoCount">0</strong></div>
+                        </div>
+                        <div class="hint-card">
+                            <strong>Cómo va</strong>
+                            <p>Se muestra una miniatura borrosa. Cada intento fallido la hace menos borrosa. ¡Adivina antes de que se vea todo!</p>
+                        </div>
+                        <div class="hint-card">
+                            <strong>Desenfoque</strong>
+                            <p id="segmentsInfo">Empiezas con máximo desenfoque. Cada fallo reduce el blur.</p>
+                        </div>
+                    </aside>
+
+                    <div>
+                        <article class="game-card glass">
+                            <div id="mysteryScreen" class="thumbnail-screen">
+                                <div class="screen-badge">Miniatura Borrosa</div>
+                                <canvas id="thumbCanvas" width="640" height="360"
+                                    style="width:100%;height:100%;object-fit:cover;pointer-events:none;user-select:none;-webkit-user-select:none;"></canvas>
+                            </div>
+
+                            <div class="controls">
+                                <div id="rounds" class="rounds" aria-label="Rondas del juego"></div>
+                                <div class="guess-row">
+                                    <input id="guessInput" type="text" autocomplete="off" placeholder="Escribe el título del vídeo" />
+                                    <button id="guessBtn" class="btn btn-primary" type="button">Adivinar</button>
+                                    <div id="searchResults" class="search-results" role="listbox" aria-label="Resultados por título"></div>
+                                </div>
+                                <div class="actions">
+                                    <button id="newBtn" class="btn btn-blue" type="button">Nuevo vídeo</button>
+                                    <button id="skipBtn" class="btn btn-dark" type="button">Siguiente pista</button>
+                                </div>
+                                <div id="status" class="status" role="status">Cargando...</div>
+                            </div>
+                        </article>
+
+                        <article id="reveal" class="reveal glass">
+                            <div id="revealMedia" class="reveal-media"></div>
+                            <div class="reveal-body">
+                                <h2 id="revealTitle">Título</h2>
+                                <p id="revealLinkText">Escucha la canción aquí</p>
+                                <div class="actions">
+                                    <a id="watchLink" class="pill-link" href="#" target="_blank" rel="noreferrer">Abrir en YouTube</a>
+                                    <button id="againBtn" class="btn btn-blue" type="button">Jugar otra</button>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <div id="infoModal" class="modal" role="dialog" aria-modal="true">
+        <article class="letter">
+            <div class="letter-head">
+                <strong>Info Dificultades</strong>
+                <button class="close-btn" type="button" onclick="document.getElementById('infoModal').classList.remove('show')" aria-label="Cerrar">×</button>
+            </div>
+            <div class="letter-body">
+                <p><strong style="color:var(--yellow);">😰 Cagado</strong><br>
+                Empiezas con la imagen menos borrosa. Tienes 6 intentos. Ideal para principiantes.</p>
+                <p><strong style="color:var(--pink);">💪 Normal</strong><br>
+                El modo clásico. Empiezas con la imagen borrosa y cada fallo la va aclarando progresivamente. Tienes 6 intentos.</p>
+                <p><strong style="color:var(--red);">💀 Extremo</strong><br>
+                Para valientes. La imagen siempre está muy borrosa y nunca se ve del todo clara. Además, en el buscador NO aparecen las miniaturas de las opciones. Tienes 6 intentos.</p>
+            </div>
+        </article>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="https://janiito-studio.github.io/RickyEdit-Web/" target="_blank" rel="noreferrer">Otros Proyectos Relacionados (La web que te hice)</a>
+            <a href="https://janiito-studio.github.io/Janiito-Studio/" target="_blank" rel="noreferrer">Mi Portafolios</a>
+        </div>
+        <p>© 2026 Rickyedit Games. Hecho por Jan (Discord: .janiito | Twitch: jasanzo)</p>
+    </footer>
+
+    <script src="../ricky-videos.js"></script>
+    <script src="../ricky-secondary.js"></script>
+    <script src="../ricky-songs.js"></script>
+    <script src="game.js"></script>
+</body>
+
+</html>

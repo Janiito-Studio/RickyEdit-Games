@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap"
         rel="stylesheet" />
-    <link rel="icon" href="../icon_songless.png" type="image/png" />
+    <link rel="icon" href="../icon_emojless.png" type="image/png" />
     <style>
         :root {
             color-scheme: dark;
@@ -37,7 +37,6 @@
             font-family: Outfit, system-ui, sans-serif;
             background:
                 linear-gradient(135deg, rgba(255, 51, 204, 0.15), transparent 32rem),
-                radial-gradient(circle at 78% 12%, rgba(56, 212, 255, 0.18), transparent 24rem),
                 var(--bg);
             color: var(--text);
             overflow-x: hidden;
@@ -60,6 +59,12 @@
             padding: 8px clamp(16px, 4vw, 44px);
             background: linear-gradient(90deg, var(--pink-2), var(--pink));
             box-shadow: 0 8px 30px rgba(255, 51, 204, 0.3);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .nav-logo {
@@ -104,7 +109,9 @@
             align-items: end;
             overflow: hidden;
             padding: 54px clamp(16px, 5vw, 68px) 86px;
-            background: #050506;
+            background:
+                linear-gradient(135deg, rgba(255, 51, 204, 0.15), transparent 32rem),
+                var(--bg);
         }
 
         .hero::before {
@@ -127,8 +134,8 @@
             position: absolute;
             inset: 0;
             background:
-                linear-gradient(90deg, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0.18) 55%, rgba(0, 0, 0, 0.72)),
                 linear-gradient(180deg, transparent 0%, var(--bg) 100%);
+            pointer-events: none;
         }
 
         @keyframes pattern { to { transform: translate(-128px, 128px); } }
@@ -556,6 +563,42 @@
             .actions .btn, .guess-row .btn { width: 100%; }
         }
 
+        .hero-section {
+            text-align: center;
+            margin-bottom: 50px;
+            max-width: 700px;
+        }
+
+        .hero-avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid var(--pink);
+            box-shadow: 0 0 25px rgba(255, 51, 204, 0.45);
+            object-fit: cover;
+            margin-bottom: 20px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .hero-section h1 {
+            font-size: clamp(2.4rem, 7vw, 6.8rem);
+            font-weight: 900;
+            line-height: 0.86;
+            letter-spacing: 0;
+            text-transform: lowercase;
+            margin: 0 0 12px;
+            text-shadow: 0 10px 36px rgba(0, 0, 0, 0.65);
+            color: #fff;
+        }
+
+        .hero-section p {
+            margin: 0;
+            max-width: 700px;
+            color: var(--muted);
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            font-weight: 600;
+        }
+
         .start-screen {
             position: fixed;
             top: 0;
@@ -564,7 +607,6 @@
             height: 100vh;
             background:
                 linear-gradient(135deg, rgba(255, 51, 204, 0.15), transparent 32rem),
-                radial-gradient(circle at 78% 12%, rgba(56, 212, 255, 0.18), transparent 24rem),
                 var(--bg);
             z-index: 1000;
             display: flex;
@@ -712,6 +754,50 @@
             box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
         }
 
+        .info-toggle-btn {
+            background: rgba(255,255,255,0.06); border: 1px solid var(--line);
+            border-radius: 12px; color: var(--muted); font-weight: 700;
+            padding: 10px 20px; cursor: pointer; font-size: 0.85rem;
+            transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px;
+            position: relative; z-index: 1;
+        }
+        .info-toggle-btn:hover {
+            background: rgba(255,51,204,0.12); color: #fff;
+            border-color: rgba(255,51,204,0.3); transform: translateY(-1px);
+        }
+
+        .modal {
+            position: fixed; inset: 0; z-index: 1100;
+            display: none; align-items: center; justify-content: center;
+            padding: 20px; background: rgba(0,0,0,0.68); backdrop-filter: blur(8px);
+        }
+        .modal.show { display: flex; }
+
+        .letter {
+            width: min(720px, 100%); max-height: min(760px, calc(100vh - 40px));
+            overflow: auto; border-radius: 22px;
+            border: 1px solid rgba(255,255,255,0.16);
+            background: linear-gradient(135deg, rgba(255,51,204,0.12), rgba(241,196,15,0.08)), #18191c;
+            box-shadow: var(--shadow);
+        }
+        .letter-head {
+            position: sticky; top: 0;
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: 18px 20px;
+            background: linear-gradient(90deg, var(--pink-2), var(--pink));
+        }
+        .letter-head strong { font-size: 1.15rem; }
+        .close-btn {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: rgba(0,0,0,0.26); color: #fff;
+            font-size: 1.3rem; font-weight: 900; border: none; cursor: pointer;
+        }
+        .letter-body {
+            padding: 22px 22px 6px; color: #f7f2f7;
+            font-size: 1.05rem; line-height: 1.65;
+        }
+        .letter-body p { margin: 0 0 16px; }
+
         .mode-start-btn {
             font-size: 1.3rem;
             font-weight: 900;
@@ -764,6 +850,11 @@
                             <button id="startEasyBtn" class="mode-diff-btn" type="button">😰 Cagado</button>
                             <button id="startNormalBtn" class="mode-diff-btn active" type="button">💪 Normal</button>
                         </div>
+                        <div class="mode-diff-row">
+                            <button id="startNoRepeatBtn" class="mode-diff-btn active" type="button">🔁 Sin repetir</button>
+                            <button id="startRandomBtn" class="mode-diff-btn" type="button">🎲 Aleatorio</button>
+                        </div>
+                        <button class="info-toggle-btn" type="button">ℹ️ Info dificultades</button>
                         <button class="mode-start-btn" id="startGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
@@ -778,6 +869,7 @@
         <div class="nav-actions">
             <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal
                 Principal</a>
+            <button id="openLetterBtn" class="icon-btn" type="button">Mensaje</button>
             <button class="icon-btn" type="button" onclick="location.href='../index.html'">
                 Volver
             </button>
@@ -904,6 +996,39 @@
             </div>
         </div>
     </main>
+
+    <div id="infoModal" class="modal" role="dialog" aria-modal="true">
+        <article class="letter">
+            <div class="letter-head">
+                <strong>Info Dificultades</strong>
+                <button class="close-btn" type="button" onclick="document.getElementById('infoModal').classList.remove('show')" aria-label="Cerrar">×</button>
+            </div>
+            <div class="letter-body">
+                <p><strong style="color:var(--yellow);">😰 Cagado</strong><br>
+                4 intentos. Empiezas con 3 emojis visibles desde el principio. Cada fallo revela uno más. Ideal para principiantes.</p>
+                <p><strong style="color:var(--pink);">💪 Normal</strong><br>
+                6 intentos. Empiezas con solo 1 emoji visible y cada fallo revela uno más. El modo clásico.</p>
+                <hr style="border:none;border-top:1px solid rgba(255,255,255,0.1);margin:8px 0;">
+                <p><strong style="color:var(--green);">🔁 Sin repetir</strong><br>
+                No se repite ninguna canción hasta que se hayan mostrado todas. Más desafío.</p>
+                <p><strong style="color:var(--yellow);">🎲 Aleatorio</strong><br>
+                Las canciones se repiten aleatoriamente. Puede salir la misma dos veces seguidas.</p>
+            </div>
+        </article>
+    </div>
+
+    <!-- Letter Modal -->
+    <div id="letterModal" class="modal" role="dialog" aria-modal="true">
+        <article class="letter">
+            <div class="letter-head">
+                <strong>Mensaje para Ricky (De Marc)</strong>
+                <button id="closeLetterBtn" class="close-btn" type="button" aria-label="Cerrar">×</button>
+            </div>
+            <div class="letter-body">
+                <p>Hola Ricky, soy amigo de Jan (Marc). Te quería decir que con los emojis he ayudado a Jan y te lo he puesto más difícil, jajaja. Eres mi creador de contenido favorito. Gracias por todo lo que haces. Eres muy válido y valioso para mí 💜.</p>
+            </div>
+        </article>
+    </div>
 
     <footer>
         <div class="footer-links">

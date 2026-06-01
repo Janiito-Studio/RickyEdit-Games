@@ -41,9 +41,6 @@
                 linear-gradient(135deg,
                     rgba(255, 51, 204, 0.15),
                     transparent 32rem),
-                radial-gradient(circle at 78% 12%,
-                    rgba(56, 212, 255, 0.18),
-                    transparent 24rem),
                 var(--bg);
             color: var(--text);
             overflow-x: hidden;
@@ -161,10 +158,19 @@
         /* Arcade Grid Options */
         .arcade-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 30px;
             width: 100%;
-            margin-bottom: 60px;
+            margin-bottom: 40px;
+        }
+
+        .arcade-bottom-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 790px;
+            margin: 0 auto 60px;
         }
 
         .arcade-card {
@@ -175,7 +181,6 @@
             box-shadow: var(--shadow);
             display: flex;
             flex-direction: column;
-            min-height: 440px;
             position: relative;
             overflow: hidden;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -203,6 +208,10 @@
 
         .songless-card .card-icon-img {
             filter: drop-shadow(0 0 10px var(--pink));
+        }
+
+        .songless-card.blur-icon .card-icon-img {
+            filter: blur(3px) drop-shadow(0 0 10px var(--pink));
         }
 
         .emojless-card .card-icon-img {
@@ -319,9 +328,6 @@
             opacity: 0.65;
             cursor: not-allowed;
             pointer-events: none;
-            justify-self: center;
-            width: 100%;
-            max-width: 380px;
         }
 
         .soon-card h2,
@@ -424,6 +430,8 @@
             font-size: 0.95rem;
             outline: none;
             transition: border-color 0.2s;
+            resize: vertical;
+            min-height: 80px;
         }
 
         .form-group input:focus,
@@ -511,6 +519,10 @@
             color: rgba(255, 255, 255, 0.5);
             font-weight: 700;
         }
+
+        @media (max-width: 700px) {
+            .arcade-bottom-row { grid-template-columns: 1fr; max-width: 420px; }
+        }
     </style>
 </head>
 
@@ -522,6 +534,7 @@
         <div class="nav-actions">
             <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal
                 Principal</a>
+            <a class="pill-link" href="#suggestions">Proponer juego</a>
         </div>
     </header>
 
@@ -529,7 +542,16 @@
         <section class="hero-section">
             <img class="hero-avatar" src="Avatar Rickyedit.jpg" alt="Rickyedit" />
             <h1>Rickyedit Games</h1>
-            <p>Elige tu minijuego preferido del universo de Rickyedit</p>
+            <p>Elige tu minijuego preferido de Rickyedit
+            </p>
+           <p>---
+            </p>
+            <p>Atención: Para disfrutar de la experiencia sonora completa, cuando entres a cualquier juego o a esta propia pantalla, haz clic en cualquier parte.
+            </p>
+                 <p>---
+             </p>
+                 <p>By Jan ;)
+            </p>
         </section>
 
         <div class="arcade-grid">
@@ -544,29 +566,6 @@
                         <h2>Songless</h2>
                         <p>Escucha fragmentos de audio aleatorios de tus vídeos y canciones favoritas y adivina el
                             título en el menor tiempo posible.</p>
-                    </div>
-                    <div class="card-action">
-                        JUGAR AHORA
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="5" y1="12" x2="19" y2="12"></line>
-                            <polyline points="12 5 19 12 12 19"></polyline>
-                        </svg>
-                    </div>
-                </div>
-            </a>
-
-            <!-- Tarjeta ¿Qué es más caro? -->
-            <a href="mas-caro/index.html" class="arcade-card mascaro-card">
-                <div class="card-image-header">
-                    <img class="card-icon-img" src="icon_vs.png" alt="¿Qué es más caro? Icon">
-                </div>
-                <div class="card-body">
-                    <div>
-                        <span class="card-badge">Comparar</span>
-                        <h2>¿Qué es más caro?</h2>
-                        <p>El gran dilema: ¿Es una skin de Counter Strike más cara que un coche, un viaje o un reloj de
-                            lujo en la vida real? ¡Atrévete a adivinar!</p>
                     </div>
                     <div class="card-action">
                         JUGAR AHORA
@@ -602,6 +601,53 @@
                 </div>
             </a>
 
+            <!-- Tarjeta Thumbnail Blur -->
+            <a href="thumbnail-blur/index.html" class="arcade-card songless-card">
+                <div class="card-image-header">
+                    <img class="card-icon-img" src="icon_miniatura_borrosa.png" alt="Thumbnail Blur Icon">
+                </div>
+                <div class="card-body">
+                    <div>
+                        <span class="card-badge">Adivinar</span>
+                        <h2>Miniatura Borrosa</h2>
+                        <p>Se te muestra una miniatura borrosa de un vídeo de Ricky. ¡Adivina cuál es pista a pista antes de que se revele!</p>
+                    </div>
+                    <div class="card-action">
+                        JUGAR AHORA
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="arcade-bottom-row">
+            <!-- Tarjeta Mas Caro -->
+            <a href="mas-caro/index.html" class="arcade-card mascaro-card">
+                <div class="card-image-header">
+                    <img class="card-icon-img" src="icon_vs.png" alt="¿Qué es más caro? Icon">
+                </div>
+                <div class="card-body">
+                    <div>
+                        <span class="card-badge">Comparar</span>
+                        <h2>¿Qué es más caro?</h2>
+                        <p>El gran dilema: ¿Es una skin de Counter Strike más cara que un coche, un viaje o un reloj de
+                            lujo en la vida real? ¡Atrévete a adivinar!</p>
+                    </div>
+                    <div class="card-action">
+                        JUGAR AHORA
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
             <!-- Tarjeta Próximamente -->
             <div class="arcade-card soon-card">
                 <div class="card-image-header">
@@ -611,8 +657,8 @@
                     <div>
                         <span class="card-badge">Bloqueado</span>
                         <h2>Próximamente</h2>
-                        <p>Estamos desarrollando nuevos minijuegos inspirados en los directos e ideas locas de
-                            Rickyedit. ¡Espéralo muy pronto!</p>
+                        <p>Estoy desarrollando nuevos minijuegos de
+                            Rickyedit. Cualquier idea se agradece.</p>
                     </div>
                     <div class="card-action">
                         PRÓXIMAMENTE
@@ -622,7 +668,7 @@
         </div>
 
         <!-- Sugerir más juegos -->
-        <div class="suggestions-container">
+        <div id="suggestions" class="suggestions-container">
             <div class="suggestions-header">
                 <h3>Proponer nuevo juego</h3>
             </div>
@@ -656,6 +702,34 @@
     </footer>
 
     <script>
+        // Hover sounds
+        let audioCtx;
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+        function playSound(type) {
+            if (!audioCtx) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            const now = audioCtx.currentTime;
+            if (type === 'click') {
+                osc.frequency.setValueAtTime(600, now);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.08);
+                osc.start(now); osc.stop(now + 0.08);
+            } else if (type === 'hover') {
+                osc.frequency.setValueAtTime(800, now);
+                gain.gain.setValueAtTime(0.04, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.05);
+                osc.start(now); osc.stop(now + 0.05);
+            }
+        }
+        document.querySelectorAll('.pill-link, .icon-btn, .arcade-card, .btn-submit, .year-chip').forEach(el => {
+            el.addEventListener('mouseenter', () => playSound('hover'));
+            el.addEventListener('click', () => playSound('click'));
+        });
+
         // Enviar sugerencia
         const form = document.getElementById('suggestionForm');
         const statusDiv = document.getElementById('formStatus');

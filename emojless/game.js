@@ -1,45 +1,79 @@
 const EMOJI_DATA = {
     "ir": "🚶🛣️🌃🌙💨🖤",
     "si mañana": "🌅☁️⏳🤔🌧️💭",
-    "diva virtual": "👩📱💻💬📸🌐",
+    "diva virtual": "👩🤖💻💬📸🌐",
     "lo siento": "😔💔🥀😭🌧️🖤",
-    "rango superior": "👑📈🚀💸🔥🏆",
+    "rango superior": "📈💸👑🚀🔥🏆",
     "hoa": "🌺🌴☀️🌊🍹✨",
     "prioridad": "❤️📲💬⏰⚡📞",
-    "otra vida": "🌌🕊️🪐🌠✨🌙",
-    "quema": "🔥🚬💔🖤⚡🥀",
-    "paqué": "❓🤷😵‍💫💭🌀🙃",
+    "otra vida": "🕊️➡️🧑‍🦲🪐🌠✨",
+    "quema": "🔥❄️🚬🖤⚡🥀",
+    "paqué": "🤷🧟😵‍💫💭🌀🙃",
     "caliente": "🥵🔥☀️💋❤️🌡️",
     "noche": "🌙🌃🌧️🚬✨🖤",
-    "badabadún": "🥁🎺🎵🎉🕺🔥",
+    "badabadún": "🏫✏️🎵🎉🕺🔥",
     "y más allá": "🚀🌌⭐🪐🌠✨",
     "casa": "🏠🛋️📺☕🚪🪟",
     "gourmet": "🍔🍕🌮🍟🍣🍰",
-    "en verdad": "🗣️👀❤️💭🖤⚖️",
-    "por ti": "❤️🌹💌🫶🥀✨",
+    "en verdad": "💧🚿❤️💭🖤⚖️",
+    "por ti": "✖️❤️🌹💌🫶🥀",
     "mi habitación": "🛏️🎧💻📱🏡🪑",
     "era": "⏳📼🕰️🥀💭🖤",
     "u banned": "🚫🔨💻⚠️😡💀",
     "4k/mes": "💸📈🤑💰💻🏦",
-    "mamisabesqno": "🎶❤️🌙😵‍💫💭🌀",
+    "mamisabesqno": "👧❌🌙😵‍💫💭🌀",
     "navimal": "🎄🎁🔔❄️☃️🦌",
-    "quelamamen": "😈💋🔥🖤⚡🌹",
+    "quelamamen": "😈🌶️🔥🖤⚡🌹",
     "blu": "🔵🌊💙🫧🐟🌙",
-    "COVID-AD": "🦠😷🧻🎄🔔❄️"
+    "COVID-AD": "🦠😷🧻🎄🔔❄️",
+    "el otro era yo": "👥👤🪞👀🤔🎭",
+    "mansana": "💃🍎🐍🚫🌳🦷",
+    "fórmula secreta": "🧪🤫🍔📝🔬🧫",
+    "ABISMO": "🕳️🌑🧗‍♂️📉😵‍💫🖤",
+    "romilar": "💊💐🤒🏥🤢🩸",
+    "Parche": "👁️🩹🚢🏴‍☠️🤕🛠️",
+    "Así Es Internet": "🌐💻🤡📱🔥🌍",
+    "Querido Youtube": "🎥▶️💌📉💸😡",
+    "Dolorfoda": "💔🤕🖤🥀🌧️😭",
+    "Soy Un Tryhard": "🎮💦🖱️⌨️🏆🔥",
+    "50 Rimas Sobre Mi": "🎤5️⃣0️⃣📝🗣️🔥",
+
+    // ── PARODIANDO CANCIONES ─────────────────────────────────────────────
+    "Parodiando Canciones 1": "🎵1️⃣😂🎤🤣🎶",
+    "Parodiando Canciones 2": "🎵2️⃣😂🎤🤣🎶",
+    "Parodiando Canciones 3": "🎵3️⃣🤣🎤🤣🎶",
+    "Parodiando Canciones 4": "🎵4️⃣🤣🎤🤣🎶",
+    "Parodiando Canciones 5": "🎵5️⃣🤣🎤🤣🎶",
+    "Parodiando Canciones 6": "🎵6️⃣😂🎤🤣🎶",
+    "Parodiando Canciones 7": "🎵7️⃣😂🎤🤣🎶",
+    "Parodiando Canciones (El Mashup)": "🎵🎛️🎚️🎶🔀🎭",
+
+    // ── OTRAS ────────────────────────────────────────────────────────────
+    "FRIKY": "🤓💔📱🚫😅💬",
+    "Mis 20 Canciones": "🎵2️⃣0️⃣🎤🎶📝🎸",
 };
 
 const SONGS = window.RICKY_SONGS || [];
 let MAX_ATTEMPTS = 6;
 
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let audioCtx = null;
+function getAudioCtx() {
+    if (!audioCtx) try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+}
+['click','touchstart','keydown','mousedown','pointerdown'].forEach(evt =>
+    document.addEventListener(evt, () => { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); }, { once: true })
+);
 
 function playSound(type) {
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
+    const ctx = getAudioCtx();
+    if (!ctx) return;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
     osc.connect(gain);
-    gain.connect(audioCtx.destination);
-    const now = audioCtx.currentTime;
+    gain.connect(ctx.destination);
+    const now = ctx.currentTime;
     if (type === 'success') {
         osc.frequency.setValueAtTime(440, now);
         osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
@@ -159,8 +193,9 @@ function updateStats() {
 function updateEmojiDisplay() {
     if (!state.current) return;
     const allEmojis = splitEmojis(state.current.emojis);
-    const visible = allEmojis.slice(0, state.round + 1);
-    const hidden = allEmojis.slice(state.round + 1).map(() => "\u2753");
+    const startVisible = easyMode ? 3 : 1;
+    const visible = allEmojis.slice(0, startVisible + state.round);
+    const hidden = allEmojis.slice(startVisible + state.round).map(() => "\u2753");
     els.emojiDisplay.textContent = [...visible, ...hidden].join(" ");
 }
 
@@ -176,7 +211,11 @@ function renderRounds() {
 
 function selectRandomSong() {
     const keys = Object.keys(EMOJI_DATA);
-    const key = keys[Math.floor(Math.random() * keys.length)];
+    if (noRepeatMode && usedSongs.length >= keys.length) usedSongs = [];
+    let available = noRepeatMode ? keys.filter(k => !usedSongs.includes(k)) : keys;
+    if (!available.length) available = keys;
+    const key = available[Math.floor(Math.random() * available.length)];
+    usedSongs.push(key);
     return { title: key, emojis: EMOJI_DATA[key] };
 }
 
@@ -191,7 +230,9 @@ function newRound() {
     els.guessInput.disabled = false;
     els.guessBtn.disabled = false;
     els.newBtn.disabled = false;
-    els.status.textContent = "Adivina la canción. Tienes 6 intentos.";
+    els.status.textContent = easyMode
+        ? "Adivina la canción. Empiezas con 3 emojis. Tienes 4 intentos."
+        : "Adivina la canción. Tienes 6 intentos.";
     renderRounds();
     updateEmojiDisplay();
     updateStats();
@@ -323,6 +364,7 @@ function renderSearchResults() {
         .querySelectorAll(".search-option")
         .forEach((button) => {
             button.addEventListener("click", () => {
+                playSound('click');
                 els.guessInput.value = button.dataset.title;
                 hideSearchResults();
                 els.guessInput.focus();
@@ -346,10 +388,10 @@ function hideSearchResults() {
     els.searchResults.innerHTML = "";
 }
 
-els.guessBtn.addEventListener("click", submitGuess);
-els.newBtn.addEventListener("click", newRound);
-els.againBtn.addEventListener("click", newRound);
-els.skipBtn.addEventListener("click", () => nextRound());
+els.guessBtn.addEventListener("click", () => { playSound('click'); submitGuess(); });
+els.newBtn.addEventListener("click", () => { playSound('click'); newRound(); });
+els.againBtn.addEventListener("click", () => { playSound('click'); newRound(); });
+els.skipBtn.addEventListener("click", () => { playSound('click'); nextRound(); });
 
 els.guessInput.addEventListener("keydown", (event) => {
     const buttons = els.searchResults.querySelectorAll(".search-option");
@@ -387,6 +429,8 @@ document.addEventListener("click", (event) => {
 
 // Start screen
 let easyMode = false;
+let noRepeatMode = true;
+let usedSongs = [];
 
 const startScreen = document.getElementById("startScreen");
 const normalToggle = document.getElementById("normalModeToggle");
@@ -397,6 +441,7 @@ const startGameBtn = document.getElementById("startGameBtn");
 
 if (normalToggle && normalCard) {
     normalToggle.addEventListener("click", () => {
+        playSound('click');
         const wasOpen = normalCard.classList.contains("open");
         document.querySelectorAll(".mode-card.open").forEach(c => c.classList.remove("open"));
         if (!wasOpen) normalCard.classList.add("open");
@@ -405,6 +450,7 @@ if (normalToggle && normalCard) {
 
 if (startEasyBtn) {
     startEasyBtn.addEventListener("click", () => {
+        playSound('click');
         easyMode = true;
         startEasyBtn.classList.add("active");
         startNormalBtn.classList.remove("active");
@@ -413,22 +459,93 @@ if (startEasyBtn) {
 
 if (startNormalBtn) {
     startNormalBtn.addEventListener("click", () => {
+        playSound('click');
         easyMode = false;
         startNormalBtn.classList.add("active");
         startEasyBtn.classList.remove("active");
     });
 }
 
+const startNoRepeatBtn = document.getElementById("startNoRepeatBtn");
+const startRandomBtn = document.getElementById("startRandomBtn");
+
+if (startNoRepeatBtn) {
+    startNoRepeatBtn.addEventListener("click", () => {
+        playSound('click');
+        noRepeatMode = true;
+        startNoRepeatBtn.classList.add("active");
+        startRandomBtn.classList.remove("active");
+    });
+}
+
+if (startRandomBtn) {
+    startRandomBtn.addEventListener("click", () => {
+        playSound('click');
+        noRepeatMode = false;
+        startRandomBtn.classList.add("active");
+        startNoRepeatBtn.classList.remove("active");
+    });
+}
+
 if (startGameBtn) {
     startGameBtn.addEventListener("click", () => {
+        playSound('success');
         startScreen.classList.add("hide");
         document.body.style.overflow = "auto";
         if (easyMode) {
             MAX_ATTEMPTS = 4;
+            document.getElementById("segmentsInfo").textContent = "Empiezas con 3 emojis visibles. Cada fallo revela uno más. Tienes 4 intentos.";
         } else {
             MAX_ATTEMPTS = 6;
+            document.getElementById("segmentsInfo").textContent = "Empiezas con 1 emoji visible. Cada fallo revela uno más. Tienes 6 intentos.";
         }
         renderRounds();
         newRound();
     });
+}
+
+// Hover sounds en TODOS los botones y enlaces
+document.addEventListener('mouseover', (e) => {
+    const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"]');
+    if (el) playSound('click');
+});
+
+// Info buttons
+document.querySelectorAll('.info-toggle-btn').forEach(btn => {
+    btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        document.getElementById('infoModal').classList.add('show');
+        playSound('click');
+    });
+});
+
+// Letter modal
+const letterModal = document.getElementById('letterModal');
+const openLetterBtn = document.getElementById('openLetterBtn');
+const closeLetterBtn = document.getElementById('closeLetterBtn');
+
+if (openLetterBtn) {
+    openLetterBtn.addEventListener('click', () => {
+        playSound('click');
+        letterModal.classList.add('show');
+        localStorage.setItem('emojless_message_shown', 'true');
+    });
+}
+if (closeLetterBtn) {
+    closeLetterBtn.addEventListener('click', () => {
+        playSound('click');
+        letterModal.classList.remove('show');
+    });
+}
+if (letterModal) {
+    letterModal.addEventListener('click', (e) => {
+        if (e.target === letterModal) letterModal.classList.remove('show');
+    });
+    // Show letter once on first visit
+    if (!localStorage.getItem('emojless_message_shown')) {
+        setTimeout(() => {
+            letterModal.classList.add('show');
+            localStorage.setItem('emojless_message_shown', 'true');
+        }, 1500);
+    }
 }

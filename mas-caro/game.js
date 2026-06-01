@@ -1,358 +1,356 @@
-// Base de datos de 50 ítems para el juego (25 Skins de CS2 + 25 Vida Real)
-// Imágenes locales almacenadas en images/skins/ e images/real/
 const items = [
-    // --- 25 SKINS DE CS2 ---
+    // --- 25 SKINS DE CS2 (Precios estables y más comunes en marketplaces externos) ---
     {
         name: "AK-47 | Case Hardened",
-        price: 45,
+        price: 320,
         type: "skin",
         image: "images/skins/ak47_case_hardened.png",
-        description: "Una de las skins más icónicas de CS2. Los patrones Blue Gem pueden valer más de 1 millón."
+        description: "Una de las skins más icónicas de CS2. Su valor medio común se mantiene estable en mercados externos para patrones estándar."
     },
     {
         name: "AWP | Dragon Lore",
-        price: 8500,
+        price: 6500,
         type: "skin",
         image: "images/skins/awp_dragon_lore.png",
-        description: "La reina indiscutible de las skins de AWP. Con su dragón grabado escupiendo fuego, símbolo de estatus en CS2."
+        description: "La reina indiscutible de las skins de AWP. Su precio de mercado real y más común se estabiliza fuera de las fluctuaciones de Steam."
     },
     {
         name: "Bowie Knife | Lore",
-        price: 280,
+        price: 160,
         type: "skin",
         image: "images/skins/bowie_knife_lore.png",
-        description: "Un cuchillo Bowie dorado con grabados rúnicos inspirado en la clásica Dragon Lore."
+        description: "Un cuchillo Bowie dorado con grabados rúnicos inspirado en la clásica Dragon Lore. Un valor de entrada muy común y estable."
     },
     {
         name: "M9 Bayonet | Crimson Web",
-        price: 1200,
+        price: 720,
         type: "skin",
         image: "images/skins/m9_bayonet_crimson_web.png",
-        description: "Patrón de telaraña roja sobre fondo negro. Los especímenes con el nudo centrado son los más valiosos."
+        description: "Patrón de telaraña roja sobre fondo negro. El precio base más repetido y representativo para desgastes intermedios estándar."
     },
     {
         name: "Glock-18 | Fade",
-        price: 620,
+        price: 950,
         type: "skin",
         image: "images/skins/glock18_fade.png",
-        description: "Pistola Glock-18 pintada con un degradado translúcido que va del violeta al amarillo."
+        description: "Pistola Glock-18 pintada con un degradado translúcido. Su coste estándar consolidado suele rondar esta cifra en la mayoría de plataformas."
     },
     {
         name: "Karambit | Case Hardened",
-        price: 900,
+        price: 750,
         type: "skin",
         image: "images/skins/karambit_case_hardened.png",
-        description: "El Santo Grial de los cuchillos de CS2. Con la cara de juego totalmente azul, su dueño rechazó ofertas millonarias."
+        description: "Un clásico absoluto de los cuchillos. Su precio base más común para patrones estándar sin sobreprecio por porcentaje de azul."
     },
     {
         name: "Butterfly Knife | Doppler Zafiro",
-        price: 12000,
+        price: 11500,
         type: "skin",
         image: "images/skins/butterfly_knife_doppler_zafiro.png",
-        description: "Un cuchillo de mariposa con el patrón Doppler en fase Zafiro. De color azul brillante cristalino."
+        description: "Un cuchillo de mariposa con el patrón Doppler en fase Zafiro. Una cotización estándar y consolidada entre grandes coleccionistas."
     },
     {
         name: "M4A4 | Howl",
-        price: 6000,
+        price: 3400,
         type: "skin",
         image: "images/skins/m4a4_howl.png",
-        description: "La única skin de contrabando del juego. Su diseño original fue retirado tras una disputa de derechos de autor."
+        description: "La única skin de rareza 'Contrabando'. Su precio medio de transacción real y más repetido en su desgaste más común."
     },
     {
         name: "AK-47 | Redline",
-        price: 18,
+        price: 20,
         type: "skin",
         image: "images/skins/ak47_redline.png",
-        description: "Una clásica skin minimalista de fibra de carbono negra con líneas decorativas de color rojo."
+        description: "Una clásica skin minimalista de fibra de carbono negra con líneas rojas. Su precio base más común y accesible en el mercado."
     },
     {
         name: "Desert Eagle | Blaze",
-        price: 380,
+        price: 620,
         type: "skin",
         image: "images/skins/desert_eagle_blaze.png",
-        description: "Pintada con llamas de aerógrafo sobre una base negra. Una skin icónica y clásica."
+        description: "Pintada con llamas de aerógrafo sobre una base negra. Mítica y con un precio estándar consolidado en plataformas externas."
     },
     {
         name: "AWP | Gungnir",
-        price: 6500,
+        price: 8200,
         type: "skin",
         image: "images/skins/awp_gungnir.png",
-        description: "Inspirada en la lanza de Odín de la mitología nórdica, con hermosos grabados en tonos azulados."
+        description: "Inspirada en la lanza de Odín de la mitología nórdica. Su valor de mercado real más repetido para desgastes estándar."
     },
     {
         name: "AK-47 | Wild Lotus",
         price: 5500,
         type: "skin",
         image: "images/skins/ak47_wild_lotus.png",
-        description: "Decorada con flores de loto de color naranja brillante sobre un fondo verde oliva."
+        description: "Decorada con impresionantes flores de loto sobre fondo verde. El precio base consolidado en operaciones de mercado abierto."
     },
     {
         name: "Karambit | Doppler",
-        price: 850,
+        price: 980,
         type: "skin",
         image: "images/skins/karambit_doppler.png",
-        description: "Un impresionante cuchillo Karambit Doppler con tonos oscuros y destellos púrpuras."
+        description: "Un impresionante cuchillo Karambit Doppler. El coste estándar y más común para sus fases regulares."
     },
     {
         name: "M4A1-S | Welcome to the Jungle",
-        price: 1800,
+        price: 1100,
         type: "skin",
         image: "images/skins/m4a1s_welcome_to_the_jungle.png",
-        description: "Una skin temática de jungla con una serpiente dorada grabada a lo largo del silenciador."
+        description: "Skin temática de jungla con una víbora dorada. Su cotización media habitual en plataformas externas estables."
     },
     {
         name: "AWP | Asiimov",
-        price: 75,
+        price: 105,
         type: "skin",
         image: "images/skins/awp_asiimov.png",
-        description: "Diseño futurista de color blanco, naranja y negro que rinde tributo a las obras de Isaac Asimov."
+        description: "Diseño futurista de color blanco, naranja y negro. Un clásico atemporal con un precio estándar muy asentado."
     },
     {
         name: "AK-47 | Vulcan",
-        price: 220,
+        price: 280,
         type: "skin",
         image: "images/skins/ak47_vulcan.png",
-        description: "Skin de temática deportiva con líneas limpias de colores gris, celeste, negro y blanco."
+        description: "Skin de estética deportiva con líneas limpias. Su valor medio real y más común para un desgaste intermedio regular."
     },
     {
         name: "USP-S | Kill Confirmed",
-        price: 22,
+        price: 45,
         type: "skin",
         image: "images/skins/usps_kill_confirmed.png",
-        description: "Muestra el impacto de una bala atravesando una calavera con salpicaduras de pintura roja."
+        description: "Muestra el impacto dinámico de una bala atravesando un cráneo. Precio estándar habitual para su versión más buscada."
     },
     {
         name: "Karambit | Fade",
-        price: 1100,
+        price: 1750,
         type: "skin",
         image: "images/skins/karambit_fade.png",
-        description: "Pintado con un degradado translúcido de colores rosa, oro, violeta y amarillo."
+        description: "Pintado con un degradado translúcido. El coste de mercado real más repetido para porcentajes de degradado estándar."
     },
     {
         name: "M9 Bayonet | Lore",
-        price: 950,
+        price: 900,
         type: "skin",
         image: "images/skins/m9_bayonet_lore.png",
-        description: "Un cuchillo M9 dorado con un patrón de nudos rúnicos grabados en la hoja."
+        description: "Un cuchillo M9 dorado con un intrincado patrón rúnico. El precio base medio más estable en transacciones externas."
     },
     {
         name: "Sport Gloves | Vice",
-        price: 3200,
+        price: 1400,
         type: "skin",
         image: "images/skins/sport_gloves_vice.png",
-        description: "Guantes deportivos de color rosa y azul de la colección Clutch. Muy codiciados en la comunidad."
+        description: "Guantes deportivos en vibrante color rosa y azul cian. Su cotización media común para desgastes intermedios realistas."
     },
     {
         name: "Specialist Gloves | Crimson Kimono",
-        price: 1600,
+        price: 1050,
         type: "skin",
         image: "images/skins/specialist_gloves_crimson_kimono.png",
-        description: "Guantes de especialista con un patrón tradicional de color rojo carmesí y negro."
+        description: "Guantes de especialista con patrón de rombos en rojo carmesí y negro. El precio base común más estable del mercado."
     },
     {
         name: "Desert Eagle | Printstream",
-        price: 65,
+        price: 40,
         type: "skin",
         image: "images/skins/desert_eagle_printstream.png",
-        description: "Acabado de color blanco perla nacarado con inscripciones informáticas y pequeños dibujos geométricos."
+        description: "Acabado de color blanco perla nacarado que cambia con la luz. Su valor de catálogo estándar más repetido."
     },
     {
         name: "AK-47 | Slate",
         price: 3,
         type: "skin",
         image: "images/skins/ak47_slate.png",
-        description: "Una de las skins más simples y populares, completamente pintada de color negro mate."
+        description: "Una skin completamente negra y sumamente popular. Su coste estándar real consolidado en plataformas externas."
     },
     {
         name: "AWP | Atheris",
-        price: 5,
+        price: 2,
         type: "skin",
         image: "images/skins/awp_atheris.png",
-        description: "Presenta una víbora de arbusto de color verde brillante y azul sobre un fondo negro."
+        description: "Presenta una víbora de arbusto de color verde brillante. Su precio base regular y más común en el mercado abierto."
     },
     {
         name: "AWP | Hyper Beast",
-        price: 28,
+        price: 25,
         type: "skin",
         image: "images/skins/awp_hyper_beast.png",
-        description: "Decorada con una criatura monstruosa pintada con colores psicodélicos e intensos."
+        description: "Diseño psicodélico neón de una criatura monstruosa. El precio medio estable más habitual para este modelo."
     },
 
-    // --- 25 VIDA REAL ---
+    // --- 25 VIDA REAL (Precios base estables estándar sin ofertas ni promociones) ---
     {
         name: "Camiseta Oficial de España",
-        price: 90,
+        price: 100,
         type: "real",
         image: "images/real/camiseta_espana.png",
-        description: "La equipación deportiva oficial de la selección española de fútbol. PVP en tienda oficial."
+        description: "La equipación deportiva oficial de la selección española de fútbol. Precio de venta al público estándar en tiendas de deportes autorizadas."
     },
     {
         name: "PlayStation 5 Pro",
-        price: 700,
+        price: 800,
         type: "real",
         image: "images/real/playstation_5_pro.png",
-        description: "Consola de última generación de Sony con alto rendimiento de gráficos y tasa de refresco fluida."
+        description: "Consola de última generación de Sony. Precio de venta al público estándar recomendado y consolidado en tiendas habituales."
     },
     {
         name: "iPhone 16 Pro Max",
-        price: 1319,
+        price: 1400,
         type: "real",
         image: "images/real/iphone_15_pro_max.png",
-        description: "Teléfono premium fabricado en titanio aeroespacial y con las cámaras más avanzadas de Apple."
+        description: "El modelo insignia de Apple construido en titanio. Su precio comercial de venta estándar y más común en establecimientos autorizados."
     },
     {
         name: "Rolex Submariner Date",
-        price: 10300,
+        price: 10500,
         type: "real",
         image: "images/real/rolex_submariner_date.png",
-        description: "El icónico reloj de buzo de lujo, un clásico indiscutible del prestigio suizo. Precio de lista oficial."
+        description: "El icónico reloj de buceo mecánico de lujo. Precio base de lista estándar recomendado por el fabricante."
     },
     {
         name: "Tesla Model 3 (base)",
-        price: 41990,
+        price: 39000,
         type: "real",
         image: "images/real/tesla_model_3.png",
-        description: "Coche eléctrico de gran autonomía con funciones avanzadas de piloto automático. Precio en España."
+        description: "Berlina eléctrica eficiente con gran autonomía. Precio de venta estándar de la marca antes de ayudas locales variables."
     },
     {
         name: "Menú Hamburguesa Completo",
         price: 12,
         type: "real",
         image: "images/real/hamburguesa_completa.png",
-        description: "Menú con hamburguesa clásica, patatas fritas crujientes y refresco mediano en cadena popular."
+        description: "Menú de hamburguesa clásica, patatas y refresco. El precio estándar habitual en el mostrador sin ofertas temporales."
     },
     {
         name: "Mansión de Lujo en Marbella",
-        price: 4500000,
+        price: 5000000,
         type: "real",
         image: "images/real/mansion_marbella.png",
-        description: "Mansión de lujo con piscina infinity, vistas al mar Mediterráneo y múltiples habitaciones."
+        description: "Exclusiva villa contemporánea en la Costa del Sol. Valor estándar de mercado promedio para propiedades de altas prestaciones en la zona."
     },
     {
         name: "Patinete Eléctrico Premium",
-        price: 799,
+        price: 850,
         type: "real",
         image: "images/real/patinete_electrico.png",
-        description: "Segway Ninebot Max, patinete de movilidad urbana de larga duración de batería."
+        description: "Patinete urbano de gama alta con suspensión y autonomía extendida. Precio de venta estándar en el mercado tecnológico habitual."
     },
     {
         name: "Billete de Metro Sencillo",
-        price: 1,
+        price: 1.50,
         type: "real",
         image: "images/real/billete_metro_sencillo.png",
-        description: "Un billete de ida simple para viajar en la red metropolitana de Madrid. Con bonificación."
+        description: "Un billete de viaje sencillo válido para un trayecto básico en la red metropolitana de transporte."
     },
     {
         name: "Viaje a Japón Todo Incluido",
-        price: 4200,
+        price: 3500,
         type: "real",
         image: "images/real/viaje_japon.png",
-        description: "Vuelos, hoteles tradicionales, pases de tren bala y guía local en Tokio y Kioto. 10 días."
+        description: "Paquete estándar de viaje combinando vuelos regulares y estancias en hoteles confortables de gama media."
     },
     {
         name: "Isla Privada en las Bahamas",
-        price: 7000000,
+        price: 12000000,
         type: "real",
         image: "images/real/isla_privada.png",
-        description: "Una pequeña porción de paraíso tropical de arena blanca y agua cristalina con absoluta privacidad."
+        description: "Un pequeño cayo virgen en el Caribe. Valor de mercado de catálogo estándar internacional para islas privadas de este rango."
     },
     {
         name: "Helicóptero Robinson R44",
-        price: 380000,
+        price: 450000,
         type: "real",
         image: "images/real/helicoptero.png",
-        description: "Helicóptero ligero monomotor de cuatro plazas muy popular a nivel mundial. Precio nuevo."
+        description: "Helicóptero civil ligero de cuatro plazas. Coste de catálogo estándar internacional para la configuración del modelo base."
     },
     {
         name: "Entradas VIP Final Champions",
         price: 5000,
         type: "real",
         image: "images/real/entradas_champions.png",
-        description: "Acceso a la zona de hospitalidad exclusiva, catering y la mejor perspectiva del estadio."
+        description: "Acceso VIP exclusivo con servicio hospitality en los paquetes oficiales emitidos para el evento deportivo de élite."
     },
     {
         name: "Refresco en el Cine",
-        price: 4,
+        price: 4.50,
         type: "real",
         image: "images/real/refresco_cine.png",
-        description: "Un clásico refresco con gas frío servido en vaso grande en la barra del cine."
+        description: "Un vaso grande de refresco frío comprado directamente en el mostrador del cine a precio comercial regular."
     },
     {
         name: "Lamborghini Huracán Evo",
-        price: 220000,
+        price: 240000,
         type: "real",
         image: "images/real/lamborghini_huracan_evo.png",
-        description: "Superdeportivo italiano con motor V10 atmosférico de 640 CV y espectacular aceleración."
+        description: "Superdeportivo italiano con motor V10. Precio de mercado de ocasión promedio y más repetido para unidades seminuevas verificadas."
     },
     {
         name: "Cena Restaurante 3 Estrellas Michelin",
         price: 350,
         type: "real",
         image: "images/real/cena_michelin.png",
-        description: "Menú degustación maridado de alta cocina en uno de los mejores locales culinarios del mundo."
+        description: "Menú degustación estándar por persona en uno de los establecimientos gastronómicos galardonados más prestigiosos."
     },
     {
         name: "Yate de Lujo (20 metros)",
-        price: 800000,
+        price: 950000,
         type: "real",
         image: "images/real/yate_lujo.png",
-        description: "Yate de recreo de segunda mano con camarotes de lujo, solárium y motor potente."
+        description: "Embarcación de recreo de eslora media de segunda mano, valorada bajo el estándar de tasación habitual de mercado."
     },
     {
         name: "Teclado Mecánico Custom Gamer",
-        price: 280,
+        price: 180,
         type: "real",
         image: "images/real/teclado_mecanico.png",
-        description: "Teclado personalizado con interruptores mecánicos engrasados y teclas premium de doble disparo."
+        description: "Teclado mecánico premium montado por piezas de alta calidad compradas a precio estándar de catálogo especializado."
     },
     {
         name: "Bolígrafo BIC Clásico",
-        price: 1,
+        price: 0.40,
         type: "real",
         image: "images/real/boligrafo_bic.png",
-        description: "El bolígrafo más vendido de la historia. Precio en papelería normal."
+        description: "El mítico bolígrafo de tinta azul, calculado a su valor comercial unitario de papelería tradicional."
     },
     {
         name: "MacBook Pro M4 Max",
-        price: 3999,
+        price: 4000,
         type: "real",
         image: "images/real/macbook_pro.png",
-        description: "Ordenador portátil de alta gama con el chip M4 Max de Apple para profesionales."
+        description: "El ordenador portátil de Apple configurado para alto rendimiento. Su precio comercial estándar de venta al público en tiendas oficiales."
     },
     {
         name: "Suscripción 1 año Netflix Premium",
-        price: 216,
+        price: 240,
         type: "real",
         image: "images/real/netflix_premium.png",
-        description: "12 meses de acceso ilimitado a películas y series en 4K. Plan premium en España 2025."
+        description: "12 meses del plan de suscripción más alto calculados según la tarifa fija comercial estándar mensual."
     },
     {
         name: "Bicicleta de Montaña Profesional",
-        price: 4500,
+        price: 4200,
         type: "real",
         image: "images/real/bicicleta_montana.png",
-        description: "Trek Fuel EX 8 con doble suspensión, cuadro de aluminio y frenos hidráulicos Shimano."
+        description: "Bicicleta de Enduro con cuadro de carbono y componentes de alta gama a precio de catálogo comercial regular."
     },
     {
         name: "Café Latte Grande en Cafetería",
-        price: 5,
+        price: 3.20,
         type: "real",
         image: "images/real/cafe_latte.png",
-        description: "Café espresso de especialidad batido con leche vaporizada en vaso alto en cafetería de barrio."
+        description: "Una taza grande de café con leche texturizada servida habitualmente en una cafetería local estándar."
     },
     {
         name: "Casa Adosada en Madrid",
-        price: 420000,
+        price: 520000,
         type: "real",
         image: "images/real/casa_adosada.png",
-        description: "Chalet adosado en las afueras de Madrid con jardín pequeño y plaza de aparcamiento."
+        description: "Vivienda familiar unifamiliar adosada. Precio medio de venta de mercado más común registrado en zonas residenciales metropolitanas."
     },
     {
         name: "Auriculares AirPods Pro 2",
-        price: 279,
+        price: 240,
         type: "real",
         image: "images/real/airpods_pro.png",
-        description: "Auriculares inalámbricos con cancelación activa de ruido de segunda generación y audio espacial."
+        description: "Auriculares inalámbricos de Apple con cancelación de ruido activa a precio estándar habitual en grandes superficies."
     }
 ];
 
@@ -365,7 +363,8 @@ let gameActive = true;
 let roundCount = 0;
 let correctCount = 0;
 let incorrectCount = 0;
-const TOTAL_ROUNDS = 50;
+let TOTAL_ROUNDS = 50;
+let easyMode = false;
 
 // Colas de mezcla para garantizar que no se repitan los ítems hasta mostrar todos
 let skinQueue = [];
@@ -381,18 +380,25 @@ function shuffle(array) {
 }
 
 // Inicialización de sonidos mediante Web Audio API
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+let audioCtx = null;
+function getAudioCtx() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+}
+['click','touchstart','keydown','mousedown','pointerdown'].forEach(evt =>
+    document.addEventListener(evt, () => { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); }, { once: true })
+);
 
 function playSound(type) {
-    if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-    }
-    const osc = audioCtx.createOscillator();
-    const gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
+    const ctx = getAudioCtx();
 
-    const now = audioCtx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+
+    const now = ctx.currentTime;
 
     if (type === 'success') {
         osc.frequency.setValueAtTime(440, now); // A4
@@ -440,6 +446,12 @@ function updateCounters() {
 // 1. Uno sea Skin de CS2 y otro sea de la Vida Real.
 // 2. No sean obvios (los precios deben estar en un rango de magnitud comparable, factor máx 15x).
 // 3. No se repitan consecutivamente, utilizando colas mezcladas sin repetición.
+function applyImageGlow(imgEl, wrapperEl, type) {
+    const bgColor = type === 'skin' ? '241, 196, 15' : '56, 212, 255';
+    imgEl.style.filter = 'drop-shadow(0 0 12px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.3)) drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4))';
+    wrapperEl.style.background = `radial-gradient(ellipse at 50% 50%, rgba(${bgColor}, 0.3), rgba(${bgColor}, 0.08) 50%, transparent 75%)`;
+}
+
 function getRandomPair() {
     const csSkins = items.filter(i => i.type === 'skin');
     const realLife = items.filter(i => i.type === 'real');
@@ -516,7 +528,10 @@ function nextRound() {
     vsIcon.className = "vs-badge";
 
     // Asignar datos a la izquierda
-    document.getElementById('img-left').src = currentPair[0].image;
+    const imgLeft = document.getElementById('img-left');
+    const wrapLeft = imgLeft.closest('.image-wrapper');
+    imgLeft.src = currentPair[0].image;
+    applyImageGlow(imgLeft, wrapLeft, currentPair[0].type);
     document.getElementById('name-left').textContent = currentPair[0].name.toUpperCase();
     document.getElementById('tag-left').textContent = currentPair[0].type === 'skin' ? 'SKIN DE CS2' : 'VIDA REAL';
     document.getElementById('tag-left').className = `item-tag ${currentPair[0].type}`;
@@ -526,7 +541,10 @@ function nextRound() {
     document.getElementById('desc-left').style.opacity = 0;
 
     // Asignar datos a la derecha
-    document.getElementById('img-right').src = currentPair[1].image;
+    const imgRight = document.getElementById('img-right');
+    const wrapRight = imgRight.closest('.image-wrapper');
+    imgRight.src = currentPair[1].image;
+    applyImageGlow(imgRight, wrapRight, currentPair[1].type);
     document.getElementById('name-right').textContent = currentPair[1].name.toUpperCase();
     document.getElementById('tag-right').textContent = currentPair[1].type === 'skin' ? 'SKIN DE CS2' : 'VIDA REAL';
     document.getElementById('tag-right').className = `item-tag ${currentPair[1].type}`;
@@ -534,6 +552,20 @@ function nextRound() {
     document.getElementById('price-right').classList.remove('revealed');
     document.getElementById('desc-right').textContent = currentPair[1].description;
     document.getElementById('desc-right').style.opacity = 0;
+
+    // Cagado hint
+    const hintEl = document.getElementById('price-hint');
+    if (hintEl) {
+        if (easyMode) {
+            const maxPrice = Math.max(currentPair[0].price, currentPair[1].price);
+            const minPrice = Math.min(currentPair[0].price, currentPair[1].price);
+            const hintRange = maxPrice > 1000 ? 'más de 1000€' : maxPrice > 100 ? 'entre 100€ y 1000€' : 'menos de 100€';
+            hintEl.textContent = `💡 Pista: El más caro cuesta ${hintRange}`;
+            hintEl.classList.add('show');
+        } else {
+            hintEl.classList.remove('show');
+        }
+    }
 
     // Habilitar clics
     document.getElementById('btn-left').disabled = false;
@@ -633,14 +665,63 @@ function animatePrice(elementId, targetValue) {
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('high-score').textContent = highestStreak;
 
+    // Accordion
+    const normalToggle = document.getElementById('normalModeToggle');
+    const normalCard = document.getElementById('normalModeCard');
+    if (normalToggle && normalCard) {
+        normalToggle.addEventListener('click', () => {
+            playSound('click');
+            const wasOpen = normalCard.classList.contains('open');
+            document.querySelectorAll('.mode-card.open').forEach(c => c.classList.remove('open'));
+            if (!wasOpen) normalCard.classList.add('open');
+        });
+    }
+
+    // Difficulty buttons
+    const startEasyBtn = document.getElementById('startEasyBtn');
+    const startNormalBtn = document.getElementById('startNormalBtn');
+    if (startEasyBtn) startEasyBtn.addEventListener('click', () => { playSound('click'); easyMode = true; startEasyBtn.classList.add('active'); startNormalBtn.classList.remove('active'); });
+    if (startNormalBtn) startNormalBtn.addEventListener('click', () => { playSound('click'); easyMode = false; startNormalBtn.classList.add('active'); startEasyBtn.classList.remove('active'); });
+
+    // Info button
+    document.querySelectorAll('.info-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('infoModal').classList.add('show');
+            playSound('click');
+        });
+    });
+
+    // Start game
+    const startGameBtn = document.getElementById('startGameBtn');
+    if (startGameBtn) {
+        startGameBtn.addEventListener('click', () => {
+            playSound('success');
+            document.getElementById('startScreen').classList.add('hide');
+            document.body.style.overflow = 'auto';
+            TOTAL_ROUNDS = easyMode ? 20 : 50;
+            nextRound();
+        });
+    }
+
+    // Hint element
+    let hintEl = document.createElement('div');
+    hintEl.className = 'price-hint';
+    hintEl.id = 'price-hint';
+    const arena = document.querySelector('.arena');
+    if (arena) arena.parentNode.insertBefore(hintEl, arena.nextSibling);
+
     document.getElementById('btn-left').addEventListener('click', () => selectOption(0));
     document.getElementById('btn-right').addEventListener('click', () => selectOption(1));
+    document.getElementById('btn-left').addEventListener('mouseenter', () => { if (gameActive) playSound('click'); });
+    document.getElementById('btn-right').addEventListener('mouseenter', () => { if (gameActive) playSound('click'); });
     document.getElementById('btn-next').addEventListener('click', () => {
         playSound('click');
         nextRound();
     });
 
     document.getElementById('btn-restart').addEventListener('click', () => {
+        playSound('click');
         score = 0;
         streak = 0;
         roundCount = 0;
@@ -651,8 +732,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('score').textContent = '0';
         document.getElementById('streak').textContent = '0';
         document.getElementById('victory-overlay').classList.remove('show');
-        nextRound();
+        document.getElementById('startScreen').classList.remove('hide');
+        document.body.style.overflow = 'hidden';
     });
+});
 
-    nextRound();
+// Hover sounds en TODOS los botones y enlaces
+document.addEventListener('mouseover', (e) => {
+    const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"], .card-button');
+    if (el) playSound('click');
 });

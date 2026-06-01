@@ -44,9 +44,6 @@
                 linear-gradient(135deg,
                     rgba(255, 51, 204, 0.15),
                     transparent 32rem),
-                radial-gradient(circle at 78% 12%,
-                    rgba(56, 212, 255, 0.18),
-                    transparent 24rem),
                 var(--bg);
             color: var(--text);
             overflow-x: hidden;
@@ -85,6 +82,12 @@
             padding: 8px clamp(16px, 4vw, 44px);
             background: linear-gradient(90deg, var(--pink-2), var(--pink));
             box-shadow: 0 8px 30px rgba(255, 51, 204, 0.3);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .nav-logo {
@@ -133,7 +136,9 @@
             align-items: end;
             overflow: hidden;
             padding: 54px clamp(16px, 5vw, 68px) 86px;
-            background: #050506;
+            background:
+                linear-gradient(135deg, rgba(255, 51, 204, 0.15), transparent 32rem),
+                var(--bg);
         }
 
         .hero::before {
@@ -160,17 +165,8 @@
             position: absolute;
             inset: 0;
             background:
-                linear-gradient(90deg,
-                    rgba(0, 0, 0, 0.78),
-                    rgba(0, 0, 0, 0.18) 55%,
-                    rgba(0, 0, 0, 0.72)),
                 linear-gradient(180deg, transparent 0%, var(--bg) 100%);
-        }
-
-        @keyframes pattern {
-            to {
-                transform: translate(-128px, 128px);
-            }
+            pointer-events: none;
         }
 
         .hero-inner {
@@ -770,7 +766,7 @@
         .modal {
             position: fixed;
             inset: 0;
-            z-index: 30;
+            z-index: 1100;
             display: none;
             align-items: center;
             justify-content: center;
@@ -875,8 +871,15 @@
             font-weight: 700;
         }
 
+        @keyframes pattern {
+            to {
+                transform: translate(-128px, 128px);
+            }
+        }
+
         @media (max-width: 900px) {
-            .hero-inner {
+
+        .hero-inner {
                 grid-template-columns: 1fr;
             }
 
@@ -936,9 +939,6 @@
                 linear-gradient(135deg,
                     rgba(255, 51, 204, 0.15),
                     transparent 32rem),
-                radial-gradient(circle at 78% 12%,
-                    rgba(56, 212, 255, 0.18),
-                    transparent 24rem),
                 var(--bg);
             z-index: 1000;
             display: flex;
@@ -1003,12 +1003,19 @@
 
         .mode-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
             width: 100%;
-            max-width: 960px;
+            max-width: 1100px;
             margin-top: 16px;
             align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .mode-cards { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 500px) {
+            .mode-cards { grid-template-columns: 1fr; }
         }
 
         .mode-card {
@@ -1019,6 +1026,7 @@
             backdrop-filter: blur(20px);
             box-shadow: var(--shadow);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            min-width: 0;
         }
 
         .mode-card:hover {
@@ -1163,6 +1171,50 @@
             box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
             outline: none;
         }
+
+        .info-toggle-btn {
+            background: rgba(255,255,255,0.06); border: 1px solid var(--line);
+            border-radius: 12px; color: var(--muted); font-weight: 700;
+            padding: 10px 20px; cursor: pointer; font-size: 0.85rem;
+            transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px;
+            position: relative; z-index: 1;
+        }
+        .info-toggle-btn:hover {
+            background: rgba(255,51,204,0.12); color: #fff;
+            border-color: rgba(255,51,204,0.3); transform: translateY(-1px);
+        }
+
+        .modal {
+            position: fixed; inset: 0; z-index: 1100;
+            display: none; align-items: center; justify-content: center;
+            padding: 20px; background: rgba(0,0,0,0.68); backdrop-filter: blur(8px);
+        }
+        .modal.show { display: flex; }
+
+        .letter {
+            width: min(720px, 100%); max-height: min(760px, calc(100vh - 40px));
+            overflow: auto; border-radius: 22px;
+            border: 1px solid rgba(255,255,255,0.16);
+            background: linear-gradient(135deg, rgba(255,51,204,0.12), rgba(241,196,15,0.08)), #18191c;
+            box-shadow: var(--shadow);
+        }
+        .letter-head {
+            position: sticky; top: 0;
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: 18px 20px;
+            background: linear-gradient(90deg, var(--pink-2), var(--pink));
+        }
+        .letter-head strong { font-size: 1.15rem; }
+        .close-btn {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: rgba(0,0,0,0.26); color: #fff;
+            font-size: 1.3rem; font-weight: 900; border: none; cursor: pointer;
+        }
+        .letter-body {
+            padding: 22px 22px 6px; color: #f7f2f7;
+            font-size: 1.05rem; line-height: 1.65;
+        }
+        .letter-body p { margin: 0 0 16px; }
 
         .mode-year-section {
             display: flex;
@@ -1350,6 +1402,7 @@
                                 💪 Normal
                             </button>
                         </div>
+                        <button class="info-toggle-btn" type="button">ℹ️ Info dificultades</button>
                         <button class="mode-start-btn" id="startMainGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
@@ -1371,6 +1424,7 @@
                                 💪 Normal
                             </button>
                         </div>
+                        <button class="info-toggle-btn" type="button">ℹ️ Info dificultades</button>
                         <button class="mode-start-btn" id="startSecondaryGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
@@ -1379,7 +1433,7 @@
             <!-- Canciones -->
             <div class="mode-card" id="songsModeCard">
                 <button class="mode-card-toggle" id="songsModeToggle" type="button">
-                    <span>🎵 Canciones de Rickyedit</span>
+                    <span>🎵 Canciones</span>
                     <span class="mode-card-chevron">▼</span>
                 </button>
                 <div class="mode-card-panel" id="songsModePanel">
@@ -1404,7 +1458,30 @@
                             <span class="mode-year-label">Año</span>
                             <div class="mode-year-chips" id="songsYearChips"></div>
                         </div>
+                        <button class="info-toggle-btn" type="button">ℹ️ Info dificultades</button>
                         <button class="mode-start-btn" id="startSongsGameBtn" type="button">Empezar</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Los 2 canales -->
+            <div class="mode-card" id="bothModeCard">
+                <button class="mode-card-toggle" id="bothModeToggle" type="button">
+                    <span>📺🎬 Los 2 canales</span>
+                    <span class="mode-card-chevron">▼</span>
+                </button>
+                <div class="mode-card-panel" id="bothModePanel">
+                    <div class="mode-panel-content">
+                        <div class="mode-diff-row">
+                            <button id="startBothEasyBtn" class="mode-diff-btn" type="button">
+                                😰 Cagado
+                            </button>
+                            <button id="startBothNormalBtn" class="mode-diff-btn active" type="button">
+                                💪 Normal
+                            </button>
+                        </div>
+                        <button class="info-toggle-btn" type="button">ℹ️ Info dificultades</button>
+                        <button class="mode-start-btn" id="startBothGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
             </div>
@@ -1614,7 +1691,7 @@
                     <a href="https://janiito-studio.github.io/RickyEdit-Web/" target="_blank" rel="noreferrer">
                         Rickyedit Web
                     </a>
-                    . Donde reaccionaste a ella en directo
+                    . Donde reac    cionaste a ella en directo
                     <a href="https://drive.google.com/file/d/1m52FJeLYQDIRggHLjtThdWDGEIdhUKrv/view?usp=sharing"
                         target="_blank" rel="noreferrer">
                         (video de la reacción)
@@ -1653,6 +1730,45 @@
         </article>
     </div>
 
+    <div id="infoModal" class="modal" role="dialog" aria-modal="true">
+        <article class="letter">
+            <div class="letter-head">
+                <strong>Info Dificultades</strong>
+                <button class="close-btn" type="button" onclick="document.getElementById('infoModal').classList.remove('show')" aria-label="Cerrar">×</button>
+            </div>
+            <div class="letter-body">
+                <p><strong style="color:var(--yellow);">😰 Cagado</strong><br>
+                4 intentos. Los fragmentos de audio son más largos (más fácil de adivinar). Ideal para principiantes.</p>
+                <p><strong style="color:var(--pink);">💪 Normal</strong><br>
+                6 intentos. Los fragmentos van de 1 segundo a 32 segundos progresivamente. El modo clásico.</p>
+            </div>
+        </article>
+    </div>
+
+    <!-- Completion Overlay (No-Repeat mode) -->
+    <div id="completionOverlay" class="modal" role="dialog" aria-modal="true">
+        <article class="letter" style="text-align: center;">
+            <div class="letter-head" style="justify-content: center;">
+                <strong>🎉 ¡Enhorabuena!</strong>
+            </div>
+            <div class="letter-body" style="text-align: center;">
+                <p style="font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 12px;">
+                    ¡Has escuchado y adivinado todos los vídeos!
+                </p>
+                <p style="color: var(--muted); margin-bottom: 8px;">
+                    Puntuación final: <strong style="color: var(--yellow);" id="completionScore">0</strong> puntos
+                </p>
+                <p style="color: var(--muted); margin-bottom: 24px;">
+                    Has completado el reto sin repetir ningún vídeo. ¡Eres un verdadero experto en el contenido de Ricky!
+                </p>
+                <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+                    <button id="completionRestartBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px;">🔁 Volver a empezar</button>
+                    <button id="completionHomeBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px; background: rgba(255,255,255,0.1); color: var(--muted); border: 1px solid var(--line); box-shadow: none;">🏠 Volver al inicio</button>
+                </div>
+            </div>
+        </article>
+    </div>
+
     <footer>
         <div class="footer-links">
             <a href="https://janiito-studio.github.io/RickyEdit-Web/" target="_blank" rel="noreferrer">Otros Proyectos
@@ -1683,15 +1799,23 @@
             },
         ];
 
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        let audioCtx = null;
+        function getAudioCtx() {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+            return audioCtx;
+        }
+        ['click','touchstart','keydown','mousedown','pointerdown'].forEach(evt =>
+            document.addEventListener(evt, () => { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); }, { once: true })
+        );
 
         function playSound(type) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
+            const ctx = getAudioCtx();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
             osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            const now = audioCtx.currentTime;
+            gain.connect(ctx.destination);
+            const now = ctx.currentTime;
             if (type === 'success') {
                 osc.frequency.setValueAtTime(440, now);
                 osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
@@ -1788,6 +1912,9 @@
             startMainGameBtn: $("startMainGameBtn"),
             startSecondaryGameBtn: $("startSecondaryGameBtn"),
             startSongsGameBtn: $("startSongsGameBtn"),
+            startBothEasyBtn: $("startBothEasyBtn"),
+            startBothNormalBtn: $("startBothNormalBtn"),
+            startBothGameBtn: $("startBothGameBtn"),
             changeModeBtn: $("changeModeBtn"),
             hintBtn: $("hintBtn"),
             hintContent: $("hintContent"),
@@ -1938,15 +2065,16 @@
         function bindEvents() {
             els.playBtn.addEventListener("click", () => { playSound('click'); playSegment(); });
             els.stopBtn.addEventListener("click", () => {
+                playSound('click');
                 stopPlayback();
                 els.playBtn.disabled = false;
                 els.status.textContent = "Música parada. Dale a reproducir para continuar.";
             });
-            els.skipBtn.addEventListener("click", nextSegment);
-            els.newBtn.addEventListener("click", newRound);
-            els.againBtn.addEventListener("click", newRound);
-            els.guessBtn.addEventListener("click", submitGuess);
-            els.hintBtn.addEventListener("click", requestHint);
+            els.skipBtn.addEventListener("click", () => { playSound('click'); nextSegment(); });
+            els.newBtn.addEventListener("click", () => { playSound('click'); newRound(); });
+            els.againBtn.addEventListener("click", () => { playSound('click'); newRound(); });
+            els.guessBtn.addEventListener("click", () => { playSound('click'); submitGuess(); });
+            els.hintBtn.addEventListener("click", () => { playSound('click'); requestHint(); });
             els.guessInput.addEventListener("keydown", (event) => {
                 const buttons =
                     els.searchResults.querySelectorAll(".search-option");
@@ -1989,8 +2117,17 @@
                 if (!event.target.closest(".guess-row"))
                     hideSearchResults();
             });
-            els.openLetterBtn.addEventListener("click", showLetter);
-            els.closeLetterBtn.addEventListener("click", hideLetter);
+            els.openLetterBtn.addEventListener("click", () => { playSound('click'); showLetter(); });
+            els.closeLetterBtn.addEventListener("click", () => { playSound('click'); hideLetter(); });
+
+            // Info buttons
+            document.querySelectorAll('.info-toggle-btn').forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    document.getElementById('infoModal').classList.add('show');
+                    playSound('click');
+                });
+            });
             els.letterModal.addEventListener("click", (event) => {
                 if (event.target === els.letterModal) hideLetter();
             });
@@ -2022,6 +2159,7 @@
                 const chipsEl = document.getElementById(chipsId);
                 if (toggle && card) {
                     toggle.addEventListener("click", () => {
+                        playSound('click');
                         const wasOpen = card.classList.contains("open");
                         document
                             .querySelectorAll(".mode-card.open")
@@ -2043,9 +2181,13 @@
                         const descText = document.getElementById("descriptionText");
                         if (descText) {
                             if (cardId === "songsModeCard") {
-                                descText.textContent = "Escucha un fragmento aleatorio de cualquier segundo de una canción del canal y adivina cuál es antes de que llegue al corte a los 15 segundos.";
-                            } else {
-                                descText.textContent = "Escucha un fragmento aleatorio de cualquier segundo de un vídeo del canal y adivina cuál es antes de que llegue al corte a los 32 segundos.";
+                                descText.textContent = "Escucha un fragmento aleatorio de cualquier segundo de una canción y adivina cuál es antes de que llegue al corte a los 15 segundos.";
+                            } else if (cardId === "secondaryModeCard" && !wasOpen) {
+                                descText.textContent = "Escucha un fragmento aleatorio de cualquier segundo de un vídeo del Canal Secundario y adivina cuál es antes de que llegue al corte a los 32 segundos.";
+                            } else if (cardId === "mainModeCard" && !wasOpen) {
+                                descText.textContent = "Escucha un fragmento aleatorio de cualquier segundo de un vídeo del Canal Principal y adivina cuál es antes de que llegue al corte a los 32 segundos.";
+                            } else if (cardId === "bothModeCard" && !wasOpen) {
+                                descText.textContent = "Escucha un fragmento aleatorio de cualquier segundo de un vídeo de ambos canales y adivina cuál es antes de que llegue al corte a los 32 segundos.";
                             }
                         }
                     });
@@ -2090,6 +2232,12 @@
                 (y) => {
                     songsYear = y;
                 },
+            );
+            setupAccordion(
+                "bothModeToggle",
+                "bothModeCard",
+                null,
+                () => {},
             );
 
             // ---- Start game helper ----
@@ -2162,64 +2310,98 @@
 
             // ---- Canal Principal buttons ----
             els.startEasyBtn.addEventListener("click", () => {
+                playSound('click');
                 mainEasyMode = true;
                 els.startEasyBtn.classList.add("active");
                 els.startNormalBtn.classList.remove("active");
             });
             els.startNormalBtn.addEventListener("click", () => {
+                playSound('click');
                 mainEasyMode = false;
                 els.startNormalBtn.classList.add("active");
                 els.startEasyBtn.classList.remove("active");
             });
-            els.startMainGameBtn.addEventListener("click", () =>
-                startGame(mainEasyMode, null, mainYear, false),
-            );
+            els.startMainGameBtn.addEventListener("click", () => {
+                playSound('success');
+                startGame(mainEasyMode, null, mainYear, false);
+            });
 
             // ---- Canal Secundario buttons ----
             els.startSecondaryEasyBtn.addEventListener("click", () => {
+                playSound('click');
                 secondaryEasyMode = true;
                 els.startSecondaryEasyBtn.classList.add("active");
                 els.startSecondaryNormalBtn.classList.remove("active");
             });
             els.startSecondaryNormalBtn.addEventListener("click", () => {
+                playSound('click');
                 secondaryEasyMode = false;
                 els.startSecondaryNormalBtn.classList.add("active");
                 els.startSecondaryEasyBtn.classList.remove("active");
             });
-            els.startSecondaryGameBtn.addEventListener("click", () =>
-                startGame(secondaryEasyMode, window.RICKY_SECONDARY, secondaryYear, false),
-            );
+            els.startSecondaryGameBtn.addEventListener("click", () => {
+                playSound('success');
+                startGame(secondaryEasyMode, window.RICKY_SECONDARY, secondaryYear, false);
+            });
 
             // ---- Canciones buttons ----
             let songsNoRepeat = true;
 
             els.startSongsEasyBtn.addEventListener("click", () => {
+                playSound('click');
                 songsEasyMode = true;
                 els.startSongsEasyBtn.classList.add("active");
                 els.startSongsNormalBtn.classList.remove("active");
             });
             els.startSongsNormalBtn.addEventListener("click", () => {
+                playSound('click');
                 songsEasyMode = false;
                 els.startSongsNormalBtn.classList.add("active");
                 els.startSongsEasyBtn.classList.remove("active");
             });
             els.startSongsNoRepeatBtn.addEventListener("click", () => {
+                playSound('click');
                 songsNoRepeat = true;
                 els.startSongsNoRepeatBtn.classList.add("active");
                 els.startSongsRandomBtn.classList.remove("active");
             });
             els.startSongsRandomBtn.addEventListener("click", () => {
+                playSound('click');
                 songsNoRepeat = false;
                 els.startSongsRandomBtn.classList.add("active");
                 els.startSongsNoRepeatBtn.classList.remove("active");
             });
-            els.startSongsGameBtn.addEventListener("click", () =>
-                startGame(songsEasyMode, window.RICKY_SONGS, songsYear, songsNoRepeat),
+            els.startSongsGameBtn.addEventListener("click", () => {
+                playSound('click');
+                startGame(songsEasyMode, window.RICKY_SONGS, songsYear, songsNoRepeat);
             );
+
+            // ---- Los 2 canales buttons ----
+            let bothEasyMode = false;
+            let bothNoRepeat = true;
+
+            els.startBothEasyBtn.addEventListener("click", () => {
+                playSound('click');
+                bothEasyMode = true;
+                els.startBothEasyBtn.classList.add("active");
+                els.startBothNormalBtn.classList.remove("active");
+            });
+            els.startBothNormalBtn.addEventListener("click", () => {
+                playSound('click');
+                bothEasyMode = false;
+                els.startBothNormalBtn.classList.add("active");
+                els.startBothEasyBtn.classList.remove("active");
+            });
+            els.startBothGameBtn.addEventListener("click", () => {
+                playSound('click');
+                const combinedPool = [...(window.RICKY_VIDEOS || []), ...(window.RICKY_SECONDARY || [])];
+                startGame(bothEasyMode, combinedPool, null, bothNoRepeat);
+            });
 
             // ---- Cambiar modo ----
             if (els.changeModeBtn) {
                 els.changeModeBtn.addEventListener("click", () => {
+                    playSound('click');
                     stopPlayback();
                     // Clear reveal media to stop any playing video
                     els.revealMedia.innerHTML = "";
@@ -2546,12 +2728,11 @@
                 if (unplayed.length > 0) {
                     candidates = unplayed;
                 } else {
-                    // All played — reset and start over
-                    state.playedSongs.clear();
-                    candidates = candidates.filter(
-                        (v) => v.id !== excludeId,
-                    );
-                    if (candidates.length === 0) candidates = state.pool;
+                    // All played — show completion overlay
+                    stopPlayback();
+                    document.getElementById('completionScore').textContent = state.score;
+                    document.getElementById('completionOverlay').classList.add('show');
+                    return;
                 }
             } else {
                 if (excludeId) {
@@ -2853,18 +3034,28 @@
                             .pop();
                         return `
             <button class="search-option" type="button" data-video-id="${video.id}">
-              <span>${escapeHtml(video.title)}</span>
-              <small>${formatLongTime(video.duration || 0)} · Año ${vYear}</small>
+              <img class="search-option-thumb" src="https://img.youtube.com/vi/${video.id}/mqdefault.jpg" alt="">
+              <div class="search-option-info">
+                <div class="search-option-title">${escapeHtml(video.title)}</div>
+                <div class="search-option-meta">${formatLongTime(video.duration || 0)} · Año ${vYear}</div>
+              </div>
             </button>
           `;
                     })
                     .join("")}
+        <button class="search-option search-submit" type="button" style="justify-content:center;color:var(--yellow);font-weight:900;">
+          Buscar en YouTube ↗
+        </button>
       `;
             els.searchResults.classList.add("show");
             els.searchResults
                 .querySelectorAll(".search-option")
                 .forEach((button) => {
                     button.addEventListener("click", () => {
+                        if (button.classList.contains("search-submit")) {
+                            window.open("https://www.youtube.com/results?search_query=" + encodeURIComponent(els.guessInput.value), "_blank");
+                            return;
+                        }
                         const selected = state.pool.find(
                             (video) => video.id === button.dataset.videoId,
                         );
@@ -2943,6 +3134,30 @@
         function hideLetter() {
             els.letterModal.classList.remove("show");
         }
+
+        // Hover sounds en TODOS los botones y enlaces
+        document.addEventListener('mouseover', (e) => {
+            const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"]');
+            if (el) playSound('click');
+        });
+
+        // Completion overlay buttons
+        document.getElementById('completionRestartBtn').addEventListener('click', () => {
+            playSound('click');
+            state.playedSongs.clear();
+            state.score = 0;
+            state.streak = 0;
+            document.getElementById('completionOverlay').classList.remove('show');
+            updateStats();
+            newRound();
+        });
+        document.getElementById('completionHomeBtn').addEventListener('click', () => {
+            playSound('click');
+            stopPlayback();
+            document.getElementById('completionOverlay').classList.remove('show');
+            document.getElementById('startScreen').classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+        });
     </script>
 </body>
 
