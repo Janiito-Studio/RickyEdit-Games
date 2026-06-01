@@ -1,0 +1,78 @@
+/* ============================================================
+   Rickyedit Games — Updates Modal Styles
+   ============================================================ */
+.rlb-updates-modal {
+  position: fixed; inset: 0; z-index: 3000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; background: rgba(0,0,0,0.72); backdrop-filter: blur(12px);
+  opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+.rlb-updates-modal.show { opacity: 1; visibility: visible; }
+
+.rlb-updates-card {
+  width: min(520px, 100%);
+  background: linear-gradient(135deg, rgba(255,51,204,0.12), rgba(241,196,15,0.08)), #18191c;
+  border: 1px solid rgba(255,255,255,0.16); border-radius: 24px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  transform: translateY(20px) scale(0.95); transition: transform 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
+  overflow: hidden;
+}
+.rlb-updates-modal.show .rlb-updates-card { transform: translateY(0) scale(1); }
+
+.rlb-updates-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 20px 24px; background: linear-gradient(90deg, var(--pink-2, #ff168c), var(--pink, #ff33cc));
+}
+.rlb-updates-badge {
+  background: var(--yellow, #f1c40f); color: #0d0d10;
+  font-size: 0.65rem; font-weight: 900; padding: 3px 8px;
+  border-radius: 6px; letter-spacing: 1px; text-transform: uppercase;
+}
+.rlb-updates-title {
+  font-size: 1.3rem; font-weight: 900; color: #fff; margin: 0; flex: 1;
+}
+.rlb-updates-close {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(0,0,0,0.26); color: #fff;
+  font-size: 1.2rem; font-weight: 900; border: none; cursor: pointer;
+  transition: background 0.2s;
+}
+.rlb-updates-close:hover { background: rgba(0,0,0,0.45); }
+
+.rlb-updates-body {
+  padding: 24px; color: #f7f2f7; font-size: 0.95rem; line-height: 1.7;
+  max-height: 55vh; overflow-y: auto;
+}
+.rlb-updates-body h3 {
+  font-size: 1.05rem; font-weight: 800; color: #fff;
+  margin: 0 0 8px; display: flex; align-items: center; gap: 8px;
+}
+.rlb-updates-body p {
+  margin: 0 0 14px; color: var(--muted, #b9bbbe);
+}
+.rlb-updates-body ul {
+  margin: 0 0 14px; padding-left: 20px;
+}
+.rlb-updates-body li {
+  margin-bottom: 6px; color: var(--muted, #b9bbbe);
+}
+.rlb-updates-body .upd-highlight {
+  color: var(--pink, #ff33cc); font-weight: 700;
+}
+.rlb-updates-body .upd-sep {
+  border: none; border-top: 1px solid rgba(255,255,255,0.08);
+  margin: 16px 0;
+}
+
+.rlb-updates-footer {
+  padding: 0 24px 24px; text-align: center;
+}
+.rlb-updates-btn {
+  background: linear-gradient(135deg, var(--yellow, #f1c40f), var(--pink, #ff33cc));
+  color: #0d0d10; font-size: 1rem; font-weight: 900;
+  padding: 14px 48px; border-radius: 50px; border: none;
+  cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
+  box-shadow: 0 10px 35px rgba(255,51,204,0.45);
+  transition: all 0.2s ease;
+}
+.rlb-updates-btn:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 14px 40px rgba(255,51,204,0.6); }

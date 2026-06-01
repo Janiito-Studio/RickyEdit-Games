@@ -109,6 +109,8 @@ const state = {
     round: 0,
     revealed: false,
     activeSearchIndex: -1,
+    correct: 0,
+    total: 0,
 };
 
 const $ = (id) => document.getElementById(id);
@@ -254,6 +256,8 @@ function submitGuess() {
         const points = Math.max(10, 60 - state.round * 10);
         state.score += points;
         state.streak += 1;
+        state.correct++;
+        state.total++;
         if (state.streak > state.maxStreak) {
             state.maxStreak = state.streak;
             localStorage.setItem("emojless_max_streak", state.maxStreak);
@@ -263,6 +267,7 @@ function submitGuess() {
         return;
     }
 
+    state.total++;
     els.status.textContent = "No era ese. Te revelo otro emoji.";
     setTimeout(() => playSound('fail'), 100);
     nextRound(false);
@@ -309,6 +314,8 @@ function reveal(won, message) {
     updateStats();
 }
 
+let searchVisibleCount = 8;
+
 function renderSearchResults() {
     state.activeSearchIndex = -1;
     const query = normalize(els.guessInput.value);
@@ -337,36 +344,36 @@ function renderSearchResults() {
         return;
     }
 
-    const maxResults = 8;
-    const visibleMatches = matches.slice(0, maxResults);
+    const visibleMatches = matches.slice(0, searchVisibleCount);
+    const remaining = matches.length - visibleMatches.length;
 
-    els.searchResults.innerHTML = `
-        <div class="search-summary">
-          ${matches.length} resultado${matches.length === 1 ? "" : "s"}
-          ${matches.length > maxResults ? ` (mostrando los primeros ${maxResults})` : ""}
-        </div>
-        ${visibleMatches
-            .map((song) => {
-                return `
+    let html = `<div class="search-summary">${matches.length} resultado${matches.length === 1 ? "" : "s"}</div>`;
+    visibleMatches.forEach((song) => {
+        html += `
             <button class="search-option" type="button" data-title="${escapeHtml(song.title)}">
               <img class="search-option-thumb" src="https://img.youtube.com/vi/${song.id}/mqdefault.jpg" alt="">
               <div class="search-option-info">
                 <div class="search-option-title">${escapeHtml(song.title)}</div>
                 <div class="search-option-meta">${song.year}</div>
               </div>
-            </button>
-          `;
-            })
-            .join("")}
-      `;
+            </button>`;
+    });
+    if (remaining > 0) {
+        html += `<button class="search-option search-more" type="button" style="justify-content:center;color:var(--pink);font-weight:900;">Ver más (${remaining} restantes)</button>`;
+    }
+
+    els.searchResults.innerHTML = html;
     els.searchResults.classList.add("show");
-    els.searchResults
-        .querySelectorAll(".search-option")
-        .forEach((button) => {
-            button.addEventListener("click", () => {
-                playSound('click');
-                els.guessInput.value = button.dataset.title;
-                hideSearchResults();
+    els.searchResults.querySelectorAll(".search-option").forEach((button) => {
+        button.addEventListener("click", () => {
+            playSound('click');
+            if (button.classList.contains("search-more")) {
+                searchVisibleCount += 8;
+                renderSearchResults();
+                return;
+            }
+            els.guessInput.value = button.dataset.title;
+            hideSearchResults();
                 els.guessInput.focus();
             });
         });
@@ -549,3 +556,85 @@ if (letterModal) {
         }, 1500);
     }
 }
+
+// Leaderboard
+let emojlessGameStartTime = null;
+
+// Set game start time when player clicks start
+if (startGameBtn) {
+    const origListener = startGameBtn.onclick;
+    startGameBtn.addEventListener("click", () => {
+        emojlessGameStartTime = Date.now();
+    });
+}
+
+const finalizeBtn = document.getElementById('finalizeBtn');
+if (finalizeBtn) {
+    finalizeBtn.addEventListener('click', () => {
+        playSound('click');
+        const elapsed = emojlessGameStartTime ? ((Date.now() - emojlessGameStartTime) / 1000).toFixed(1) : null;
+        RickyLeaderboard.save('emojless', {
+            score: state.score,
+            difficulty: easyMode ? 'easy' : 'normal',
+            time: elapsed ? parseFloat(elapsed) : null,
+            correct: state.correct || 0,
+            total: state.total || 0,
+            maxStreak: state.maxStreak || 0
+        }, () => {
+            document.getElementById('reveal').classList.remove('show');
+            document.getElementById('startScreen').classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+            renderEmojlessLeaderboard();
+        });
+    });
+}
+
+const leaderboardToggle = document.getElementById('leaderboardToggle');
+if (leaderboardToggle) {
+    leaderboardToggle.addEventListener('click', () => {
+        playSound('click');
+        const panel = document.getElementById('leaderboardPanel');
+        panel.classList.toggle('visible');
+        if (panel.classList.contains('visible')) renderEmojlessLeaderboard();
+    });
+}
+
+function renderEmojlessLeaderboard() {
+    RickyLeaderboard.render('leaderboardContainer', 'emojless', {
+        title: '🏆 Top — Emojless',
+        columns: ['rank', 'name', 'correct', 'total', 'percent', 'time', 'difficulty', 'date'],
+        difficulties: ['easy', 'normal'],
+        maxRows: 20
+    });
+}
+
+// Updates modal
+RickyUpdates.show('emojless', 'v2.0', `
+    <h3>🆕 ¡Bienvenido a Emojless!</h3>
+    <p>Este es un juego nuevo donde tienes que <span class="upd-highlight">adivinar canciones de Rickyedit</span> solo con emojis.</p>
+    <hr class="upd-sep">
+    <h3>🎮 Cómo se juega</h3>
+    <ul>
+        <li>Se te muestran los emojis de una canción</li>
+        <li>Escribe el nombre en el buscador y selecciónalo</li>
+        <li>Cada fallo revela un emoji más</li>
+    </ul>
+    <hr class="upd-sep">
+    <h3>😎 Modos</h3>
+    <ul>
+        <li><span class="upd-highlight">Cagado</span> — Empiezas con 3 emojis y tienes 4 intentos</li>
+        <li><span class="upd-highlight">Normal</span> — Empiezas con 1 emoji y tienes 6 intentos</li>
+        <li><span class="upd-highlight">Sin repetir</span> — No se repite ninguna canción</li>
+    </ul>
+    <hr class="upd-sep">
+    <h3>🏆 Leaderboard</h3>
+    <p>Compite con otros jugadores. ¡Dale a <span class="upd-highlight">¡Entendido!</span>!</p>
+    <hr class="upd-sep">
+    <h3>🌐 Rickyedit Games — General</h3>
+    <ul>
+        <li>Diseño <span class="upd-highlight">unificado</span> en todas las páginas: mismo header rosa, footer, fondo, y patrón</li>
+        <li><span class="upd-highlight">Sonidos</span> en todos los botones al pasar el ratón</li>
+        <li><span class="upd-highlight">Modal de Info</span> en cada juego con las dificultades y cómo se juega</li>
+        <li>El <span class="upd-highlight">Songless</span> ha sido revisado y actualizado con buscador mejorado, thumbnails, modos Sin repetir / Aleatorio, canal Los 2 canales, y botón de Finalizar</li>
+    </ul>
+`);

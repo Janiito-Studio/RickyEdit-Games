@@ -788,3 +788,34 @@ document.addEventListener('mouseover', (e) => {
     const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"], .card-button');
     if (el) playSound('click');
 });
+
+// Updates modal
+RickyUpdates.show('mascaro', 'v2.0', `
+    <h3>🆕 ¡Bienvenido a ¿Qué es más caro?</h3>
+    <p>Un juego donde tienes que <span class="upd-highlight">adivinar qué skin de Rickyedit cuesta más</span> de entre dos opciones.</p>
+    <hr class="upd-sep">
+    <h3>🎮 Cómo se juega</h3>
+    <ul>
+        <li>Se te muestran 2 skins lado a lado</li>
+        <li>Escribe cuál crees que cuesta más</li>
+        <li>Cada acierto suma puntos</li>
+        <li>¡La racha de aciertos seguidos da bonus!</li>
+    </ul>
+    <hr class="upd-sep">
+    <h3>😎 Modos</h3>
+    <ul>
+        <li><span class="upd-highlight">Cagado</span> — 3 rondas, más tiempo para decidir</li>
+        <li><span class="upd-highlight">Normal</span> — 5 rondas, ritmo estándar</li>
+    </ul>
+    <hr class="upd-sep">
+    <h3>🏆 Leaderboard</h3>
+    <p>Compite con otros jugadores. ¡Dale a <span class="upd-highlight">¡Entendido!</span>!</p>
+    <hr class="upd-sep">
+    <h3>🌐 Rickyedit Games — General</h3>
+    <ul>
+        <li>Diseño <span class="upd-highlight">unificado</span> en todas las páginas: mismo header rosa, footer, fondo, y patrón</li>
+        <li><span class="upd-highlight">Sonidos</span> en todos los botones al pasar el ratón</li>
+        <li><span class="upd-highlight">Modal de Info</span> en cada juego con las dificultades y cómo se juega</li>
+        <li>El <span class="upd-highlight">Songless</span> ha sido revisado y actualizado con buscador mejorado, thumbnails, modos Sin repetir / Aleatorio, canal Los 2 canales, y botón de Finalizar</li>
+    </ul>
+`);

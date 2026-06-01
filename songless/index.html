@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap"
         rel="stylesheet" />
     <link rel="icon" href="../icon_songless.png" type="image/png" />
+    <link rel="stylesheet" href="../leaderboard.css" />
+    <link rel="stylesheet" href="../updates.css" />
     <style>
         :root {
             color-scheme: dark;
@@ -1763,10 +1765,19 @@
                 </p>
                 <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
                     <button id="completionRestartBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px;">🔁 Volver a empezar</button>
+                    <button id="completionFinalizeBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px; background: linear-gradient(135deg, var(--yellow), var(--pink));">📝 Finalizar</button>
                     <button id="completionHomeBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px; background: rgba(255,255,255,0.1); color: var(--muted); border: 1px solid var(--line); box-shadow: none;">🏠 Volver al inicio</button>
                 </div>
             </div>
         </article>
+    </div>
+
+    <!-- Leaderboard -->
+    <div style="width:100%;max-width:800px;margin:24px auto;padding:0 16px;">
+        <button class="leaderboard-toggle" id="leaderboardToggle" type="button">🏆 Leaderboard</button>
+        <div class="leaderboard-panel" id="leaderboardPanel">
+            <div id="leaderboardContainer"></div>
+        </div>
     </div>
 
     <footer>
@@ -1782,6 +1793,8 @@
     <script src="../ricky-videos.js"></script>
     <script src="../ricky-secondary.js"></script>
     <script src="../ricky-songs.js"></script>
+    <script src="../leaderboard.js"></script>
+    <script src="../updates.js"></script>
     <script>
         const SEGMENTS = [1, 2, 4, 8, 16, 32];
         const SECONDARY_SEGMENTS = [1, 2, 4, 8, 16, 32];
@@ -1868,6 +1881,9 @@
             videoError: false,
             hintsRequested: 0,
             messageShown: localStorage.getItem("ricky_message_shown") === "true",
+            gameStartTime: null,
+            correct: 0,
+            incorrect: 0,
         };
 
         const $ = (id) => document.getElementById(id);
@@ -2247,6 +2263,9 @@
                 yearFilter,
                 noRepeat,
             ) => {
+                state.gameStartTime = Date.now();
+                state.correct = 0;
+                state.incorrect = 0;
                 window.scrollTo(0, 0);
                 document
                     .querySelectorAll(".mode-card.open")
@@ -2919,6 +2938,7 @@
                     );
                 }
                 reveal(true, `Acertaste. +${points} puntos.`);
+                state.correct++;
                 setTimeout(() => playSound('success'), 100);
                 return;
             }
@@ -2934,6 +2954,7 @@
             els.playBtn.disabled = false;
             if (state.round >= segs.length - 1) {
                 state.streak = 0;
+                state.incorrect++;
                 reveal(false, "Se acabaron las pistas.");
                 setTimeout(() => playSound('fail'), 100);
                 return;
@@ -2987,15 +3008,13 @@
             return "Novato";
         }
 
-        function renderSearchResults() {
-            state.activeSearchIndex = -1;
-            const query = normalize(els.guessInput.value);
-            if (query.length < 2) {
-                hideSearchResults();
-                return;
-            }
+        let searchVisibleCount = 8;
 
-            const terms = query.split(" ").filter(Boolean);
+        function renderSearchResults() {
+            const query = normalize(els.guessInput.value).trim();
+            if (!query) { hideSearchResults(); return; }
+
+            const terms = query.split(/\s+/);
             const matches = state.pool.filter((video) => {
                 const title = normalize(video.title);
                 return terms.every((term) => title.includes(term));
@@ -3015,56 +3034,42 @@
                 return;
             }
 
-            const maxResults = 8;
-            const visibleMatches = matches.slice(0, maxResults);
+            const visibleMatches = matches.slice(0, searchVisibleCount);
+            const remaining = matches.length - visibleMatches.length;
 
-            els.searchResults.innerHTML = `
-        <div class="search-summary">
-          ${matches.length} título${matches.length === 1 ? "" : "s"} encontrado${matches.length === 1 ? "" : "s"}
-          ${matches.length > maxResults ? ` (mostrando los primeros ${maxResults})` : ""}
-        </div>
-        ${visibleMatches
-                    .map((video) => {
-                        const vIndex = state.pool.findIndex((v) => v.id === video.id);
-                        const vYear = estimateUploadDate(
-                            vIndex >= 0 ? vIndex : 50,
-                            state.pool.length || 100,
-                        )
-                            .split(" ")
-                            .pop();
-                        return `
+            let html = `<div class="search-summary">${matches.length} resultado${matches.length === 1 ? "" : "s"}</div>`;
+            visibleMatches.forEach((video) => {
+                const vIndex = state.pool.findIndex((v) => v.id === video.id);
+                const vYear = estimateUploadDate(vIndex >= 0 ? vIndex : 50, state.pool.length || 100).split(" ").pop();
+                html += `
             <button class="search-option" type="button" data-video-id="${video.id}">
               <img class="search-option-thumb" src="https://img.youtube.com/vi/${video.id}/mqdefault.jpg" alt="">
               <div class="search-option-info">
                 <div class="search-option-title">${escapeHtml(video.title)}</div>
                 <div class="search-option-meta">${formatLongTime(video.duration || 0)} · Año ${vYear}</div>
               </div>
-            </button>
-          `;
-                    })
-                    .join("")}
-        <button class="search-option search-submit" type="button" style="justify-content:center;color:var(--yellow);font-weight:900;">
-          Buscar en YouTube ↗
-        </button>
-      `;
+            </button>`;
+            });
+            if (remaining > 0) {
+                html += `<button class="search-option search-more" type="button" style="justify-content:center;color:var(--pink);font-weight:900;">Ver más (${remaining} restantes)</button>`;
+            }
+
+            els.searchResults.innerHTML = html;
             els.searchResults.classList.add("show");
-            els.searchResults
-                .querySelectorAll(".search-option")
-                .forEach((button) => {
-                    button.addEventListener("click", () => {
-                        if (button.classList.contains("search-submit")) {
-                            window.open("https://www.youtube.com/results?search_query=" + encodeURIComponent(els.guessInput.value), "_blank");
-                            return;
-                        }
-                        const selected = state.pool.find(
-                            (video) => video.id === button.dataset.videoId,
-                        );
-                        if (!selected) return;
-                        els.guessInput.value = selected.title;
-                        hideSearchResults();
-                        els.guessInput.focus();
-                    });
+            els.searchResults.querySelectorAll(".search-option").forEach((button) => {
+                button.addEventListener("click", () => {
+                    if (button.classList.contains("search-more")) {
+                        searchVisibleCount += 8;
+                        renderSearchResults();
+                        return;
+                    }
+                    const selected = state.pool.find((video) => video.id === button.dataset.videoId);
+                    if (!selected) return;
+                    els.guessInput.value = selected.title;
+                    hideSearchResults();
+                    els.guessInput.focus();
                 });
+            });
         }
 
         function updateSearchHighlight(buttons) {
@@ -3158,6 +3163,83 @@
             document.getElementById('startScreen').classList.remove('hide');
             document.body.style.overflow = 'hidden';
         });
+
+        // Finalize button — save to leaderboard
+        document.getElementById('completionFinalizeBtn').addEventListener('click', () => {
+            playSound('click');
+            const elapsed = state.gameStartTime ? ((Date.now() - state.gameStartTime) / 1000).toFixed(1) : null;
+            const channel = state.isSecondaryMode ? 'secondary' : (state.isSongsMode ? 'songs' : (state.pool.length > (window.RICKY_VIDEOS || []).length ? 'both' : 'principal'));
+            RickyLeaderboard.save('songless', {
+                score: state.score,
+                difficulty: state.isEasyMode ? 'easy' : 'normal',
+                channel,
+                time: elapsed ? parseFloat(elapsed) : null,
+                correct: state.correct,
+                total: state.correct + state.incorrect,
+                maxStreak: state.maxStreak || 0
+            }, () => {
+                stopPlayback();
+                document.getElementById('completionOverlay').classList.remove('show');
+                document.getElementById('startScreen').classList.remove('hide');
+                document.body.style.overflow = 'hidden';
+                renderSonglessLeaderboard();
+            });
+        });
+
+        // Leaderboard toggle
+        document.getElementById('leaderboardToggle').addEventListener('click', () => {
+            playSound('click');
+            const panel = document.getElementById('leaderboardPanel');
+            panel.classList.toggle('visible');
+            if (panel.classList.contains('visible')) renderSonglessLeaderboard();
+        });
+
+        function renderSonglessLeaderboard() {
+            RickyLeaderboard.render('leaderboardContainer', 'songless', {
+                title: '🏆 Top — Songless',
+                columns: ['rank', 'name', 'correct', 'total', 'percent', 'time', 'difficulty', 'channel', 'date'],
+                difficulties: ['easy', 'normal'],
+                channels: { principal: 'Canal Principal', secondary: 'Canal Secundario', songs: 'Canciones', both: 'Los 2 canales' },
+                maxRows: 20
+            });
+        }
+
+        // Track game start time
+        const origStartGame = startGame;
+        // startGame is a const, so patch state
+        state.gameStartTime = null;
+
+        // Updates modal — show on first visit
+        RickyUpdates.show('songless', 'v3.0', `
+            <h3>🆕 Novedades</h3>
+            <p>¡Hola! Han pasado cosas desde la última vez. Aquí te van los cambios:</p>
+            <hr class="upd-sep">
+            <h3>🎵 Canciones nuevas</h3>
+            <p>He añadido <span class="upd-highlight">nuevas canciones</span> al songless. Hay más variedad que nunca.</p>
+            <hr class="upd-sep">
+            <h3>🎨 Rediseño de interfaz</h3>
+            <p>La interfaz se ha <span class="upd-highlight">rediseñado</span> para que todo se vea más limpio y bonito. Los botones, los modos, todo.</p>
+            <hr class="upd-sep">
+            <h3>🎮 Nuevos juegos</h3>
+            <ul>
+                <li><span class="upd-highlight">Emojless</span> — Adivina la canción por emojis. ¿Conoces la discografía de Ricky?</li>
+                <li><span class="upd-highlight">Thumbnail Blur</span> — Adivina el vídeo con la miniatura borrosa. Cada intento la enfoca un poco más.</li>
+                <li><span class="upd-highlight">¿Qué es más caro?</span> — Compara precios de skins de CS2 vs objetos reales. ¿Puedes adivinar cuál cuesta más?</li>
+            </ul>
+            <hr class="upd-sep">
+            <h3>🏆 Leaderboard</h3>
+            <p>Ahora hay un leaderboard en cada juego. Compite con tus amigos por el primer puesto.</p>
+            <hr class="upd-sep">
+            <h3>🌐 Rickyedit Games — General</h3>
+            <ul>
+                <li>Diseño <span class="upd-highlight">unificado</span> en todas las páginas: mismo color de fondo, header con degradado rosa, footer, y patrón de tablero</li>
+                <li><span class="upd-highlight">Sonidos</span> en todos los botones al pasar el ratón</li>
+                <li><span class="upd-highlight">Modal de Info</span> en cada juego con las dificultades y cómo se juega</li>
+                <li>Se ha revisado el <span class="upd-highlight">Songless</span> y está actualizado con todo lo nuevo: buscador mejorado con thumbnails, modos Sin repetir / Aleatorio, canal Los 2 canales, y botón de Finalizar para el leaderboard</li>
+            </ul>
+            <hr class="upd-sep">
+            <p>¡Dale a <span class="upd-highlight">¡Entendido!</span> y a jugar!</p>
+        `);
     </script>
 </body>
 

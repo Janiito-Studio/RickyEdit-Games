@@ -19,6 +19,8 @@ let state = {
     isEasyMode: false,
     isExtreme: false,
     maxAttempts: 6,
+    correct: 0,
+    total: 0,
 };
 
 const $ = (id) => document.getElementById(id);
@@ -238,6 +240,8 @@ function submitGuess() {
         const points = Math.max(10, 60 - state.round * 10);
         state.score += points;
         state.streak += 1;
+        state.correct++;
+        state.total++;
         if (state.streak > state.maxStreak) {
             state.maxStreak = state.streak;
             localStorage.setItem("thumb_max_streak", state.maxStreak);
@@ -248,6 +252,7 @@ function submitGuess() {
         return;
     }
 
+    state.total++;
     els.status.textContent = "No era ese. Siguiente pista.";
     setTimeout(() => playSound('fail'), 100);
     nextRound(false);
@@ -288,14 +293,16 @@ function reveal(won, message) {
     updateStats();
 }
 
+let searchVisibleCount = 8;
+
 function renderSearchResults() {
     state.activeSearchIndex = -1;
     const query = normalize(els.guessInput.value);
-    if (query.length < 2) { hideSearchResults(); return; }
+    if (query.length < 1) { hideSearchResults(); return; }
 
-    const pool = [...allVideos, ...secondaryVideos];
     const terms = query.split(" ").filter(Boolean);
-    const matches = pool.filter((video) => {
+    const allVideos = [...(window.RICKY_VIDEOS || []), ...(window.RICKY_SECONDARY || [])];
+    const matches = allVideos.filter((video) => {
         const title = normalize(video.title);
         return terms.every((term) => title.includes(term));
     });
@@ -314,13 +321,47 @@ function renderSearchResults() {
         return;
     }
 
+    const visibleMatches = matches.slice(0, searchVisibleCount);
+    const remaining = matches.length - visibleMatches.length;
+
+    let html = `<div class="search-summary">${matches.length} resultado${matches.length === 1 ? "" : "s"}</div>`;
+    visibleMatches.forEach((video) => {
+        html += `
+            <button class="search-option" type="button" data-title="${escapeHtml(video.title)}">
+              ${state.isExtreme ? '' : `<img class="search-option-thumb" src="https://img.youtube.com/vi/${video.id}/mqdefault.jpg" alt="">`}
+              <div class="search-option-info">
+                <div class="search-option-title">${escapeHtml(video.title)}</div>
+                <div class="search-option-meta">${formatDuration(video.duration || 0)}</div>
+              </div>
+            </button>`;
+    });
+    if (remaining > 0) {
+        html += `<button class="search-option search-more" type="button" style="justify-content:center;color:var(--pink);font-weight:900;">Ver más (${remaining} restantes)</button>`;
+    }
+
+    els.searchResults.innerHTML = html;
+    els.searchResults.classList.add("show");
+    els.searchResults.querySelectorAll(".search-option").forEach((button) => {
+        button.addEventListener("click", () => {
+            if (button.classList.contains("search-more")) {
+                searchVisibleCount += 8;
+                renderSearchResults();
+                return;
+            }
+            els.guessInput.value = button.dataset.title;
+            hideSearchResults();
+            els.guessInput.focus();
+        });
+    });
+}
+
     const maxResults = 8;
     const visibleMatches = matches.slice(0, maxResults);
 
     els.searchResults.innerHTML = `
         <div class="search-summary">
           ${matches.length} resultado${matches.length === 1 ? "" : "s"}
-          ${matches.length > maxResults ? ` (mostrando los primeros ${maxResults})` : ""}
+          ${matches.length > maxResults ? ` — hay más, sigue escribiendo para ver más resultados` : ""}
         </div>
         ${visibleMatches.map((video) => `
             <button class="search-option" type="button" data-title="${escapeHtml(video.title)}">
@@ -409,6 +450,7 @@ document.addEventListener('mouseover', (e) => {
 
 // Start screen
 let currentDifficulty = 'normal';
+let currentChannel = 'principal';
 const startScreen = document.getElementById("startScreen");
 
 function setupStartAccordion(toggleId, cardId) {
@@ -482,13 +524,13 @@ function startGame() {
 }
 
 if (document.getElementById("startGameBtn")) {
-    document.getElementById("startGameBtn").addEventListener("click", startGame);
+    document.getElementById("startGameBtn").addEventListener("click", () => { currentChannel = 'principal'; startGame(); });
 }
 if (document.getElementById("startSecondaryGameBtn")) {
-    document.getElementById("startSecondaryGameBtn").addEventListener("click", startGame);
+    document.getElementById("startSecondaryGameBtn").addEventListener("click", () => { currentChannel = 'secondary'; startGame(); });
 }
 if (document.getElementById("startBothGameBtn")) {
-    document.getElementById("startBothGameBtn").addEventListener("click", startGame);
+    document.getElementById("startBothGameBtn").addEventListener("click", () => { currentChannel = 'both'; startGame(); });
 }
 
 // Elegir otro
@@ -511,3 +553,87 @@ if (els.changeModeBtn) {
 // Init data
 allVideos = (window.RICKY_VIDEOS || []).filter(v => v && v.id);
 secondaryVideos = (window.RICKY_SECONDARY || []).filter(v => v && v.id);
+
+// Leaderboard
+let thumbblurGameStartTime = null;
+const finalizeBtn = document.getElementById('finalizeBtn');
+if (finalizeBtn) {
+    finalizeBtn.addEventListener('click', () => {
+        playSound('click');
+        const elapsed = thumbblurGameStartTime ? ((Date.now() - thumbblurGameStartTime) / 1000).toFixed(1) : null;
+        const channel = currentChannel;
+        RickyLeaderboard.save('thumbblur', {
+            score: state.score,
+            difficulty: state.isExtreme ? 'extreme' : (state.isEasyMode ? 'easy' : 'normal'),
+            channel,
+            time: elapsed ? parseFloat(elapsed) : null,
+            correct: state.correct || 0,
+            total: state.total || 0,
+            maxStreak: state.maxStreak || 0
+        }, () => {
+            els.reveal.classList.remove('show');
+            startScreen.classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+            renderThumbblurLeaderboard();
+        });
+    });
+}
+
+const leaderboardToggle = document.getElementById('leaderboardToggle');
+if (leaderboardToggle) {
+    leaderboardToggle.addEventListener('click', () => {
+        playSound('click');
+        const panel = document.getElementById('leaderboardPanel');
+        panel.classList.toggle('visible');
+        if (panel.classList.contains('visible')) renderThumbblurLeaderboard();
+    });
+}
+
+function renderThumbblurLeaderboard() {
+    RickyLeaderboard.render('leaderboardContainer', 'thumbblur', {
+        title: '🏆 Top — Thumbnail Blur',
+        columns: ['rank', 'name', 'correct', 'total', 'percent', 'time', 'difficulty', 'channel', 'date'],
+        difficulties: ['easy', 'normal', 'extreme'],
+        channels: { principal: 'Canal Principal', secondary: 'Canal Secundario', both: 'Los 2 canales' },
+        maxRows: 20
+    });
+}
+
+// Track game start
+const origStartGameTB = startGame;
+startGame = function() {
+    thumbblurGameStartTime = Date.now();
+    origStartGameTB.apply(this, arguments);
+};
+
+// Updates modal
+RickyUpdates.show('thumbblur', 'v2.0', `
+    <h3>🆕 ¡Bienvenido a Thumbnail Blur!</h3>
+    <p>Un juego nuevo donde tienes que <span class="upd-highlight">adivinar vídeos de Rickyedit</span> con la miniatura borrosa.</p>
+    <hr class="upd-sep">
+    <h3>🎮 Cómo se juega</h3>
+    <ul>
+        <li>Se te muestra una miniatura borrosa de un vídeo</li>
+        <li>Escribe el título en el buscador y selecciónalo</li>
+        <li>Cada intento enfoca la miniatura un poco más</li>
+        <li>Cuanto antes la adivines, más puntos</li>
+    </ul>
+    <hr class="upd-sep">
+    <h3>😎 Modos</h3>
+    <ul>
+        <li><span class="upd-highlight">Cagado</span> — Miniatura muy borrosa, menos intentos</li>
+        <li><span class="upd-highlight">Normal</span> — Borrosidad equilibrada</li>
+        <li><span class="upd-highlight">Extremo</span> — Sin ver la miniatura, solo por el título</li>
+    </ul>
+    <hr class="upd-sep">
+    <h3>🏆 Leaderboard</h3>
+    <p>Compite con otros jugadores. ¡Dale a <span class="upd-highlight">¡Entendido!</span>!</p>
+    <hr class="upd-sep">
+    <h3>🌐 Rickyedit Games — General</h3>
+    <ul>
+        <li>Diseño <span class="upd-highlight">unificado</span> en todas las páginas: mismo header rosa, footer, fondo, y patrón</li>
+        <li><span class="upd-highlight">Sonidos</span> en todos los botones al pasar el ratón</li>
+        <li><span class="upd-highlight">Modal de Info</span> en cada juego con las dificultades y cómo se juega</li>
+        <li>El <span class="upd-highlight">Songless</span> ha sido revisado y actualizado con buscador mejorado, thumbnails, modos Sin repetir / Aleatorio, canal Los 2 canales, y botón de Finalizar</li>
+    </ul>
+`);

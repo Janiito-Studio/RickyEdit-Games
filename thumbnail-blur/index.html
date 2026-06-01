@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap"
         rel="stylesheet" />
     <link rel="icon" href="../icon_miniatura_borrosa.png" type="image/png" />
+    <link rel="stylesheet" href="../leaderboard.css" />
+    <link rel="stylesheet" href="../updates.css" />
     <style>
         :root {
             color-scheme: dark;
@@ -402,6 +404,7 @@
                                 <div class="actions">
                                     <a id="watchLink" class="pill-link" href="#" target="_blank" rel="noreferrer">Abrir en YouTube</a>
                                     <button id="againBtn" class="btn btn-blue" type="button">Jugar otra</button>
+                                    <button id="finalizeBtn" class="btn btn-dark" type="button">Finalizar</button>
                                 </div>
                             </div>
                         </article>
@@ -428,6 +431,14 @@
         </article>
     </div>
 
+    <!-- Leaderboard -->
+    <div style="width:100%;max-width:800px;margin:24px auto;padding:0 16px;">
+        <button class="leaderboard-toggle" id="leaderboardToggle" type="button">🏆 Leaderboard</button>
+        <div class="leaderboard-panel" id="leaderboardPanel">
+            <div id="leaderboardContainer"></div>
+        </div>
+    </div>
+
     <footer>
         <div class="footer-links">
             <a href="https://janiito-studio.github.io/RickyEdit-Web/" target="_blank" rel="noreferrer">Otros Proyectos Relacionados (La web que te hice)</a>
@@ -439,6 +450,8 @@
     <script src="../ricky-videos.js"></script>
     <script src="../ricky-secondary.js"></script>
     <script src="../ricky-songs.js"></script>
+    <script src="../leaderboard.js"></script>
+    <script src="../updates.js"></script>
     <script src="game.js"></script>
 </body>
 

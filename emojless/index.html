@@ -988,6 +988,9 @@
                                     <button id="againBtn" class="btn btn-blue" type="button">
                                         Jugar otra
                                     </button>
+                                    <button id="finalizeBtn" class="btn btn-dark" type="button">
+                                        Finalizar
+                                    </button>
                                 </div>
                             </div>
                         </article>
@@ -996,6 +999,14 @@
             </div>
         </div>
     </main>
+
+    <!-- Leaderboard -->
+    <div style="width:100%;max-width:800px;margin:24px auto;padding:0 16px;">
+        <button class="leaderboard-toggle" id="leaderboardToggle" type="button">🏆 Leaderboard</button>
+        <div class="leaderboard-panel" id="leaderboardPanel">
+            <div id="leaderboardContainer"></div>
+        </div>
+    </div>
 
     <div id="infoModal" class="modal" role="dialog" aria-modal="true">
         <article class="letter">
@@ -1040,7 +1051,11 @@
         <p>© 2026 Rickyedit Games. Hecho por Jan (Discord: .janiito | Twitch: jasanzo)</p>
     </footer>
 
+    <link rel="stylesheet" href="../leaderboard.css">
+    <link rel="stylesheet" href="../updates.css">
     <script src="../ricky-songs.js"></script>
+    <script src="../leaderboard.js"></script>
+    <script src="../updates.js"></script>
     <script src="game.js"></script>
 </body>
 
