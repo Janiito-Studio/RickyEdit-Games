@@ -365,6 +365,7 @@ let correctCount = 0;
 let incorrectCount = 0;
 let TOTAL_ROUNDS = 50;
 let easyMode = false;
+let gameStartTime = null;
 
 // Colas de mezcla para garantizar que no se repitan los ítems hasta mostrar todos
 let skinQueue = [];
@@ -513,6 +514,7 @@ function nextRound() {
     }
     
     roundCount++;
+    if (!gameStartTime) gameStartTime = Date.now();
     gameActive = true;
     currentPair = getRandomPair();
     updateCounters();
@@ -729,13 +731,57 @@ document.addEventListener('DOMContentLoaded', () => {
         incorrectCount = 0;
         skinQueue = [];
         realQueue = [];
+        gameStartTime = null;
         document.getElementById('score').textContent = '0';
         document.getElementById('streak').textContent = '0';
         document.getElementById('victory-overlay').classList.remove('show');
         document.getElementById('startScreen').classList.remove('hide');
         document.body.style.overflow = 'hidden';
     });
+
+    // Finalize button — save score to leaderboard
+    document.getElementById('btn-finalize').addEventListener('click', () => {
+        playSound('click');
+        const elapsed = gameStartTime ? ((Date.now() - gameStartTime) / 1000).toFixed(1) : null;
+        const total = correctCount + incorrectCount;
+        const pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+        RickyLeaderboard.save('mascaro', {
+            score,
+            difficulty: easyMode ? 'easy' : 'normal',
+            time: elapsed ? parseFloat(elapsed) : null,
+            correct: correctCount,
+            total,
+            percent: pct,
+            maxStreak: highestStreak
+        }, () => {
+            document.getElementById('victory-overlay').classList.remove('show');
+            document.getElementById('startScreen').classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+            score = 0; streak = 0; roundCount = 0; correctCount = 0; incorrectCount = 0;
+            skinQueue = []; realQueue = []; gameStartTime = null;
+            document.getElementById('score').textContent = '0';
+            document.getElementById('streak').textContent = '0';
+            renderLeaderboard();
+        });
+    });
+
+    // Leaderboard toggle
+    document.getElementById('leaderboardToggle').addEventListener('click', () => {
+        playSound('click');
+        const panel = document.getElementById('leaderboardPanel');
+        panel.classList.toggle('visible');
+        if (panel.classList.contains('visible')) renderLeaderboard();
+    });
 });
+
+function renderLeaderboard() {
+    RickyLeaderboard.render('leaderboardContainer', 'mascaro', {
+        title: '🏆 Top — ¿Qué es más caro?',
+        columns: ['rank', 'name', 'correct', 'total', 'percent', 'time', 'difficulty', 'date'],
+        difficulties: ['easy', 'normal'],
+        maxRows: 20
+    });
+}
 
 // Hover sounds en TODOS los botones y enlaces
 document.addEventListener('mouseover', (e) => {

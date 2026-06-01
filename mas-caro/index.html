@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../leaderboard.css">
     <link rel="icon" href="../icon_vs.png" type="image/png">
 </head>
 
@@ -79,6 +80,8 @@
             <button id="btn-restart" class="btn-next"
                 style="display: inline-block; animation: none; position: static; transform: none;">Jugar de
                 Nuevo</button>
+            <button id="btn-finalize" class="btn-next"
+                style="display: inline-block; animation: none; position: static; transform: none; margin-left: 12px; background: rgba(255,255,255,0.1); color: #fff; border: 1px solid var(--line); box-shadow: none;">Finalizar</button>
         </div>
     </div>
 
@@ -209,6 +212,14 @@
         <div class="controls-area">
             <button id="btn-next" class="btn-next">Siguiente Ronda</button>
         </div>
+
+        <!-- Leaderboard -->
+        <div style="width:100%;max-width:1100px;margin-top:24px;">
+            <button class="leaderboard-toggle" id="leaderboardToggle" type="button">🏆 Leaderboard</button>
+            <div class="leaderboard-panel" id="leaderboardPanel">
+                <div id="leaderboardContainer"></div>
+            </div>
+        </div>
     </main>
 
     <footer>
@@ -237,6 +248,7 @@
         </article>
     </div>
 
+    <script src="../leaderboard.js"></script>
     <script src="game.js"></script>
 </body>
 

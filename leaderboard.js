@@ -1,16 +1,14 @@
 /* ============================================================
-   Rickyedit Games — Shared Leaderboard Module
-   Usage:
-     import from each game's script:
-       <script src="../leaderboard.js"></script>
-       <link rel="stylesheet" href="../leaderboard.css">
+   Rickyedit Games — Shared Leaderboard Module v2
+   <script src="../leaderboard.js"></script>
+   <link rel="stylesheet" href="../leaderboard.css">
    ============================================================ */
 (function () {
   'use strict';
 
-  const LS_PREFIX = 'rlb_'; // rlb = RickyLeaderBoard
+  const LS_PREFIX = 'rlb_';
+  const NAME_KEY = 'rlb_player_name';
 
-  /* ── helpers ─────────────────────────────────────────────── */
   function storageKey(gameId) { return LS_PREFIX + gameId; }
 
   function loadScores(gameId) {
@@ -22,26 +20,108 @@
     localStorage.setItem(storageKey(gameId), JSON.stringify(arr));
   }
 
-  /* ── public API ──────────────────────────────────────────── */
+  /* ── Name helpers ──────────────────────────────────────────── */
+  function getSavedName() { return localStorage.getItem(NAME_KEY) || ''; }
+  function setSavedName(name) { localStorage.setItem(NAME_KEY, name); }
 
-  /**
-   * Save a score entry.
-   * @param {string} gameId  - e.g. "songless", "emojless", "thumbblur", "mascaro"
-   * @param {object} data    - { name, score, difficulty, channel, time, round, streak, maxStreak, correct, total, date? }
-   */
+  function isNameTaken(gameId, name) {
+    const scores = loadScores(gameId);
+    return scores.some(s => s.name && s.name.toLowerCase() === name.toLowerCase());
+  }
+
+  /* ── Name Input Modal ──────────────────────────────────────── */
+  function showNameModal(gameId, callback) {
+    const saved = getSavedName();
+    const existing = document.getElementById('rlbNameModal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'rlbNameModal';
+    modal.className = 'rlb-name-modal';
+    modal.innerHTML = `
+      <div class="rlb-name-card">
+        <div class="rlb-name-icon">✏️</div>
+        <h3 class="rlb-name-title">¿Cómo te llamas?</h3>
+        <p class="rlb-name-sub">Escribe tu nombre para el leaderboard</p>
+        <input type="text" id="rlbNameInput" class="rlb-name-input" placeholder="Tu nombre..." maxlength="20" value="${saved}" autocomplete="off" />
+        <p id="rlbNameError" class="rlb-name-error" style="display:none;"></p>
+        <div class="rlb-name-actions">
+          <button id="rlbNameCancel" class="rlb-name-btn rlb-name-btn-cancel">Cancelar</button>
+          <button id="rlbNameConfirm" class="rlb-name-btn rlb-name-btn-confirm">Guardar</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    requestAnimationFrame(() => modal.classList.add('show'));
+
+    const input = document.getElementById('rlbNameInput');
+    const error = document.getElementById('rlbNameError');
+    input.focus();
+    input.select();
+
+    function confirm() {
+      const name = input.value.trim();
+      if (!name) {
+        error.textContent = 'Escribe un nombre';
+        error.style.display = 'block';
+        return;
+      }
+      if (name.length < 2) {
+        error.textContent = 'El nombre tiene que tener al menos 2 letras';
+        error.style.display = 'block';
+        return;
+      }
+      if (isNameTaken(gameId, name)) {
+        error.textContent = 'Ese nombre ya está en uso. Elige otro.';
+        error.style.display = 'block';
+        return;
+      }
+      setSavedName(name);
+      modal.classList.remove('show');
+      setTimeout(() => modal.remove(), 300);
+      callback(name);
+    }
+
+    document.getElementById('rlbNameConfirm').addEventListener('click', confirm);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') confirm(); });
+    document.getElementById('rlbNameCancel').addEventListener('click', () => {
+      modal.classList.remove('show');
+      setTimeout(() => modal.remove(), 300);
+    });
+    modal.addEventListener('click', e => { if (e.target === modal) {
+      modal.classList.remove('show');
+      setTimeout(() => modal.remove(), 300);
+    }});
+  }
+
+  /* ── Public API ──────────────────────────────────────────── */
   window.RickyLeaderboard = {
-    save(gameId, data) {
-      const scores = loadScores(gameId);
-      data.date = data.date || new Date().toISOString();
-      scores.push(data);
-      // keep only top 100 per game
-      scores.sort((a, b) => (b.score || 0) - (a.score || 0));
-      if (scores.length > 100) scores.length = 100;
-      saveScores(gameId, scores);
-      return data;
+
+    /** Save a score entry (shows name modal if needed) */
+    save(gameId, data, callback) {
+      const doSave = (name) => {
+        data.name = name;
+        data.date = data.date || new Date().toISOString();
+        const scores = loadScores(gameId);
+        scores.push(data);
+        scores.sort((a, b) => (b.score || 0) - (a.score || 0));
+        if (scores.length > 100) scores.length = 100;
+        saveScores(gameId, scores);
+        if (callback) callback(data);
+      };
+
+      const saved = getSavedName();
+      if (saved) {
+        if (isNameTaken(gameId, saved)) {
+          showNameModal(gameId, doSave);
+        } else {
+          doSave(saved);
+        }
+      } else {
+        showNameModal(gameId, doSave);
+      }
     },
 
-    /** Returns sorted scores (highest first), optionally filtered. */
     getAll(gameId, filter) {
       let scores = loadScores(gameId);
       if (filter) {
@@ -52,27 +132,18 @@
       return scores;
     },
 
-    /** Clear all scores for a game. */
-    clear(gameId) {
-      saveScores(gameId, []);
-    },
+    clear(gameId) { saveScores(gameId, []); },
 
-    /**
-     * Render leaderboard into a container element.
-     * @param {HTMLElement|string} container - element or ID
-     * @param {string} gameId
-     * @param {object} opts - { title, filters, columns, maxRows, lang }
-     */
+    getSavedName,
+
     render(container, gameId, opts) {
       if (typeof container === 'string') container = document.getElementById(container);
       if (!container) return;
       opts = opts || {};
 
-      const lang = opts.lang || 'es';
       const maxRows = opts.maxRows || 20;
-      const columns = opts.columns || ['rank', 'name', 'score', 'difficulty', 'round', 'time', 'date'];
+      const columns = opts.columns || ['rank', 'name', 'correct', 'total', 'percent', 'time', 'difficulty', 'date'];
 
-      // difficulty labels
       const diffLabels = { easy: '😰 Cagado', normal: '💪 Normal', extreme: '🔥 Extremo', none: '—' };
       const diffKeys = opts.difficulties || ['easy', 'normal', 'extreme'];
       const channelLabels = opts.channels || {};
@@ -80,7 +151,12 @@
 
       let currentFilter = { difficulty: '', channel: '' };
 
-      function getFiltered() { return window.RickyLeaderboard.getAll(gameId, currentFilter.difficulty || currentFilter.channel ? currentFilter : null); }
+      function getFiltered() {
+        let scores = window.RickyLeaderboard.getAll(gameId);
+        if (currentFilter.difficulty) scores = scores.filter(s => s.difficulty === currentFilter.difficulty);
+        if (currentFilter.channel) scores = scores.filter(s => s.channel === currentFilter.channel);
+        return scores;
+      }
 
       function formatDate(iso) {
         if (!iso) return '—';
@@ -106,35 +182,36 @@
           <h3 class="rlb-title">${opts.title || '🏆 Leaderboard'}</h3>
           <div class="rlb-filters">`;
 
-        // Difficulty filter
         html += `<select class="rlb-filter" data-filter="difficulty">
-          <option value="">Todas las dificultades</option>`;
+          <option value="">Todas</option>`;
         diffKeys.forEach(k => {
           html += `<option value="${k}" ${currentFilter.difficulty === k ? 'selected' : ''}>${diffLabels[k] || k}</option>`;
         });
         html += `</select>`;
 
-        // Channel filter
         if (channelKeys.length) {
           html += `<select class="rlb-filter" data-filter="channel">
-            <option value="">Todos los canales</option>`;
+            <option value="">Todos</option>`;
           channelKeys.forEach(k => {
             html += `<option value="${k}" ${currentFilter.channel === k ? 'selected' : ''}>${channelLabels[k]}</option>`;
           });
           html += `</select>`;
         }
 
-        html += `<button class="rlb-clear-btn" title="Borrar todo">🗑️</button>
-          </div></div>`;
+        html += `<button class="rlb-clear-btn" title="Borrar todo">🗑️</button></div></div>`;
 
         if (!rows.length) {
-          html += `<div class="rlb-empty">No hay puntuaciones todavía. ¡Juega para registrar tu primera!</div>`;
+          html += `<div class="rlb-empty">
+            <div class="rlb-empty-icon">🎮</div>
+            <div class="rlb-empty-text">No hay puntuaciones todavía</div>
+            <div class="rlb-empty-sub">¡Juega para registrar tu primera!</div>
+          </div>`;
         } else {
           html += `<div class="rlb-table-wrap"><table class="rlb-table"><thead><tr>`;
           const colLabels = {
             rank: '#', name: 'Jugador', score: 'Puntos', difficulty: 'Dificultad',
             channel: 'Canal', round: 'Pista', time: 'Tiempo', date: 'Fecha',
-            streak: 'Racha', correct: 'Correctos', total: 'Total'
+            streak: 'Racha', correct: '✓', total: 'Total', percent: '%'
           };
           columns.forEach(c => {
             if (colLabels[c]) html += `<th class="rlb-col-${c}">${colLabels[c]}</th>`;
@@ -144,6 +221,7 @@
           rows.forEach((s, i) => {
             const medals = ['🥇', '🥈', '🥉'];
             const rankDisplay = i < 3 ? medals[i] : (i + 1);
+            const pct = s.total ? Math.round((s.correct / s.total) * 100) : (s.percent || 0);
             html += `<tr class="${i < 3 ? 'rlb-top-' + (i + 1) : ''}">`;
             columns.forEach(c => {
               let val = '';
@@ -159,27 +237,24 @@
                 case 'streak': val = s.maxStreak || s.streak || 0; break;
                 case 'correct': val = s.correct != null ? s.correct : '—'; break;
                 case 'total': val = s.total != null ? s.total : '—'; break;
+                case 'percent': val = pct + '%'; break;
               }
               html += `<td class="rlb-col-${c}">${val}</td>`;
             });
             html += `</tr>`;
           });
-
           html += `</tbody></table></div>`;
         }
 
         container.innerHTML = html;
 
-        // bind filter events
         container.querySelectorAll('.rlb-filter').forEach(sel => {
           sel.addEventListener('change', e => {
-            const f = e.target.dataset.filter;
-            currentFilter[f] = e.target.value;
+            currentFilter[e.target.dataset.filter] = e.target.value;
             render();
           });
         });
 
-        // clear button
         const clearBtn = container.querySelector('.rlb-clear-btn');
         if (clearBtn) {
           clearBtn.addEventListener('click', () => {
