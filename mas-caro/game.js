@@ -770,13 +770,13 @@ document.addEventListener('DOMContentLoaded', () => {
         playSound('click');
         const panel = document.getElementById('leaderboardPanel');
         panel.classList.toggle('visible');
-        if (panel.classList.contains('visible')) renderLeaderboard();
     });
+    renderLeaderboard();
 });
 
 function renderLeaderboard() {
     RickyLeaderboard.render('leaderboardContainer', 'mascaro', {
-        title: '🏆 Top — ¿Qué es más caro?',
+        title: '<img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Top — ¿Qué es más caro?',
         columns: ['rank', 'name', 'correct', 'total', 'percent', 'time', 'difficulty', 'date'],
         difficulties: ['easy', 'normal'],
         maxRows: 20
@@ -784,19 +784,50 @@ function renderLeaderboard() {
 }
 
 // Hover sounds en TODOS los botones y enlaces
+const _hoveredEls = new WeakSet();
 document.addEventListener('mouseover', (e) => {
     const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"], .card-button');
-    if (el) playSound('click');
+    if (el && !_hoveredEls.has(el)) { _hoveredEls.add(el); playSound('click'); }
+});
+document.addEventListener('mouseout', (e) => {
+    const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"], .card-button');
+    if (el) _hoveredEls.delete(el);
+});
+
+// Info modal content
+const MASCARO_INFO_HTML =
+    '<h3>🆕 ¡Bienvenido a ¿Qué es más caro?</h3>' +
+    '<p>Un juego donde tienes que <span class="upd-highlight">adivinar qué skin de Counter Strike cuesta más</span> de entre dos opciones.</p>' +
+    '<hr class="upd-sep">' +
+    '<h3>🎮 Cómo se juega</h3>' +
+    '<ul>' +
+    '<li>Se te muestran 2 skins de Counter Strike lado a lado</li>' +
+    '<li>Escribe cuál crees que cuesta más</li>' +
+    '<li>Cada acierto suma puntos</li>' +
+    '<li>¡La racha de aciertos seguidos da bonus!</li>' +
+    '</ul>' +
+    '<hr class="upd-sep">' +
+    '<h3>😎 Modos</h3>' +
+    '<ul>' +
+    '<li><span class="upd-highlight">Cagado</span> — 3 rondas, más tiempo para decidir</li>' +
+    '<li><span class="upd-highlight">Normal</span> — 5 rondas, ritmo estándar</li>' +
+    '</ul>' +
+    '<hr class="upd-sep">' +
+    '<h3><img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Leaderboard</h3>' +
+    '<p>Compite con otros jugadores. ¡Dale a <span class="upd-highlight">¡Entendido!</span>!</p>';
+
+document.querySelectorAll('#openUpdatesBtn, #startOpenUpdatesBtn').forEach(btn => {
+    btn.addEventListener('click', () => { playSound('click'); RickyUpdates.forceShow(MASCARO_INFO_HTML); });
 });
 
 // Updates modal
 RickyUpdates.show('mascaro', 'v2.0', `
     <h3>🆕 ¡Bienvenido a ¿Qué es más caro?</h3>
-    <p>Un juego donde tienes que <span class="upd-highlight">adivinar qué skin de Rickyedit cuesta más</span> de entre dos opciones.</p>
+    <p>Un juego donde tienes que <span class="upd-highlight">adivinar qué skin de Counter Strike cuesta más</span> de entre dos opciones.</p>
     <hr class="upd-sep">
     <h3>🎮 Cómo se juega</h3>
     <ul>
-        <li>Se te muestran 2 skins lado a lado</li>
+        <li>Se te muestran 2 skins de Counter Strike lado a lado</li>
         <li>Escribe cuál crees que cuesta más</li>
         <li>Cada acierto suma puntos</li>
         <li>¡La racha de aciertos seguidos da bonus!</li>
@@ -808,14 +839,6 @@ RickyUpdates.show('mascaro', 'v2.0', `
         <li><span class="upd-highlight">Normal</span> — 5 rondas, ritmo estándar</li>
     </ul>
     <hr class="upd-sep">
-    <h3>🏆 Leaderboard</h3>
+    <h3><img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Leaderboard</h3>
     <p>Compite con otros jugadores. ¡Dale a <span class="upd-highlight">¡Entendido!</span>!</p>
-    <hr class="upd-sep">
-    <h3>🌐 Rickyedit Games — General</h3>
-    <ul>
-        <li>Diseño <span class="upd-highlight">unificado</span> en todas las páginas: mismo header rosa, footer, fondo, y patrón</li>
-        <li><span class="upd-highlight">Sonidos</span> en todos los botones al pasar el ratón</li>
-        <li><span class="upd-highlight">Modal de Info</span> en cada juego con las dificultades y cómo se juega</li>
-        <li>El <span class="upd-highlight">Songless</span> ha sido revisado y actualizado con buscador mejorado, thumbnails, modos Sin repetir / Aleatorio, canal Los 2 canales, y botón de Finalizar</li>
-    </ul>
 `);

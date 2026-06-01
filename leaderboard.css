@@ -6,31 +6,40 @@
 .leaderboard-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  color: var(--muted);
-  font-weight: 700;
-  padding: 10px 20px;
+  gap: 8px;
+  background: linear-gradient(135deg, rgba(255, 51, 204, 0.12), rgba(241, 196, 15, 0.08));
+  border: 1px solid rgba(255, 51, 204, 0.3);
+  border-radius: 14px;
+  color: #fff;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 800;
+  padding: 12px 24px;
   cursor: pointer;
-  font-size: 0.85rem;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   position: relative;
   z-index: 1;
 }
+.leaderboard-toggle .rlb-icon-img { width: 22px; height: 22px; object-fit: contain; border-radius: 4px; }
 .leaderboard-toggle:hover {
-  background: rgba(255, 51, 204, 0.12);
-  color: #fff;
-  border-color: rgba(255, 51, 204, 0.3);
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, rgba(255, 51, 204, 0.22), rgba(241, 196, 15, 0.15));
+  border-color: rgba(255, 51, 204, 0.5);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 51, 204, 0.25);
 }
+
+/* ── Icon images ──────────────────────────────────────────── */
+.rlb-icon-img { width: 1.2em; height: 1.2em; object-fit: contain; vertical-align: middle; }
+.rlb-name-icon .rlb-icon-img { width: 3rem; height: 3rem; border-radius: 12px; }
+
+/* ── Button icons ─────────────────────────────────────────── */
+.mode-diff-btn img { width: 1.2em; height: 1.2em; object-fit: contain; vertical-align: middle; margin-right: 4px; }
 
 /* ── Panel ─────────────────────────────────────────────────── */
 .leaderboard-panel {
   display: none;
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
   animation: rlbSlideIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -51,7 +60,8 @@
   margin-bottom: 16px;
 }
 .rlb-title {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
+  font-weight: 900;
   color: #fff;
   margin: 0;
 }
@@ -64,22 +74,25 @@
 .rlb-filter {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 10px;
   color: var(--muted);
-  font-size: 0.8rem;
-  font-weight: 600;
-  padding: 6px 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 8px 14px;
   cursor: pointer;
-  transition: border-color 0.2s;
+  transition: all 0.2s ease;
 }
+.rlb-filter:hover { border-color: var(--pink); color: #fff; }
+.rlb-filter.active { background: rgba(255, 51, 204, 0.15); border-color: var(--pink); color: #fff; }
 .rlb-filter:focus { outline: none; border-color: var(--pink); }
 .rlb-clear-btn {
   background: rgba(231, 76, 60, 0.1);
   border: 1px solid rgba(231, 76, 60, 0.3);
-  border-radius: 8px;
+  border-radius: 10px;
   color: #e74c3c;
   font-size: 0.85rem;
-  padding: 6px 10px;
+  font-weight: 700;
+  padding: 8px 14px;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -100,34 +113,35 @@
 /* ── Table ─────────────────────────────────────────────────── */
 .rlb-table-wrap {
   overflow-x: auto;
-  border-radius: 16px;
-  border: 1px solid var(--line);
-  background: var(--card);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, rgba(255, 51, 204, 0.04), transparent), var(--card);
   backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 .rlb-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
 }
 .rlb-table th {
-  padding: 12px 14px;
+  padding: 14px 18px;
   text-align: left;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   color: var(--muted);
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 2px solid var(--line);
 }
 .rlb-table td {
-  padding: 10px 14px;
+  padding: 12px 18px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.75);
 }
 .rlb-table tr:last-child td { border-bottom: none; }
-.rlb-table tr:hover td { background: rgba(255, 255, 255, 0.03); }
+.rlb-table tr:hover td { background: rgba(255, 51, 204, 0.06); }
 
 /* ── Top 3 highlights ──────────────────────────────────────── */
 .rlb-top-1 td { color: #ffd700; font-weight: 700; }

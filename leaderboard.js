@@ -40,7 +40,7 @@
     modal.className = 'rlb-name-modal';
     modal.innerHTML = `
       <div class="rlb-name-card">
-        <div class="rlb-name-icon">✏️</div>
+        <div class="rlb-name-icon"><img src="../Iconos/Guardar nombre.png" alt="Guardar" class="rlb-icon-img"></div>
         <h3 class="rlb-name-title">¿Cómo te llamas?</h3>
         <p class="rlb-name-sub">Escribe tu nombre para el leaderboard</p>
         <input type="text" id="rlbNameInput" class="rlb-name-input" placeholder="Tu nombre..." maxlength="20" value="${saved}" autocomplete="off" />
@@ -144,7 +144,7 @@
       const maxRows = opts.maxRows || 20;
       const columns = opts.columns || ['rank', 'name', 'correct', 'total', 'percent', 'time', 'difficulty', 'date'];
 
-      const diffLabels = { easy: '😰 Cagado', normal: '💪 Normal', extreme: '🔥 Extremo', none: '—' };
+      const diffLabels = { easy: '<img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado', normal: '<img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal', extreme: '<img src="../Extremo.png" alt="" class="rlb-icon-img"> Extremo', none: '—' };
       const diffKeys = opts.difficulties || ['easy', 'normal', 'extreme'];
       const channelLabels = opts.channels || {};
       const channelKeys = Object.keys(channelLabels);
@@ -179,7 +179,7 @@
         const rows = scores.slice(0, maxRows);
 
         let html = `<div class="rlb-header">
-          <h3 class="rlb-title">${opts.title || '🏆 Leaderboard'}</h3>
+          <h3 class="rlb-title">${opts.title || '<img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Leaderboard'}</h3>
           <div class="rlb-filters">`;
 
         html += `<select class="rlb-filter" data-filter="difficulty">

@@ -355,41 +355,6 @@ function renderSearchResults() {
     });
 }
 
-    const maxResults = 8;
-    const visibleMatches = matches.slice(0, maxResults);
-
-    els.searchResults.innerHTML = `
-        <div class="search-summary">
-          ${matches.length} resultado${matches.length === 1 ? "" : "s"}
-          ${matches.length > maxResults ? ` — hay más, sigue escribiendo para ver más resultados` : ""}
-        </div>
-        ${visibleMatches.map((video) => `
-            <button class="search-option" type="button" data-title="${escapeHtml(video.title)}">
-              ${state.isExtreme ? '' : `<img class="search-option-thumb" src="https://img.youtube.com/vi/${video.id}/mqdefault.jpg" alt="">`}
-              <div class="search-option-info">
-                <div class="search-option-title">${escapeHtml(video.title)}</div>
-                <div class="search-option-meta">${formatDuration(video.duration || 0)}</div>
-              </div>
-            </button>
-        `).join("")}
-        <button class="search-option search-submit" type="button" style="justify-content:center;color:var(--yellow);font-weight:900;">
-          Buscar en YouTube ↗
-        </button>
-    `;
-    els.searchResults.classList.add("show");
-    els.searchResults.querySelectorAll(".search-option").forEach((button) => {
-        button.addEventListener("click", () => {
-            if (button.classList.contains("search-submit")) {
-                window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(els.guessInput.value)}`, "_blank");
-                return;
-            }
-            els.guessInput.value = button.dataset.title;
-            hideSearchResults();
-            els.guessInput.focus();
-        });
-    });
-}
-
 function updateSearchHighlight(buttons) {
     buttons.forEach((btn, idx) => {
         if (idx === state.activeSearchIndex) {
@@ -443,9 +408,14 @@ document.addEventListener("click", (event) => {
 });
 
 // Hover sounds en TODOS los botones y enlaces
+const _hoveredEls = new WeakSet();
 document.addEventListener('mouseover', (e) => {
     const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"]');
-    if (el) playSound('click');
+    if (el && !_hoveredEls.has(el)) { _hoveredEls.add(el); playSound('click'); }
+});
+document.addEventListener('mouseout', (e) => {
+    const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"]');
+    if (el) _hoveredEls.delete(el);
 });
 
 // Start screen
@@ -554,6 +524,33 @@ if (els.changeModeBtn) {
 allVideos = (window.RICKY_VIDEOS || []).filter(v => v && v.id);
 secondaryVideos = (window.RICKY_SECONDARY || []).filter(v => v && v.id);
 
+// Info modal content
+const THUMBBLUR_INFO_HTML =
+    '<h3>🆕 ¡Bienvenido a Miniatura Borrosa!</h3>' +
+    '<p>Un juego nuevo donde tienes que <span class="upd-highlight">adivinar vídeos de Rickyedit</span> con la miniatura borrosa.</p>' +
+    '<hr class="upd-sep">' +
+    '<h3>🎮 Cómo se juega</h3>' +
+    '<ul>' +
+    '<li>Se te muestra una miniatura borrosa de un vídeo</li>' +
+    '<li>Escribe el título en el buscador y selecciónalo</li>' +
+    '<li>Cada intento enfoca la miniatura un poco más</li>' +
+    '<li>Cuanto antes la adivines, más puntos</li>' +
+    '</ul>' +
+    '<hr class="upd-sep">' +
+    '<h3>😎 Modos</h3>' +
+    '<ul>' +
+    '<li><span class="upd-highlight">Cagado</span> — Miniatura muy borrosa, menos intentos</li>' +
+    '<li><span class="upd-highlight">Normal</span> — Borrosidad equilibrada</li>' +
+    '<li><span class="upd-highlight">Extremo</span> — Sin ver la miniatura, solo por el título</li>' +
+    '</ul>' +
+    '<hr class="upd-sep">' +
+    '<h3><img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Leaderboard</h3>' +
+    '<p>Compite con otros jugadores. ¡Dale a <span class="upd-highlight">¡Entendido!</span>!</p>';
+
+document.querySelectorAll('#openUpdatesBtn, #startOpenUpdatesBtn').forEach(btn => {
+    btn.addEventListener('click', () => { playSound('click'); RickyUpdates.forceShow(THUMBBLUR_INFO_HTML); });
+});
+
 // Leaderboard
 let thumbblurGameStartTime = null;
 const finalizeBtn = document.getElementById('finalizeBtn');
@@ -585,13 +582,13 @@ if (leaderboardToggle) {
         playSound('click');
         const panel = document.getElementById('leaderboardPanel');
         panel.classList.toggle('visible');
-        if (panel.classList.contains('visible')) renderThumbblurLeaderboard();
     });
 }
+renderThumbblurLeaderboard();
 
 function renderThumbblurLeaderboard() {
     RickyLeaderboard.render('leaderboardContainer', 'thumbblur', {
-        title: '🏆 Top — Thumbnail Blur',
+        title: '<img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Top — Miniatura Borrosa',
         columns: ['rank', 'name', 'correct', 'total', 'percent', 'time', 'difficulty', 'channel', 'date'],
         difficulties: ['easy', 'normal', 'extreme'],
         channels: { principal: 'Canal Principal', secondary: 'Canal Secundario', both: 'Los 2 canales' },
@@ -608,7 +605,7 @@ startGame = function() {
 
 // Updates modal
 RickyUpdates.show('thumbblur', 'v2.0', `
-    <h3>🆕 ¡Bienvenido a Thumbnail Blur!</h3>
+    <h3>🆕 ¡Bienvenido a Miniatura Borrosa!</h3>
     <p>Un juego nuevo donde tienes que <span class="upd-highlight">adivinar vídeos de Rickyedit</span> con la miniatura borrosa.</p>
     <hr class="upd-sep">
     <h3>🎮 Cómo se juega</h3>
@@ -626,14 +623,6 @@ RickyUpdates.show('thumbblur', 'v2.0', `
         <li><span class="upd-highlight">Extremo</span> — Sin ver la miniatura, solo por el título</li>
     </ul>
     <hr class="upd-sep">
-    <h3>🏆 Leaderboard</h3>
+    <h3><img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Leaderboard</h3>
     <p>Compite con otros jugadores. ¡Dale a <span class="upd-highlight">¡Entendido!</span>!</p>
-    <hr class="upd-sep">
-    <h3>🌐 Rickyedit Games — General</h3>
-    <ul>
-        <li>Diseño <span class="upd-highlight">unificado</span> en todas las páginas: mismo header rosa, footer, fondo, y patrón</li>
-        <li><span class="upd-highlight">Sonidos</span> en todos los botones al pasar el ratón</li>
-        <li><span class="upd-highlight">Modal de Info</span> en cada juego con las dificultades y cómo se juega</li>
-        <li>El <span class="upd-highlight">Songless</span> ha sido revisado y actualizado con buscador mejorado, thumbnails, modos Sin repetir / Aleatorio, canal Los 2 canales, y botón de Finalizar</li>
-    </ul>
 `);

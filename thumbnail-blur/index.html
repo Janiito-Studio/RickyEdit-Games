@@ -12,6 +12,7 @@
     <link rel="icon" href="../icon_miniatura_borrosa.png" type="image/png" />
     <link rel="stylesheet" href="../leaderboard.css" />
     <link rel="stylesheet" href="../updates.css" />
+    <link rel="stylesheet" href="../easter-egg.css" />
     <style>
         :root {
             color-scheme: dark;
@@ -56,10 +57,20 @@
         .nav-logo { width: min(220px, 48vw); max-height: 48px; object-fit: contain; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.55)); }
         .nav-actions { display: flex; flex-wrap: wrap; justify-content: end; gap: 10px; }
         .pill-link, .icon-btn {
-            display: inline-flex; align-items: center; justify-content: center;
-            min-height: 40px; border-radius: 999px; padding: 0 14px;
-            border: 1px solid rgba(255,255,255,0.24); background: rgba(0,0,0,0.18);
-            color: #fff; font-weight: 800; white-space: nowrap; text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 40px;
+            border-radius: 999px;
+            padding: 0 14px;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            background: rgba(0, 0, 0, 0.18);
+            color: #fff;
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: 800;
+            white-space: nowrap;
+            text-decoration: none;
             transition: transform 0.2s ease, background 0.2s ease;
         }
         .pill-link:hover, .icon-btn:hover { transform: translateY(-2px); background: rgba(0,0,0,0.32); }
@@ -171,6 +182,7 @@
         .mode-card { border-radius: 24px; border: 1px solid var(--line); background: var(--card); overflow: visible; backdrop-filter: blur(20px); box-shadow: var(--shadow); transition: all 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
         .mode-card:hover { transform: translateY(-6px); box-shadow: 0 30px 60px rgba(255,51,204,0.15); border-color: rgba(255,51,204,0.25); }
         .mode-card-toggle { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 20px 24px; background: rgba(255,51,204,0.08); color: #fff; font-size: 1.15rem; font-weight: 900; text-align: left; border: none; border-bottom: 1px solid var(--line); border-radius: 24px; cursor: pointer; transition: background 0.2s ease, border-radius 0.2s ease, color 0.2s ease; }
+        .mode-card-toggle .mode-icon { width: 2rem; height: 2rem; border-radius: 8px; object-fit: cover; margin-right: 10px; vertical-align: middle; }
         .mode-card-toggle:hover { background: rgba(255,51,204,0.15); }
         .mode-card.open .mode-card-toggle { background: linear-gradient(135deg, var(--yellow), var(--pink)); color: #0d0d10; border-radius: 24px 24px 0 0; border-bottom-color: transparent; }
         .mode-card-chevron { transition: transform 0.25s ease; font-size: 0.7rem; opacity: 0.5; }
@@ -249,6 +261,7 @@
             </div>
             <div class="nav-actions">
                 <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
+                <button id="startOpenUpdatesBtn" class="icon-btn" type="button">Info</button>
                 <button class="icon-btn" type="button" onclick="location.href='../index.html'">Volver</button>
             </div>
         </nav>
@@ -262,17 +275,17 @@
         <div class="mode-cards">
             <div class="mode-card" id="principalModeCard">
                 <button class="mode-card-toggle" id="principalModeToggle" type="button">
-                    <span>📺 Canal Principal</span>
+                    <span><img src="../Avatar Rickyedit.jpg" alt="" class="mode-icon"> Canal Principal</span>
                     <span class="mode-card-chevron">▼</span>
                 </button>
                 <div class="mode-card-panel" id="principalModePanel">
                     <div class="mode-panel-content">
                         <div class="mode-diff-row">
-                            <button id="startEasyBtn" class="mode-diff-btn start-easy-btn" type="button">😰 Cagado</button>
-                            <button id="startNormalBtn" class="mode-diff-btn active start-normal-btn" type="button">💪 Normal</button>
-                            <button id="startExtremeBtn" class="mode-diff-btn start-extreme-btn" type="button">💀 Extremo</button>
+                            <button id="startEasyBtn" class="mode-diff-btn start-easy-btn" type="button"><img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado</button>
+                            <button id="startNormalBtn" class="mode-diff-btn active start-normal-btn" type="button"><img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal</button>
+                            <button id="startExtremeBtn" class="mode-diff-btn start-extreme-btn" type="button"><img src="../Extremo.png" alt="" class="rlb-icon-img"> Extremo</button>
                         </div>
-                        <button class="info-toggle-btn" type="button">ℹ️ Info dificultades</button>
+                        <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
                         <button class="mode-start-btn" id="startGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
@@ -280,17 +293,17 @@
 
             <div class="mode-card" id="secondaryModeCard">
                 <button class="mode-card-toggle" id="secondaryModeToggle" type="button">
-                    <span>🎬 Canal Secundario</span>
+                    <span><img src="../ricky world.png" alt="" class="mode-icon"> Canal Secundario</span>
                     <span class="mode-card-chevron">▼</span>
                 </button>
                 <div class="mode-card-panel" id="secondaryModePanel">
                     <div class="mode-panel-content">
                         <div class="mode-diff-row">
-                            <button class="mode-diff-btn start-easy-btn" type="button">😰 Cagado</button>
-                            <button class="mode-diff-btn active start-normal-btn" type="button">💪 Normal</button>
-                            <button class="mode-diff-btn start-extreme-btn" type="button">💀 Extremo</button>
+                            <button class="mode-diff-btn start-easy-btn" type="button"><img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado</button>
+                            <button class="mode-diff-btn active start-normal-btn" type="button"><img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal</button>
+                            <button class="mode-diff-btn start-extreme-btn" type="button"><img src="../Extremo.png" alt="" class="rlb-icon-img"> Extremo</button>
                         </div>
-                        <button class="info-toggle-btn" type="button">ℹ️ Info dificultades</button>
+                        <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
                         <button class="mode-start-btn" id="startSecondaryGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
@@ -298,17 +311,17 @@
 
             <div class="mode-card" id="bothModeCard">
                 <button class="mode-card-toggle" id="bothModeToggle" type="button">
-                    <span>📺🎬 Los 2 canales</span>
+                    <span><img src="../2_canales.png" alt="" class="mode-icon"> Los 2 canales</span>
                     <span class="mode-card-chevron">▼</span>
                 </button>
                 <div class="mode-card-panel" id="bothModePanel">
                     <div class="mode-panel-content">
                         <div class="mode-diff-row">
-                            <button class="mode-diff-btn start-easy-btn" type="button">😰 Cagado</button>
-                            <button class="mode-diff-btn active start-normal-btn" type="button">💪 Normal</button>
-                            <button class="mode-diff-btn start-extreme-btn" type="button">💀 Extremo</button>
+                            <button class="mode-diff-btn start-easy-btn" type="button"><img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado</button>
+                            <button class="mode-diff-btn active start-normal-btn" type="button"><img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal</button>
+                            <button class="mode-diff-btn start-extreme-btn" type="button"><img src="../Extremo.png" alt="" class="rlb-icon-img"> Extremo</button>
                         </div>
-                        <button class="info-toggle-btn" type="button">ℹ️ Info dificultades</button>
+                        <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
                         <button class="mode-start-btn" id="startBothGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
@@ -323,6 +336,7 @@
         <div class="nav-actions">
             <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
             <button id="changeModeBtn" class="icon-btn" type="button" style="display: none">Elegir Otro</button>
+            <button id="openUpdatesBtn" class="icon-btn" type="button">Info</button>
             <button class="icon-btn" type="button" onclick="location.href='../index.html'">Volver</button>
         </div>
     </nav>
@@ -421,11 +435,11 @@
                 <button class="close-btn" type="button" onclick="document.getElementById('infoModal').classList.remove('show')" aria-label="Cerrar">×</button>
             </div>
             <div class="letter-body">
-                <p><strong style="color:var(--yellow);">😰 Cagado</strong><br>
+                <p><strong style="color:var(--yellow);"><img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado</strong><br>
                 Empiezas con la imagen menos borrosa. Tienes 6 intentos. Ideal para principiantes.</p>
-                <p><strong style="color:var(--pink);">💪 Normal</strong><br>
+                <p><strong style="color:var(--pink);"><img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal</strong><br>
                 El modo clásico. Empiezas con la imagen borrosa y cada fallo la va aclarando progresivamente. Tienes 6 intentos.</p>
-                <p><strong style="color:var(--red);">💀 Extremo</strong><br>
+                <p><strong style="color:var(--red);"><img src="../Extremo.png" alt="" class="rlb-icon-img"> Extremo</strong><br>
                 Para valientes. La imagen siempre está muy borrosa y nunca se ve del todo clara. Además, en el buscador NO aparecen las miniaturas de las opciones. Tienes 6 intentos.</p>
             </div>
         </article>
@@ -433,8 +447,8 @@
 
     <!-- Leaderboard -->
     <div style="width:100%;max-width:800px;margin:24px auto;padding:0 16px;">
-        <button class="leaderboard-toggle" id="leaderboardToggle" type="button">🏆 Leaderboard</button>
-        <div class="leaderboard-panel" id="leaderboardPanel">
+        <button class="leaderboard-toggle" id="leaderboardToggle" type="button"><img src="../Iconos/Trofeo leaderboard.png" alt="Trofeo" class="rlb-icon-img"> Leaderboard</button>
+        <div class="leaderboard-panel visible" id="leaderboardPanel">
             <div id="leaderboardContainer"></div>
         </div>
     </div>
@@ -452,6 +466,7 @@
     <script src="../ricky-songs.js"></script>
     <script src="../leaderboard.js"></script>
     <script src="../updates.js"></script>
+    <script src="../easter-egg.js"></script>
     <script src="game.js"></script>
 </body>
 

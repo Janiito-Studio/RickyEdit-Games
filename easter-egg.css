@@ -1,0 +1,223 @@
+/* ============================================================
+   Rickyedit Games — Easter Egg Modal Styles
+   ============================================================ */
+
+/* Modal overlay */
+.rlb-ee-modal {
+  position: fixed; inset: 0; z-index: 3500;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; background: rgba(0,0,0,0.78); backdrop-filter: blur(14px);
+  opacity: 0; visibility: hidden; transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+.rlb-ee-modal.show { opacity: 1; visibility: visible; }
+
+/* Card */
+.rlb-ee-card {
+  width: min(480px, 100%);
+  background: linear-gradient(135deg, rgba(255,51,204,0.10), rgba(241,196,15,0.06)), #18191c;
+  border: 1px solid rgba(255,255,255,0.14); border-radius: 24px;
+  box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+  transform: translateY(20px) scale(0.95); transition: transform 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
+  overflow: hidden;
+}
+.rlb-ee-modal.show .rlb-ee-card { transform: translateY(0) scale(1); }
+
+/* Header */
+.rlb-ee-header {
+  display: flex; align-items: center; gap: 10px;
+  padding: 18px 24px; background: linear-gradient(90deg, var(--pink-2, #ff168c), var(--pink, #ff33cc));
+}
+.rlb-ee-title {
+  font-size: 1.3rem; font-weight: 900; color: #fff; margin: 0; flex: 1;
+}
+.rlb-ee-close {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(0,0,0,0.26); color: #fff;
+  font-size: 1.2rem; font-weight: 900; border: none; cursor: pointer;
+  transition: background 0.2s;
+}
+.rlb-ee-close:hover { background: rgba(0,0,0,0.45); }
+
+/* Body */
+.rlb-ee-body {
+  padding: 24px; color: #f7f2f7; font-size: 0.95rem; line-height: 1.6;
+  max-height: 65vh; overflow-y: auto;
+}
+
+/* Hero image */
+.rlb-ee-hero {
+  text-align: center; margin-bottom: 20px;
+}
+.rlb-ee-hero-img {
+  width: min(260px, 80%);
+  border-radius: 18px;
+  border: 3px solid rgba(255,255,255,0.12);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  animation: rlb-ee-float 3s ease-in-out infinite;
+  margin-bottom: 10px;
+}
+@keyframes rlb-ee-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.rlb-ee-hero-msg {
+  font-size: 0.82rem; color: var(--muted, #b9bbbe);
+  font-style: italic; margin: 0;
+}
+
+/* Counter */
+.rlb-ee-counter {
+  text-align: center;
+  font-size: 1rem; font-weight: 800;
+  color: #fff; margin-bottom: 18px;
+  padding: 10px 0;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.rlb-ee-count-num {
+  color: var(--yellow, #f1c40f);
+  font-size: 1.15rem;
+}
+
+/* Discovered list */
+.rlb-ee-discovered-list {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-bottom: 20px;
+}
+.rlb-ee-egg-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  transition: background 0.2s;
+}
+.rlb-ee-egg-item.found {
+  background: rgba(54,226,138,0.08);
+  border-color: rgba(54,226,138,0.2);
+}
+.rlb-ee-egg-icon {
+  font-size: 1.3rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+.rlb-ee-egg-img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+.rlb-ee-egg-clickable {
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+}
+.rlb-ee-egg-clickable:hover {
+  background: rgba(255,255,255,0.08);
+  transform: scale(1.02);
+}
+.rlb-ee-egg-name {
+  font-size: 0.88rem; font-weight: 700;
+  color: var(--muted, #b9bbbe);
+}
+.rlb-ee-egg-item.found .rlb-ee-egg-name {
+  color: #fff;
+}
+
+/* Input section */
+.rlb-ee-input-section {
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 18px;
+}
+.rlb-ee-input-label {
+  display: block;
+  font-size: 0.85rem; font-weight: 700;
+  color: var(--muted, #b9bbbe);
+  margin-bottom: 10px;
+}
+.rlb-ee-input-row {
+  display: flex; gap: 8px;
+}
+.rlb-ee-input {
+  flex: 1;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #fff; font-family: inherit; font-size: 0.95rem;
+  outline: none; transition: border-color 0.2s;
+}
+.rlb-ee-input:focus { border-color: var(--pink, #ff33cc); }
+.rlb-ee-input::placeholder { color: rgba(255,255,255,0.3); }
+.rlb-ee-submit {
+  background: linear-gradient(135deg, var(--yellow, #f1c40f), var(--pink, #ff33cc));
+  color: #0d0d10; font-size: 1.1rem; font-weight: 900;
+  width: 48px; border-radius: 12px; border: none;
+  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+}
+.rlb-ee-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255,51,204,0.4);
+}
+.rlb-ee-input-feedback {
+  margin-top: 10px; font-size: 0.85rem; font-weight: 700;
+  min-height: 20px; text-align: center;
+}
+.rlb-ee-input-feedback.error { color: var(--pink, #ff33cc); }
+.rlb-ee-input-feedback.duplicate { color: var(--yellow, #f1c40f); }
+.rlb-ee-input-feedback.success { color: var(--green, #36e28a); }
+
+/* Reveal overlay */
+.rlb-ee-reveal-overlay {
+  position: fixed; inset: 0; z-index: 4000;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.88); backdrop-filter: blur(16px);
+  opacity: 0; visibility: hidden; transition: opacity 0.35s ease, visibility 0.35s ease;
+  cursor: pointer;
+}
+.rlb-ee-reveal-overlay.show { opacity: 1; visibility: visible; }
+
+.rlb-ee-reveal-card {
+  text-align: center;
+  transform: scale(0.7); transition: transform 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+  padding: 40px;
+}
+.rlb-ee-reveal-overlay.show .rlb-ee-reveal-card {
+  transform: scale(1);
+}
+.rlb-ee-reveal-img {
+  width: min(320px, 80vw);
+  border-radius: 20px;
+  border: 4px solid rgba(255,255,255,0.2);
+  box-shadow: 0 0 60px rgba(255,51,204,0.4);
+  margin-bottom: 24px;
+  animation: rlb-ee-reveal-pulse 1.5s ease-in-out infinite;
+}
+@keyframes rlb-ee-reveal-pulse {
+  0%, 100% { box-shadow: 0 0 60px rgba(255,51,204,0.4); }
+  50% { box-shadow: 0 0 80px rgba(255,51,204,0.7), 0 0 120px rgba(241,196,15,0.3); }
+}
+.rlb-ee-reveal-title {
+  font-size: clamp(1.4rem, 5vw, 2.2rem);
+  font-weight: 900;
+  margin: 0 0 8px;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.rlb-ee-reveal-subtitle {
+  font-size: 1.1rem; font-weight: 800;
+  margin: 0; letter-spacing: 1px;
+}
+
+/* Confetti */
+.rlb-ee-confetti {
+  position: absolute;
+  width: 10px; height: 10px;
+  top: -10px;
+  border-radius: 2px;
+  animation: rlb-ee-confetti-fall linear forwards;
+}
+@keyframes rlb-ee-confetti-fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}

@@ -12,6 +12,7 @@
     <link rel="icon" href="../icon_songless.png" type="image/png" />
     <link rel="stylesheet" href="../leaderboard.css" />
     <link rel="stylesheet" href="../updates.css" />
+    <link rel="stylesheet" href="../easter-egg.css" />
     <style>
         :root {
             color-scheme: dark;
@@ -117,6 +118,8 @@
             border: 1px solid rgba(255, 255, 255, 0.24);
             background: rgba(0, 0, 0, 0.18);
             color: #fff;
+            font-family: inherit;
+            font-size: inherit;
             font-weight: 800;
             white-space: nowrap;
             text-decoration: none;
@@ -1054,6 +1057,7 @@
             cursor: pointer;
             transition: background 0.2s ease, border-radius 0.2s ease, color 0.2s ease;
         }
+        .mode-card-toggle .mode-icon { width: 2rem; height: 2rem; border-radius: 8px; object-fit: cover; margin-right: 10px; vertical-align: middle; }
 
         .mode-card-toggle:hover {
             background: rgba(255, 51, 204, 0.15);
@@ -1375,6 +1379,11 @@
             <div class="nav-actions" id="startNavActions">
                 <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer"
                     id="startPrincipalLink">Canal Principal</a>
+                <a class="pill-link" href="https://www.youtube.com/@rickyeworld" target="_blank" rel="noreferrer"
+                    id="startSecondaryLink" style="display: none">Canal Secundario</a>
+                <button id="startOpenUpdatesBtn" class="icon-btn" type="button">
+                    Info
+                </button>
                 <button class="icon-btn" type="button" onclick="location.href='../index.html'">
                     Volver
                 </button>
@@ -1391,20 +1400,20 @@
             <!-- Canal Principal -->
             <div class="mode-card" id="mainModeCard">
                 <button class="mode-card-toggle" id="mainModeToggle" type="button">
-                    <span>📺 Canal Principal</span>
+                    <span><img src="../Avatar Rickyedit.jpg" alt="" class="mode-icon"> Canal Principal</span>
                     <span class="mode-card-chevron">▼</span>
                 </button>
                 <div class="mode-card-panel" id="mainModePanel">
                     <div class="mode-panel-content">
                         <div class="mode-diff-row">
-                            <button id="startEasyBtn" class="mode-diff-btn" type="button">
-                                😰 Cagado
+<button id="startEasyBtn" class="mode-diff-btn" type="button">
+                                 <img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado
                             </button>
                             <button id="startNormalBtn" class="mode-diff-btn active" type="button">
-                                💪 Normal
+                                 <img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal
                             </button>
                         </div>
-                        <button class="info-toggle-btn" type="button">ℹ️ Info dificultades</button>
+                        <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
                         <button class="mode-start-btn" id="startMainGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
@@ -1413,20 +1422,20 @@
             <!-- Canal Secundario -->
             <div class="mode-card" id="secondaryModeCard">
                 <button class="mode-card-toggle" id="secondaryModeToggle" type="button">
-                    <span>🎬 Canal Secundario</span>
+                    <span><img src="../ricky world.png" alt="" class="mode-icon"> Canal Secundario</span>
                     <span class="mode-card-chevron">▼</span>
                 </button>
                 <div class="mode-card-panel" id="secondaryModePanel">
                     <div class="mode-panel-content">
                         <div class="mode-diff-row">
-                            <button id="startSecondaryEasyBtn" class="mode-diff-btn" type="button">
-                                😰 Cagado
+<button id="startSecondaryEasyBtn" class="mode-diff-btn" type="button">
+                                 <img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado
                             </button>
                             <button id="startSecondaryNormalBtn" class="mode-diff-btn active" type="button">
-                                💪 Normal
+                                 <img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal
                             </button>
                         </div>
-                        <button class="info-toggle-btn" type="button">ℹ️ Info dificultades</button>
+                        <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
                         <button class="mode-start-btn" id="startSecondaryGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
@@ -1435,32 +1444,32 @@
             <!-- Canciones -->
             <div class="mode-card" id="songsModeCard">
                 <button class="mode-card-toggle" id="songsModeToggle" type="button">
-                    <span>🎵 Canciones</span>
+                    <span><img src="../icon_songless.png" alt="" class="mode-icon"> Canciones</span>
                     <span class="mode-card-chevron">▼</span>
                 </button>
                 <div class="mode-card-panel" id="songsModePanel">
                     <div class="mode-panel-content">
                         <div class="mode-diff-row">
-                            <button id="startSongsEasyBtn" class="mode-diff-btn" type="button">
-                                😰 Cagado
+<button id="startSongsEasyBtn" class="mode-diff-btn" type="button">
+                                 <img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado
                             </button>
                             <button id="startSongsNormalBtn" class="mode-diff-btn active" type="button">
-                                💪 Normal
+                                 <img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal
                             </button>
                         </div>
                         <div class="mode-diff-row">
                             <button id="startSongsNoRepeatBtn" class="mode-diff-btn active" type="button">
-                                🔁 Sin repetir
+                                <img src="../Iconos/Modo sin repetir.png" alt="" class="rlb-icon-img"> Sin repetir
                             </button>
                             <button id="startSongsRandomBtn" class="mode-diff-btn" type="button">
-                                🎲 Aleatorio
+                                <img src="../Iconos/Modo aleatorio.png" alt="" class="rlb-icon-img"> Aleatorio
                             </button>
                         </div>
                         <div class="mode-year-section">
                             <span class="mode-year-label">Año</span>
                             <div class="mode-year-chips" id="songsYearChips"></div>
                         </div>
-                        <button class="info-toggle-btn" type="button">ℹ️ Info dificultades</button>
+                        <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
                         <button class="mode-start-btn" id="startSongsGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
@@ -1469,20 +1478,20 @@
             <!-- Los 2 canales -->
             <div class="mode-card" id="bothModeCard">
                 <button class="mode-card-toggle" id="bothModeToggle" type="button">
-                    <span>📺🎬 Los 2 canales</span>
+                    <span><img src="../2_canales.png" alt="" class="mode-icon"> Los 2 canales</span>
                     <span class="mode-card-chevron">▼</span>
                 </button>
                 <div class="mode-card-panel" id="bothModePanel">
                     <div class="mode-panel-content">
                         <div class="mode-diff-row">
-                            <button id="startBothEasyBtn" class="mode-diff-btn" type="button">
-                                😰 Cagado
+<button id="startBothEasyBtn" class="mode-diff-btn" type="button">
+                                 <img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado
                             </button>
                             <button id="startBothNormalBtn" class="mode-diff-btn active" type="button">
-                                💪 Normal
+                                 <img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal
                             </button>
                         </div>
-                        <button class="info-toggle-btn" type="button">ℹ️ Info dificultades</button>
+                        <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
                         <button class="mode-start-btn" id="startBothGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
@@ -1504,6 +1513,9 @@
             </button>
             <button id="changeModeBtn" class="icon-btn" type="button" style="display: none">
                 Elegir Otro
+            </button>
+            <button id="openUpdatesBtn" class="icon-btn" type="button" style="display: none">
+                Info
             </button>
             <button class="icon-btn" type="button" onclick="location.href='../index.html'">
                 Volver
@@ -1739,9 +1751,9 @@
                 <button class="close-btn" type="button" onclick="document.getElementById('infoModal').classList.remove('show')" aria-label="Cerrar">×</button>
             </div>
             <div class="letter-body">
-                <p><strong style="color:var(--yellow);">😰 Cagado</strong><br>
+                <p><strong style="color:var(--yellow);"><img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado</strong><br>
                 4 intentos. Los fragmentos de audio son más largos (más fácil de adivinar). Ideal para principiantes.</p>
-                <p><strong style="color:var(--pink);">💪 Normal</strong><br>
+                <p><strong style="color:var(--pink);"><img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal</strong><br>
                 6 intentos. Los fragmentos van de 1 segundo a 32 segundos progresivamente. El modo clásico.</p>
             </div>
         </article>
@@ -1774,8 +1786,8 @@
 
     <!-- Leaderboard -->
     <div style="width:100%;max-width:800px;margin:24px auto;padding:0 16px;">
-        <button class="leaderboard-toggle" id="leaderboardToggle" type="button">🏆 Leaderboard</button>
-        <div class="leaderboard-panel" id="leaderboardPanel">
+        <button class="leaderboard-toggle" id="leaderboardToggle" type="button"><img src="../Iconos/Trofeo leaderboard.png" alt="Trofeo" class="rlb-icon-img"> Leaderboard</button>
+        <div class="leaderboard-panel visible" id="leaderboardPanel">
             <div id="leaderboardContainer"></div>
         </div>
     </div>
@@ -1795,6 +1807,7 @@
     <script src="../ricky-songs.js"></script>
     <script src="../leaderboard.js"></script>
     <script src="../updates.js"></script>
+    <script src="../easter-egg.js"></script>
     <script>
         const SEGMENTS = [1, 2, 4, 8, 16, 32];
         const SECONDARY_SEGMENTS = [1, 2, 4, 8, 16, 32];
@@ -2190,8 +2203,16 @@
                         renderRounds();
 
                         const startPrincipalLink = document.getElementById("startPrincipalLink");
-                        if (startPrincipalLink) {
-                            startPrincipalLink.style.display = (cardId === "secondaryModeCard" && !wasOpen) ? "none" : "";
+                        const startSecondaryLink = document.getElementById("startSecondaryLink");
+                        if (cardId === "secondaryModeCard" && !wasOpen) {
+                            if (startPrincipalLink) startPrincipalLink.style.display = "none";
+                            if (startSecondaryLink) startSecondaryLink.style.display = "";
+                        } else if (cardId === "bothModeCard" && !wasOpen) {
+                            if (startPrincipalLink) startPrincipalLink.style.display = "";
+                            if (startSecondaryLink) startSecondaryLink.style.display = "";
+                        } else {
+                            if (startPrincipalLink) startPrincipalLink.style.display = "";
+                            if (startSecondaryLink) startSecondaryLink.style.display = "none";
                         }
 
                         const descText = document.getElementById("descriptionText");
@@ -2320,7 +2341,29 @@
 
                 document.body.style.overflow = "auto";
                 if (els.changeModeBtn) els.changeModeBtn.style.display = "";
+                const openUpdatesBtn = document.getElementById('openUpdatesBtn');
+                if (openUpdatesBtn) openUpdatesBtn.style.display = '';
             };
+
+            // ---- Info buttons (start screen + game) ----
+            const SONGLESS_INFO_HTML =
+                '<h3>🆕 Novedades</h3>' +
+                '<p>¡Hola! Han pasado cosas desde la última vez. Aquí te van los cambios:</p>' +
+                '<hr class="upd-sep">' +
+                '<h3>🎵 Canciones nuevas</h3>' +
+                '<p>He añadido <span class="upd-highlight">nuevas canciones</span> al songless. Hay más variedad que nunca.</p>' +
+                '<hr class="upd-sep">' +
+                '<h3>🎨 Rediseño de interfaz</h3>' +
+                '<p>La interfaz se ha <span class="upd-highlight">rediseñado</span> para que todo se vea más limpio y bonito. Los botones, los modos, todo. Buscador mejorado con miniaturas, modos Sin repetir / Aleatorio, canal Los 2 canales.</p>' +
+                '<hr class="upd-sep">' +
+                '<h3><img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Leaderboard</h3>' +
+                '<p>Ahora hay un leaderboard en cada juego. Compite con tus amigos por el primer puesto.</p>' +
+                '<hr class="upd-sep">' +
+                '<p>¡Dale a <span class="upd-highlight">¡Entendido!</span> y a jugar!</p>';
+
+            document.querySelectorAll('#openUpdatesBtn, #startOpenUpdatesBtn').forEach(btn => {
+                btn.addEventListener('click', () => { playSound('click'); RickyUpdates.forceShow(SONGLESS_INFO_HTML); });
+            });
 
             // ---- Difficulty tracking (false = Normal, true = Easy) ----
             let mainEasyMode = false; // Default: Normal
@@ -3141,9 +3184,14 @@
         }
 
         // Hover sounds en TODOS los botones y enlaces
+        const _hoveredEls = new WeakSet();
         document.addEventListener('mouseover', (e) => {
             const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"]');
-            if (el) playSound('click');
+            if (el && !_hoveredEls.has(el)) { _hoveredEls.add(el); playSound('click'); }
+        });
+        document.addEventListener('mouseout', (e) => {
+            const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"]');
+            if (el) _hoveredEls.delete(el);
         });
 
         // Completion overlay buttons
@@ -3191,12 +3239,12 @@
             playSound('click');
             const panel = document.getElementById('leaderboardPanel');
             panel.classList.toggle('visible');
-            if (panel.classList.contains('visible')) renderSonglessLeaderboard();
         });
+        renderSonglessLeaderboard();
 
         function renderSonglessLeaderboard() {
             RickyLeaderboard.render('leaderboardContainer', 'songless', {
-                title: '🏆 Top — Songless',
+                title: '<img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Top — Songless',
                 columns: ['rank', 'name', 'correct', 'total', 'percent', 'time', 'difficulty', 'channel', 'date'],
                 difficulties: ['easy', 'normal'],
                 channels: { principal: 'Canal Principal', secondary: 'Canal Secundario', songs: 'Canciones', both: 'Los 2 canales' },
@@ -3218,25 +3266,17 @@
             <p>He añadido <span class="upd-highlight">nuevas canciones</span> al songless. Hay más variedad que nunca.</p>
             <hr class="upd-sep">
             <h3>🎨 Rediseño de interfaz</h3>
-            <p>La interfaz se ha <span class="upd-highlight">rediseñado</span> para que todo se vea más limpio y bonito. Los botones, los modos, todo.</p>
+            <p>La interfaz se ha <span class="upd-highlight">rediseñado</span> para que todo se vea más limpio y bonito. Los botones, los modos, todo. Buscador mejorado con miniaturas, modos Sin repetir / Aleatorio, canal Los 2 canales.</p>
             <hr class="upd-sep">
             <h3>🎮 Nuevos juegos</h3>
             <ul>
                 <li><span class="upd-highlight">Emojless</span> — Adivina la canción por emojis. ¿Conoces la discografía de Ricky?</li>
-                <li><span class="upd-highlight">Thumbnail Blur</span> — Adivina el vídeo con la miniatura borrosa. Cada intento la enfoca un poco más.</li>
-                <li><span class="upd-highlight">¿Qué es más caro?</span> — Compara precios de skins de CS2 vs objetos reales. ¿Puedes adivinar cuál cuesta más?</li>
+                <li><span class="upd-highlight">Miniatura Borrosa</span> — Adivina el vídeo con la miniatura borrosa. Cada intento la enfoca un poco más.</li>
+                <li><span class="upd-highlight">¿Qué es más caro?</span> — Compara precios de skins de Counter Strike vs objetos reales. ¿Puedes adivinar cuál cuesta más?</li>
             </ul>
             <hr class="upd-sep">
-            <h3>🏆 Leaderboard</h3>
+            <h3><img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Leaderboard</h3>
             <p>Ahora hay un leaderboard en cada juego. Compite con tus amigos por el primer puesto.</p>
-            <hr class="upd-sep">
-            <h3>🌐 Rickyedit Games — General</h3>
-            <ul>
-                <li>Diseño <span class="upd-highlight">unificado</span> en todas las páginas: mismo color de fondo, header con degradado rosa, footer, y patrón de tablero</li>
-                <li><span class="upd-highlight">Sonidos</span> en todos los botones al pasar el ratón</li>
-                <li><span class="upd-highlight">Modal de Info</span> en cada juego con las dificultades y cómo se juega</li>
-                <li>Se ha revisado el <span class="upd-highlight">Songless</span> y está actualizado con todo lo nuevo: buscador mejorado con thumbnails, modos Sin repetir / Aleatorio, canal Los 2 canales, y botón de Finalizar para el leaderboard</li>
-            </ul>
             <hr class="upd-sep">
             <p>¡Dale a <span class="upd-highlight">¡Entendido!</span> y a jugar!</p>
         `);

@@ -11,6 +11,7 @@
         rel="stylesheet" />
     <link rel="icon" href="Avatar Rickyedit.jpg" type="image/jpeg" />
     <link rel="stylesheet" href="updates.css" />
+    <link rel="stylesheet" href="easter-egg.css" />
     <style>
         :root {
             color-scheme: dark;
@@ -86,6 +87,8 @@
             border: 1px solid rgba(255, 255, 255, 0.24);
             background: rgba(0, 0, 0, 0.18);
             color: #fff;
+            font-family: inherit;
+            font-size: inherit;
             font-weight: 800;
             white-space: nowrap;
             text-decoration: none;
@@ -536,6 +539,7 @@
             <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal
                 Principal</a>
             <a class="pill-link" href="#suggestions">Proponer juego</a>
+            <button id="openUpdatesBtn" class="pill-link" type="button">Novedades</button>
         </div>
     </header>
 
@@ -544,13 +548,6 @@
             <img class="hero-avatar" src="Avatar Rickyedit.jpg" alt="Rickyedit" />
             <h1>Rickyedit Games</h1>
             <p>Elige tu minijuego preferido de Rickyedit
-            </p>
-           <p>---
-            </p>
-            <p>Atención: Para disfrutar de la experiencia sonora completa, cuando entres a cualquier juego o a esta propia pantalla, haz clic en cualquier parte.
-            </p>
-                 <p>---
-             </p>
                  <p>By Jan ;)
             </p>
         </section>
@@ -786,6 +783,7 @@
         });
     </script>
     <script src="updates.js"></script>
+    <script src="easter-egg.js"></script>
     <script>
         RickyUpdates.show('lobby', 'v1.0', `
             <h3>🎮 ¡Bienvenido a Rickyedit Games!</h3>
@@ -793,24 +791,31 @@
             <hr class="upd-sep">
             <h3>🕹️ Juegos disponibles</h3>
             <ul>
-                <li><span class="upd-highlight">Songless</span> — Adivina la canción de Rickyedit solo por el audio. Con buscador, thumbnails, y varios modos</li>
+                <li><span class="upd-highlight">Songless</span> — Adivina la canción de Rickyedit solo por el audio. Con buscador, miniaturas, y varios modos</li>
                 <li><span class="upd-highlight">Emojless</span> — Adivina la canción solo por emojis. ¿Conoces la discografía?</li>
-                <li><span class="upd-highlight">Thumbnail Blur</span> — Adivina el vídeo con la miniatura borrosa. Cada intento la enfoca un poco más</li>
-                <li><span class="upd-highlight">¿Qué es más caro?</span> — Compara precios de skins y objetos. ¿Cuál cuesta más?</li>
-            </ul>
-            <hr class="upd-sep">
-            <h3>🌐 Novedades de la web</h3>
-            <ul>
-                <li>Diseño <span class="upd-highlight">unificado</span> en todas las páginas: mismo header rosa, footer, fondo oscuro, y patrón decorativo</li>
-                <li><span class="upd-highlight">Sonidos</span> en todos los botones al pasar el ratón</li>
-                <li><span class="upd-highlight">Modal de Info</span> en cada juego con las dificultades y cómo se juega</li>
-                <li><span class="upd-highlight">Leaderboard</span> en cada juego para competir con amigos</li>
-                <li>El <span class="upd-highlight">Songless</span> ha sido revisado y mejorado: buscador con thumbnails, modos Sin repetir / Aleatorio, canal Los 2 canales, y botón de Finalizar</li>
+                <li><span class="upd-highlight">Miniatura Borrosa</span> — Adivina el vídeo con la miniatura borrosa. Cada intento la enfoca un poco más</li>
+                <li><span class="upd-highlight">¿Qué es más caro?</span> — Compara precios de skins de Counter Strike y objetos. ¿Cuál cuesta más?</li>
             </ul>
             <hr class="upd-sep">
             <p>¡Dale a <span class="upd-highlight">¡Entendido!</span> y a explorar!</p>
-            <p>PD: Si ves algún error, sorry, lo he acabado rápido porque tenía que irme de casa. ¡Que lo disfrutes! 💜</p>
         `);
+
+        document.getElementById('openUpdatesBtn').addEventListener('click', () => {
+            RickyUpdates.forceShow(`
+                <h3>🎮 ¡Bienvenido a Rickyedit Games!</h3>
+                <p>Esta es la plataforma de <span class="upd-highlight">minijuegos de Rickyedit</span>. ¡Aquí encontrarás todo tipo de retos para poner a prueba tu conocimiento!</p>
+                <hr class="upd-sep">
+                <h3>🕹️ Juegos disponibles</h3>
+                <ul>
+                    <li><span class="upd-highlight">Songless</span> — Adivina la canción de Rickyedit solo por el audio. Con buscador, miniaturas, y varios modos</li>
+                    <li><span class="upd-highlight">Emojless</span> — Adivina la canción solo por emojis. ¿Conoces la discografía?</li>
+                    <li><span class="upd-highlight">Miniatura Borrosa</span> — Adivina el vídeo con la miniatura borrosa. Cada intento la enfoca un poco más</li>
+                    <li><span class="upd-highlight">¿Qué es más caro?</span> — Compara precios de skins de Counter Strike y objetos. ¿Cuál cuesta más?</li>
+                </ul>
+                <hr class="upd-sep">
+                <p>¡Dale a <span class="upd-highlight">¡Entendido!</span> y a explorar!</p>
+            `);
+        });
     </script>
 </body>
 

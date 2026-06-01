@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="../leaderboard.css">
     <link rel="stylesheet" href="../updates.css">
+    <link rel="stylesheet" href="../easter-egg.css">
     <link rel="icon" href="../icon_vs.png" type="image/png">
 </head>
 
@@ -25,6 +26,7 @@
             </div>
             <div class="nav-actions">
                 <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
+                <button id="startOpenUpdatesBtn" class="icon-btn" type="button">Info</button>
                 <button class="icon-btn" type="button" onclick="location.href='../index.html'">Volver</button>
             </div>
         </nav>
@@ -38,16 +40,16 @@
         <div class="mode-cards">
             <div class="mode-card" id="normalModeCard">
                 <button class="mode-card-toggle" id="normalModeToggle" type="button">
-                    <span>🎮 Normal</span>
+                    <span><img src="../Mando.png" alt="" style="width:20px;height:20px;vertical-align:middle;margin-right:4px;"> Normal</span>
                     <span class="mode-card-chevron">▼</span>
                 </button>
                 <div class="mode-card-panel" id="normalModePanel">
                     <div class="mode-panel-content">
                         <div class="mode-diff-row">
-                            <button id="startEasyBtn" class="mode-diff-btn" type="button">😰 Cagado</button>
-                            <button id="startNormalBtn" class="mode-diff-btn active" type="button">💪 Normal</button>
+                            <button id="startEasyBtn" class="mode-diff-btn" type="button"><img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado</button>
+                            <button id="startNormalBtn" class="mode-diff-btn active" type="button"><img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal</button>
                         </div>
-                        <button class="info-toggle-btn" type="button">ℹ️ Info dificultades</button>
+                        <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
                         <button class="mode-start-btn" id="startGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
@@ -58,7 +60,7 @@
     <!-- Victory Overlay -->
     <div id="victory-overlay" class="victory-overlay">
         <div class="victory-content glass">
-            <div style="font-size: 6rem; margin-bottom: 10px; filter: drop-shadow(0 0 15px var(--yellow));">🏆</div>
+            <div style="margin-bottom: 10px; filter: drop-shadow(0 0 15px var(--yellow));"><img src="../Iconos/Trofeo leaderboard.png" alt="Trofeo" style="width: 6rem; height: 6rem;"></div>
             <h2 style="font-size: 2rem; font-weight: 800; color: #fff; text-transform: uppercase; margin-bottom: 10px;">
                 ¡Enhorabuena!</h2>
             <h1 class="victory-title"
@@ -93,6 +95,7 @@
         <div class="nav-actions">
             <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal
                 Principal</a>
+            <button id="openUpdatesBtn" class="icon-btn" type="button">Info</button>
             <button class="icon-btn" type="button" onclick="location.href='../index.html'">
                 Volver
             </button>
@@ -216,8 +219,8 @@
 
         <!-- Leaderboard -->
         <div style="width:100%;max-width:1100px;margin-top:24px;">
-            <button class="leaderboard-toggle" id="leaderboardToggle" type="button">🏆 Leaderboard</button>
-            <div class="leaderboard-panel" id="leaderboardPanel">
+            <button class="leaderboard-toggle" id="leaderboardToggle" type="button"><img src="../Iconos/Trofeo leaderboard.png" alt="Trofeo" class="rlb-icon-img"> Leaderboard</button>
+            <div class="leaderboard-panel visible" id="leaderboardPanel">
                 <div id="leaderboardContainer"></div>
             </div>
         </div>
@@ -241,9 +244,9 @@
                 <button class="close-btn" type="button" onclick="document.getElementById('infoModal').classList.remove('show')" aria-label="Cerrar">×</button>
             </div>
             <div class="letter-body">
-                <p><strong style="color:var(--yellow);">😰 Cagado</strong><br>
+                <p><strong style="color:var(--yellow);"><img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado</strong><br>
                 Se te da una pista: el rango de precio del objeto más caro. Solo 20 rondas para hacerlo más corto.</p>
-                <p><strong style="color:var(--pink);">💪 Normal</strong><br>
+                <p><strong style="color:var(--pink);"><img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal</strong><br>
                 Sin pistas. 50 rondas de comparación pura. El modo clásico.</p>
             </div>
         </article>
@@ -251,6 +254,7 @@
 
     <script src="../leaderboard.js"></script>
     <script src="../updates.js"></script>
+    <script src="../easter-egg.js"></script>
     <script src="game.js"></script>
 </body>
 

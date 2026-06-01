@@ -512,9 +512,14 @@ if (startGameBtn) {
 }
 
 // Hover sounds en TODOS los botones y enlaces
+const _hoveredEls = new WeakSet();
 document.addEventListener('mouseover', (e) => {
     const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"]');
-    if (el) playSound('click');
+    if (el && !_hoveredEls.has(el)) { _hoveredEls.add(el); playSound('click'); }
+});
+document.addEventListener('mouseout', (e) => {
+    const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"]');
+    if (el) _hoveredEls.delete(el);
 });
 
 // Info buttons
@@ -548,14 +553,49 @@ if (letterModal) {
     letterModal.addEventListener('click', (e) => {
         if (e.target === letterModal) letterModal.classList.remove('show');
     });
-    // Show letter once on first visit
+    // Show letter once on first visit, but not if updates modal is open
     if (!localStorage.getItem('emojless_message_shown')) {
         setTimeout(() => {
-            letterModal.classList.add('show');
+            const updatesModal = document.getElementById('rlbUpdatesModal');
+            if (!updatesModal || !updatesModal.classList.contains('show')) {
+                letterModal.classList.add('show');
+            }
             localStorage.setItem('emojless_message_shown', 'true');
         }, 1500);
     }
 }
+
+// Info modal content
+const EMOJLESS_INFO_HTML =
+    '<h3>🆕 ¡Bienvenido a Emojless!</h3>' +
+    '<p>Este es un juego nuevo donde tienes que <span class="upd-highlight">adivinar canciones de Rickyedit</span> solo con emojis.</p>' +
+    '<hr class="upd-sep">' +
+    '<h3>🎮 Cómo se juega</h3>' +
+    '<ul>' +
+    '<li>Se te muestran los emojis de una canción</li>' +
+    '<li>Escribe el nombre en el buscador y selecciónalo</li>' +
+    '<li>Cada fallo revela un emoji más</li>' +
+    '</ul>' +
+    '<hr class="upd-sep">' +
+    '<h3>😎 Modos</h3>' +
+    '<ul>' +
+    '<li><span class="upd-highlight">Cagado</span> — Empiezas con 3 emojis y tienes 4 intentos</li>' +
+    '<li><span class="upd-highlight">Normal</span> — Empiezas con 1 emoji y tienes 6 intentos</li>' +
+    '<li><span class="upd-highlight">Sin repetir</span> — No se repite ninguna canción</li>' +
+    '</ul>' +
+    '<hr class="upd-sep">' +
+    '<h3><img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Leaderboard</h3>' +
+    '<p>Compite con otros jugadores. ¡Dale a <span class="upd-highlight">¡Entendido!</span>!</p>';
+
+function showEmojlessInfo() {
+    if (letterModal) letterModal.classList.remove('show');
+    RickyUpdates.forceShow(EMOJLESS_INFO_HTML);
+}
+
+// Info buttons (start screen + game topbar)
+document.querySelectorAll('#openUpdatesBtn, #startOpenUpdatesBtn').forEach(btn => {
+    btn.addEventListener('click', () => { playSound('click'); showEmojlessInfo(); });
+});
 
 // Leaderboard
 let emojlessGameStartTime = null;
@@ -595,13 +635,13 @@ if (leaderboardToggle) {
         playSound('click');
         const panel = document.getElementById('leaderboardPanel');
         panel.classList.toggle('visible');
-        if (panel.classList.contains('visible')) renderEmojlessLeaderboard();
     });
 }
+renderEmojlessLeaderboard();
 
 function renderEmojlessLeaderboard() {
     RickyLeaderboard.render('leaderboardContainer', 'emojless', {
-        title: '🏆 Top — Emojless',
+        title: '<img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Top — Emojless',
         columns: ['rank', 'name', 'correct', 'total', 'percent', 'time', 'difficulty', 'date'],
         difficulties: ['easy', 'normal'],
         maxRows: 20
@@ -627,14 +667,6 @@ RickyUpdates.show('emojless', 'v2.0', `
         <li><span class="upd-highlight">Sin repetir</span> — No se repite ninguna canción</li>
     </ul>
     <hr class="upd-sep">
-    <h3>🏆 Leaderboard</h3>
+    <h3><img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Leaderboard</h3>
     <p>Compite con otros jugadores. ¡Dale a <span class="upd-highlight">¡Entendido!</span>!</p>
-    <hr class="upd-sep">
-    <h3>🌐 Rickyedit Games — General</h3>
-    <ul>
-        <li>Diseño <span class="upd-highlight">unificado</span> en todas las páginas: mismo header rosa, footer, fondo, y patrón</li>
-        <li><span class="upd-highlight">Sonidos</span> en todos los botones al pasar el ratón</li>
-        <li><span class="upd-highlight">Modal de Info</span> en cada juego con las dificultades y cómo se juega</li>
-        <li>El <span class="upd-highlight">Songless</span> ha sido revisado y actualizado con buscador mejorado, thumbnails, modos Sin repetir / Aleatorio, canal Los 2 canales, y botón de Finalizar</li>
-    </ul>
 `);

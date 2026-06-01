@@ -64,6 +64,9 @@
       if (hasSeen(gameId, version)) return;
       createModal(html);
       setSeen(gameId, version);
+    },
+    forceShow(html) {
+      createModal(html);
     }
   };
 })();
