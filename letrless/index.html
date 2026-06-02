@@ -4,12 +4,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Rickyedit Emojless</title>
+    <title>Rickyedit Letrless</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap"
         rel="stylesheet" />
-    <link rel="icon" href="../icon_emojless.png" type="image/png" />
+    <link rel="icon" href="../icon_songless.png" type="image/png" />
     <style>
         :root {
             color-scheme: dark;
@@ -286,14 +286,42 @@
                 #101014;
         }
 
-        .emoji-display {
-            font-size: clamp(1.8rem, 5vw, 3.2rem);
+        .lyric-display {
+            font-size: clamp(1.4rem, 3.5vw, 2.2rem);
             z-index: 2;
             text-align: center;
             filter: drop-shadow(0 0 20px rgba(255, 51, 204, 0.5));
             animation: float 4s ease-in-out infinite;
-            line-height: 1.4;
-            white-space: nowrap;
+            line-height: 1.6;
+            white-space: normal;
+            max-width: 90%;
+            word-wrap: break-word;
+        }
+
+        .lyric-word {
+            display: inline-block;
+            margin: 4px 5px;
+            font-weight: 800;
+        }
+
+        .lyric-word.revealed {
+            color: #fff;
+        }
+
+        .lyric-word.hidden {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 60px;
+            height: 38px;
+            padding: 0 14px;
+            border-radius: 10px;
+            background: rgba(255, 51, 204, 0.25);
+            border: 2px solid rgba(255, 51, 204, 0.5);
+            color: transparent;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+            vertical-align: middle;
         }
 
         .controls {
@@ -305,7 +333,7 @@
 
         .rounds {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
             gap: 8px;
         }
 
@@ -859,8 +887,8 @@
 
         <section class="hero-section">
             <img class="hero-avatar" src="../Avatar Rickyedit.jpg" alt="Avatar Rickyedit" />
-            <h1>Rickyedit emojless</h1>
-            <p>Adivina la canción basándote en los emojis. ¿Conoces la discografía de Ricky?</p>
+            <h1>Rickyedit letrless</h1>
+            <p>Adivina la canción basándote en fragmentos de su letra. ¡Se van desbloqueando palabra por palabra!</p>
         </section>
 
         <div class="mode-cards">
@@ -872,12 +900,13 @@
                 <div class="mode-card-panel" id="normalModePanel">
                     <div class="mode-panel-content">
                         <div class="mode-diff-row">
-                            <button id="startEasyBtn" class="mode-diff-btn" type="button"><img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado</button>
+                            <button id="startEasyBtn" class="mode-diff-btn" type="button"><img src="../Iconos/Dificultad%20dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Fácil</button>
                             <button id="startNormalBtn" class="mode-diff-btn active" type="button"><img src="../icon_songless.png" alt="" class="rlb-icon-img"> Normal</button>
+                            <button id="startHardBtn" class="mode-diff-btn" type="button"><img src="../Iconos/Dificultad%20dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Difícil</button>
                         </div>
                         <div class="mode-diff-row">
-                            <button id="startNoRepeatBtn" class="mode-diff-btn active" type="button"><img src="../Iconos/Modo sin repetir.png" alt="" class="rlb-icon-img"> Sin repetir</button>
-                            <button id="startRandomBtn" class="mode-diff-btn" type="button"><img src="../Iconos/Modo aleatorio.png" alt="" class="rlb-icon-img"> Aleatorio</button>
+                            <button id="startNoRepeatBtn" class="mode-diff-btn active" type="button"><img src="../Iconos/Modo%20sin%20repetir.png" alt="" class="rlb-icon-img"> Sin repetir</button>
+                            <button id="startRandomBtn" class="mode-diff-btn" type="button"><img src="../Iconos/Modo%20aleatorio.png" alt="" class="rlb-icon-img"> Aleatorio</button>
                         </div>
                         <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
                         <button class="mode-start-btn" id="startGameBtn" type="button">Empezar</button>
@@ -892,22 +921,18 @@
             <img class="nav-logo" src="../Rickyedit Games.png" alt="Rickyedit Games Logo" />
         </div>
         <div class="nav-actions">
-            <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal
-                Principal</a>
-            <button id="openLetterBtn" class="icon-btn" type="button">Mensaje</button>
+            <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
             <button id="openUpdatesBtn" class="icon-btn" type="button">Info</button>
-            <button class="icon-btn" type="button" onclick="location.href='../index.html'">
-                Volver
-            </button>
+            <button class="icon-btn" type="button" onclick="location.href='../index.html'">Volver</button>
         </div>
     </nav>
 
     <header class="hero">
         <div class="hero-inner">
             <div class="hero-copy">
-                <h1>Rickyedit emojless</h1>
+                <h1>Rickyedit letrless</h1>
                 <p id="descriptionText">
-                    Adivina la canción basándote en los emojis. ¡Pon a prueba tus conocimientos de la discografía de Ricky!
+                    Adivina la canción basándote en fragmentos de su letra. ¡Se van desbloqueando palabra por palabra!
                 </p>
             </div>
             <div class="avatar-card">
@@ -948,8 +973,8 @@
                                 <strong id="rank" style="font-size: 1.25rem; margin-top: 8px;">Novato</strong>
                             </div>
                             <div class="stat">
-                                <span>Intento</span>
-                                <strong id="attempt">1/6</strong>
+                                <span>Palabra</span>
+                                <strong id="attempt">1/1</strong>
                             </div>
                             <div class="stat">
                                 <span>Canciones</span>
@@ -959,13 +984,13 @@
                         <div class="hint-card">
                             <strong>Cómo va</strong>
                             <p>
-                                Aparecerán 6 emojis que representan la canción. ¡Adivina el título antes de quedarte sin intentos!
+                                Aparece una frase de la canción. Se van desbloqueando las palabras una a una. ¡Adivina el título antes de que se revele toda la frase!
                             </p>
                         </div>
                         <div class="hint-card">
-                            <strong>Emojis</strong>
+                            <strong>Palabras</strong>
                             <p id="segmentsInfo">
-                                Empiezas con 1 emoji visible. Cada fallo revela uno más.
+                                Empiezas con 1 palabra visible. Cada fallo revela una más.
                             </p>
                         </div>
                     </aside>
@@ -974,7 +999,7 @@
                         <article class="game-card glass">
                             <div id="mysteryScreen" class="mystery-screen">
                                 <div class="curtain">
-                                    <div id="emojiDisplay" class="emoji-display">❓ ❓ ❓ ❓ ❓ ❓</div>
+                                    <div id="lyricDisplay" class="lyric-display">---</div>
                                 </div>
                             </div>
 
@@ -1040,28 +1065,17 @@
                 <button class="close-btn" type="button" onclick="document.getElementById('infoModal').classList.remove('show')" aria-label="Cerrar">×</button>
             </div>
             <div class="letter-body">
-                <p><strong style="color:var(--yellow);"><img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado</strong><br>
-                4 intentos. Empiezas con 3 emojis visibles desde el principio. Cada fallo revela uno más. Ideal para principiantes.</p>
-                <p><strong style="color:var(--pink);"><img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal</strong><br>
-                6 intentos. Empiezas con solo 1 emoji visible y cada fallo revela uno más. El modo clásico.</p>
+                <p><strong style="color:var(--yellow);"><img src="../Iconos/Dificultad%20dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Fácil</strong><br>
+                Las frases elegidas tienen al menos 7 palabras. Más pistas disponibles antes de quedarte sin palabras.</p>
+                <p><strong style="color:var(--pink);"><img src="../icon_songless.png" alt="" class="rlb-icon-img"> Normal</strong><br>
+                Las frases elegidas tienen al menos 5 palabras. El equilibrio perfecto.</p>
+                <p><strong style="color:var(--pink-2);"><img src="../Iconos/Dificultad%20dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Difícil</strong><br>
+                Las frases elegidas tienen al menos 3 palabras. Menos pistas, más reto.</p>
                 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.1);margin:8px 0;">
-                <p><strong style="color:var(--green);"><img src="../Iconos/Modo sin repetir.png" alt="" class="rlb-icon-img"> Sin repetir</strong><br>
+                <p><strong style="color:var(--green);"><img src="../Iconos/Modo%20sin%20repetir.png" alt="" class="rlb-icon-img"> Sin repetir</strong><br>
                 No se repite ninguna canción hasta que se hayan mostrado todas. Más desafío.</p>
-                <p><strong style="color:var(--yellow);"><img src="../Iconos/Modo aleatorio.png" alt="" class="rlb-icon-img"> Aleatorio</strong><br>
+                <p><strong style="color:var(--yellow);"><img src="../Iconos/Modo%20aleatorio.png" alt="" class="rlb-icon-img"> Aleatorio</strong><br>
                 Las canciones se repiten aleatoriamente. Puede salir la misma dos veces seguidas.</p>
-            </div>
-        </article>
-    </div>
-
-    <!-- Letter Modal -->
-    <div id="letterModal" class="modal" role="dialog" aria-modal="true">
-        <article class="letter">
-            <div class="letter-head">
-                <strong>Mensaje para Ricky (De Marc)</strong>
-                <button id="closeLetterBtn" class="close-btn" type="button" aria-label="Cerrar">×</button>
-            </div>
-            <div class="letter-body">
-                <p>Hola Ricky, soy amigo de Jan (Marc). Te quería decir que con los emojis he ayudado a Jan y te lo he puesto más difícil, jajaja. Eres mi creador de contenido favorito. Gracias por todo lo que haces. Eres muy válido y valioso para mí 💜.</p>
             </div>
         </article>
     </div>
@@ -1081,6 +1095,7 @@
     <link rel="stylesheet" href="../easter-egg.css">
     <link rel="stylesheet" href="../volume.css">
     <script src="../ricky-songs.js"></script>
+    <script src="../ricky-lyrics.js"></script>
     <script src="../leaderboard.js"></script>
     <script src="../updates.js"></script>
     <script src="../easter-egg.js"></script>

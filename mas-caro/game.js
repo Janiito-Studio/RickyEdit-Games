@@ -391,8 +391,13 @@ function getAudioCtx() {
     document.addEventListener(evt, () => { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); }, { once: true })
 );
 
+let _currentOsc = null;
 function playSound(type) {
+    var vol = (typeof RickyVolume !== 'undefined') ? RickyVolume.get() : 1;
+    if (vol <= 0) return;
+    if (_currentOsc) { try { _currentOsc.stop(); } catch(e) {} _currentOsc = null; }
     const ctx = getAudioCtx();
+    if (!ctx) return;
 
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -402,26 +407,27 @@ function playSound(type) {
     const now = ctx.currentTime;
 
     if (type === 'success') {
-        osc.frequency.setValueAtTime(440, now); // A4
-        osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
-        gain.gain.setValueAtTime(0.1, now);
+        osc.frequency.setValueAtTime(440, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
+        gain.gain.setValueAtTime(0.04 * vol, now);
         gain.gain.linearRampToValueAtTime(0, now + 0.35);
         osc.start(now);
         osc.stop(now + 0.35);
     } else if (type === 'fail') {
-        osc.frequency.setValueAtTime(330, now); // E4
-        osc.frequency.linearRampToValueAtTime(165, now + 0.25); // E3
-        gain.gain.setValueAtTime(0.15, now);
+        osc.frequency.setValueAtTime(330, now);
+        osc.frequency.linearRampToValueAtTime(165, now + 0.25);
+        gain.gain.setValueAtTime(0.05 * vol, now);
         gain.gain.linearRampToValueAtTime(0, now + 0.4);
         osc.start(now);
         osc.stop(now + 0.4);
     } else if (type === 'click') {
         osc.frequency.setValueAtTime(600, now);
-        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.setValueAtTime(0.03 * vol, now);
         gain.gain.linearRampToValueAtTime(0, now + 0.08);
         osc.start(now);
         osc.stop(now + 0.08);
     }
+    _currentOsc = osc;
 }
 
 // Formatear precio
@@ -765,12 +771,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Leaderboard toggle
-    document.getElementById('leaderboardToggle').addEventListener('click', () => {
-        playSound('click');
-        const panel = document.getElementById('leaderboardPanel');
-        panel.classList.toggle('visible');
-    });
     renderLeaderboard();
 });
 
@@ -786,12 +786,16 @@ function renderLeaderboard() {
 // Hover sounds en TODOS los botones y enlaces
 const _hoveredEls = new WeakSet();
 document.addEventListener('mouseover', (e) => {
-    const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"], .card-button');
+    const el = e.target.closest('button, a.pill-link, a.icon-btn, .card-button');
     if (el && !_hoveredEls.has(el)) { _hoveredEls.add(el); playSound('click'); }
 });
 document.addEventListener('mouseout', (e) => {
-    const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"], .card-button');
-    if (el) _hoveredEls.delete(el);
+    const el = e.target.closest('button, a.pill-link, a.icon-btn, .card-button');
+    if (el && !el.contains(e.relatedTarget)) _hoveredEls.delete(el);
+});
+document.addEventListener('click', (e) => {
+    const el = e.target.closest('button, a.pill-link, a.icon-btn, .card-button');
+    if (el) playSound('click');
 });
 
 // Info modal content

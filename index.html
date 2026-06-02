@@ -12,6 +12,7 @@
     <link rel="icon" href="Avatar Rickyedit.jpg" type="image/jpeg" />
     <link rel="stylesheet" href="updates.css" />
     <link rel="stylesheet" href="easter-egg.css" />
+    <link rel="stylesheet" href="volume.css" />
     <style>
         :root {
             color-scheme: dark;
@@ -166,15 +167,6 @@
             gap: 30px;
             width: 100%;
             margin-bottom: 40px;
-        }
-
-        .arcade-bottom-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            width: 100%;
-            max-width: 790px;
-            margin: 0 auto 60px;
         }
 
         .arcade-card {
@@ -524,9 +516,6 @@
             font-weight: 700;
         }
 
-        @media (max-width: 700px) {
-            .arcade-bottom-row { grid-template-columns: 1fr; max-width: 420px; }
-        }
     </style>
 </head>
 
@@ -620,9 +609,29 @@
                     </div>
                 </div>
             </a>
-        </div>
 
-        <div class="arcade-bottom-row">
+            <!-- Tarjeta Letrless -->
+            <a href="letrless/index.html" class="arcade-card emojless-card">
+                <div class="card-image-header">
+                    <img class="card-icon-img" src="icon_songless.png" alt="Letrless Icon">
+                </div>
+                <div class="card-body">
+                    <div>
+                        <span class="card-badge">Adivinar</span>
+                        <h2>Letrless</h2>
+                        <p>Adivina la canción basándote en fragmentos de su letra. ¡Se van desbloqueando palabra por palabra!</p>
+                    </div>
+                    <div class="card-action">
+                        JUGAR AHORA
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
             <!-- Tarjeta Mas Caro -->
             <a href="mas-caro/index.html" class="arcade-card mascaro-card">
                 <div class="card-image-header">
@@ -703,9 +712,13 @@
         // Hover sounds
         let audioCtx;
         try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+        let _currentOsc = null;
         function playSound(type) {
             if (!audioCtx) return;
+            var vol = (typeof RickyVolume !== 'undefined') ? RickyVolume.get() : 1;
+            if (vol <= 0) return;
             if (audioCtx.state === 'suspended') audioCtx.resume();
+            if (_currentOsc) { try { _currentOsc.stop(); } catch(e) {} _currentOsc = null; }
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.connect(gain);
@@ -713,19 +726,29 @@
             const now = audioCtx.currentTime;
             if (type === 'click') {
                 osc.frequency.setValueAtTime(600, now);
-                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.setValueAtTime(0.03 * vol, now);
                 gain.gain.linearRampToValueAtTime(0, now + 0.08);
                 osc.start(now); osc.stop(now + 0.08);
             } else if (type === 'hover') {
                 osc.frequency.setValueAtTime(800, now);
-                gain.gain.setValueAtTime(0.04, now);
+                gain.gain.setValueAtTime(0.015 * vol, now);
                 gain.gain.linearRampToValueAtTime(0, now + 0.05);
                 osc.start(now); osc.stop(now + 0.05);
             }
+            _currentOsc = osc;
         }
-        document.querySelectorAll('.pill-link, .icon-btn, .arcade-card, .btn-submit, .year-chip').forEach(el => {
-            el.addEventListener('mouseenter', () => playSound('hover'));
-            el.addEventListener('click', () => playSound('click'));
+        const _hoveredEls = new WeakSet();
+        document.addEventListener('mouseover', (e) => {
+            const el = e.target.closest('button, a.pill-link, a.icon-btn, a.arcade-card');
+            if (el && !_hoveredEls.has(el)) { _hoveredEls.add(el); playSound('hover'); }
+        });
+        document.addEventListener('mouseout', (e) => {
+            const el = e.target.closest('button, a.pill-link, a.icon-btn, a.arcade-card');
+            if (el && !el.contains(e.relatedTarget)) _hoveredEls.delete(el);
+        });
+        document.addEventListener('click', (e) => {
+            const el = e.target.closest('button, a.pill-link, a.icon-btn, a.arcade-card');
+            if (el) playSound('click');
         });
 
         // Enviar sugerencia
@@ -734,7 +757,7 @@
         const btnSubmit = document.getElementById('btnSubmit');
 
         form.addEventListener('submit', async (e) => {
-
+            playSound('click');
             e.preventDefault();
 
             // Webhook de Discord configurado directamente
@@ -784,6 +807,7 @@
     </script>
     <script src="updates.js"></script>
     <script src="easter-egg.js"></script>
+    <script src="volume.js"></script>
     <script>
         RickyUpdates.show('lobby', 'v1.0', `
             <h3>🎮 ¡Bienvenido a Rickyedit Games!</h3>
@@ -801,6 +825,7 @@
         `);
 
         document.getElementById('openUpdatesBtn').addEventListener('click', () => {
+            playSound('click');
             RickyUpdates.forceShow(`
                 <h3>🎮 ¡Bienvenido a Rickyedit Games!</h3>
                 <p>Esta es la plataforma de <span class="upd-highlight">minijuegos de Rickyedit</span>. ¡Aquí encontrarás todo tipo de retos para poner a prueba tu conocimiento!</p>

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="../leaderboard.css" />
     <link rel="stylesheet" href="../updates.css" />
     <link rel="stylesheet" href="../easter-egg.css" />
+    <link rel="stylesheet" href="../volume.css" />
     <style>
         :root {
             color-scheme: dark;
@@ -1151,19 +1152,36 @@
             border-radius: 50px;
             color: #fff;
             background: rgba(255, 51, 204, 0.18);
-            border: 2px solid rgba(255, 51, 204, 0.5);
-            box-shadow: none;
+            border: none;
+            position: relative;
             transition: all 0.25s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
             cursor: pointer;
+            outline: none;
+        }
+
+        .mode-diff-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 2px;
+            background: rgba(255, 51, 204, 0.5);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            transition: background 0.25s ease;
         }
 
         .mode-diff-btn:hover {
             transform: translateY(-2px);
             background: rgba(255, 51, 204, 0.3);
-            border-color: rgba(255, 51, 204, 0.8);
-            box-shadow: 0 8px 20px rgba(255, 51, 204, 0.2);
+        }
+
+        .mode-diff-btn:hover::before {
+            background: rgba(255, 51, 204, 0.8);
         }
 
         .mode-diff-btn:active {
@@ -1173,9 +1191,11 @@
         .mode-diff-btn.active {
             background: linear-gradient(135deg, var(--yellow), var(--pink));
             color: #0d0d10;
-            border-color: transparent;
             box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
-            outline: none;
+        }
+
+        .mode-diff-btn.active::before {
+            background: transparent;
         }
 
         .info-toggle-btn {
@@ -1786,7 +1806,6 @@
 
     <!-- Leaderboard -->
     <div style="width:100%;max-width:800px;margin:24px auto;padding:0 16px;">
-        <button class="leaderboard-toggle" id="leaderboardToggle" type="button"><img src="../Iconos/Trofeo leaderboard.png" alt="Trofeo" class="rlb-icon-img"> Leaderboard</button>
         <div class="leaderboard-panel visible" id="leaderboardPanel">
             <div id="leaderboardContainer"></div>
         </div>
@@ -1808,6 +1827,7 @@
     <script src="../leaderboard.js"></script>
     <script src="../updates.js"></script>
     <script src="../easter-egg.js"></script>
+    <script src="../volume.js"></script>
     <script>
         const SEGMENTS = [1, 2, 4, 8, 16, 32];
         const SECONDARY_SEGMENTS = [1, 2, 4, 8, 16, 32];
@@ -1835,7 +1855,11 @@
             document.addEventListener(evt, () => { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); }, { once: true })
         );
 
+        let _currentOsc = null;
         function playSound(type) {
+            var vol = (typeof RickyVolume !== 'undefined') ? RickyVolume.get() : 1;
+            if (vol <= 0) return;
+            if (_currentOsc) { try { _currentOsc.stop(); } catch(e) {} _currentOsc = null; }
             const ctx = getAudioCtx();
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
@@ -1845,21 +1869,22 @@
             if (type === 'success') {
                 osc.frequency.setValueAtTime(440, now);
                 osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
-                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.setValueAtTime(0.04 * vol, now);
                 gain.gain.linearRampToValueAtTime(0, now + 0.35);
                 osc.start(now); osc.stop(now + 0.35);
             } else if (type === 'fail') {
                 osc.frequency.setValueAtTime(330, now);
                 osc.frequency.linearRampToValueAtTime(165, now + 0.25);
-                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.setValueAtTime(0.05 * vol, now);
                 gain.gain.linearRampToValueAtTime(0, now + 0.4);
                 osc.start(now); osc.stop(now + 0.4);
             } else if (type === 'click') {
                 osc.frequency.setValueAtTime(600, now);
-                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.setValueAtTime(0.03 * vol, now);
                 gain.gain.linearRampToValueAtTime(0, now + 0.08);
                 osc.start(now); osc.stop(now + 0.08);
             }
+            _currentOsc = osc;
         }
 
         const state = {
@@ -2966,8 +2991,12 @@
                 els.status.textContent = "Escribe algo antes de adivinar.";
                 return;
             }
+            if (guess.length < 2) {
+                els.status.textContent = "Escribe al menos 2 caracteres.";
+                return;
+            }
             if (
-                answer.includes(guess) ||
+                answer === guess ||
                 tokenScore(guess, answer) >= 0.68
             ) {
                 const points = Math.max(10, 80 - state.round * 12);
@@ -3186,12 +3215,16 @@
         // Hover sounds en TODOS los botones y enlaces
         const _hoveredEls = new WeakSet();
         document.addEventListener('mouseover', (e) => {
-            const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"]');
+            const el = e.target.closest('button, a.pill-link, a.icon-btn');
             if (el && !_hoveredEls.has(el)) { _hoveredEls.add(el); playSound('click'); }
         });
         document.addEventListener('mouseout', (e) => {
-            const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"]');
-            if (el) _hoveredEls.delete(el);
+            const el = e.target.closest('button, a.pill-link, a.icon-btn');
+            if (el && !el.contains(e.relatedTarget)) _hoveredEls.delete(el);
+        });
+        document.addEventListener('click', (e) => {
+            const el = e.target.closest('button, a.pill-link, a.icon-btn');
+            if (el) playSound('click');
         });
 
         // Completion overlay buttons
@@ -3234,12 +3267,6 @@
             });
         });
 
-        // Leaderboard toggle
-        document.getElementById('leaderboardToggle').addEventListener('click', () => {
-            playSound('click');
-            const panel = document.getElementById('leaderboardPanel');
-            panel.classList.toggle('visible');
-        });
         renderSonglessLeaderboard();
 
         function renderSonglessLeaderboard() {

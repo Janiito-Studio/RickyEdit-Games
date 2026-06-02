@@ -66,7 +66,11 @@ function getAudioCtx() {
     document.addEventListener(evt, () => { if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); }, { once: true })
 );
 
+let _currentOsc = null;
 function playSound(type) {
+    var vol = (typeof RickyVolume !== 'undefined') ? RickyVolume.get() : 1;
+    if (vol <= 0) return;
+    if (_currentOsc) { try { _currentOsc.stop(); } catch(e) {} _currentOsc = null; }
     const ctx = getAudioCtx();
     if (!ctx) return;
     const osc = ctx.createOscillator();
@@ -77,21 +81,22 @@ function playSound(type) {
     if (type === 'success') {
         osc.frequency.setValueAtTime(440, now);
         osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
-        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.setValueAtTime(0.04 * vol, now);
         gain.gain.linearRampToValueAtTime(0, now + 0.35);
         osc.start(now); osc.stop(now + 0.35);
     } else if (type === 'fail') {
         osc.frequency.setValueAtTime(330, now);
         osc.frequency.linearRampToValueAtTime(165, now + 0.25);
-        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.setValueAtTime(0.05 * vol, now);
         gain.gain.linearRampToValueAtTime(0, now + 0.4);
         osc.start(now); osc.stop(now + 0.4);
     } else if (type === 'click') {
         osc.frequency.setValueAtTime(600, now);
-        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.setValueAtTime(0.03 * vol, now);
         gain.gain.linearRampToValueAtTime(0, now + 0.08);
         osc.start(now); osc.stop(now + 0.08);
     }
+    _currentOsc = osc;
 }
 
 const SONG_MAP = {};
@@ -167,7 +172,11 @@ function escapeHtml(value) {
 }
 
 function splitEmojis(str) {
-    return [...str].filter(ch => ch !== "\uFE0F" && ch !== "\u200D");
+    if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+        const segmenter = new Intl.Segmenter('en', { granularity: 'grapheme' });
+        return [...segmenter.segment(str)].map(s => s.segment);
+    }
+    return [...str].filter(ch => ch !== "\uFE0F" && ch !== "\u200D" && ch !== "\u20E3");
 }
 
 function getRank(streak) {
@@ -195,9 +204,12 @@ function updateStats() {
 function updateEmojiDisplay() {
     if (!state.current) return;
     const allEmojis = splitEmojis(state.current.emojis);
+    const totalSlots = Math.max(allEmojis.length, 6);
     const startVisible = easyMode ? 3 : 1;
-    const visible = allEmojis.slice(0, startVisible + state.round);
-    const hidden = allEmojis.slice(startVisible + state.round).map(() => "\u2753");
+    const visibleCount = Math.min(startVisible + state.round, totalSlots);
+    const visible = allEmojis.slice(0, visibleCount);
+    const hidden = [];
+    for (let i = visibleCount; i < totalSlots; i++) hidden.push("\u2753");
     els.emojiDisplay.textContent = [...visible, ...hidden].join(" ");
 }
 
@@ -250,9 +262,13 @@ function submitGuess() {
         return;
     }
 
+    if (guess.length < 2) {
+        els.status.textContent = "Escribe al menos 2 caracteres.";
+        return;
+    }
     const songInfo = SONG_MAP[state.current.title];
     const fullTitle = songInfo ? normalize(songInfo.title) : answer;
-    if (fullTitle.includes(guess) || answer.includes(guess) || tokenScore(guess, answer) >= 0.68) {
+    if (fullTitle === guess || answer === guess || tokenScore(guess, answer) >= 0.68) {
         const points = Math.max(10, 60 - state.round * 10);
         state.score += points;
         state.streak += 1;
@@ -508,18 +524,29 @@ if (startGameBtn) {
         }
         renderRounds();
         newRound();
+        // Show Marc's letter on first game start
+        if (!localStorage.getItem('emojless_message_shown') && letterModal) {
+            setTimeout(() => {
+                letterModal.classList.add('show');
+            }, 800);
+            localStorage.setItem('emojless_message_shown', 'true');
+        }
     });
 }
 
 // Hover sounds en TODOS los botones y enlaces
 const _hoveredEls = new WeakSet();
 document.addEventListener('mouseover', (e) => {
-    const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"]');
+    const el = e.target.closest('button, a.pill-link, a.icon-btn');
     if (el && !_hoveredEls.has(el)) { _hoveredEls.add(el); playSound('click'); }
 });
 document.addEventListener('mouseout', (e) => {
-    const el = e.target.closest('button, a.pill-link, a.icon-btn, input[type="text"]');
-    if (el) _hoveredEls.delete(el);
+    const el = e.target.closest('button, a.pill-link, a.icon-btn');
+    if (el && !el.contains(e.relatedTarget)) _hoveredEls.delete(el);
+});
+document.addEventListener('click', (e) => {
+    const el = e.target.closest('button, a.pill-link, a.icon-btn');
+    if (el) playSound('click');
 });
 
 // Info buttons
@@ -553,15 +580,9 @@ if (letterModal) {
     letterModal.addEventListener('click', (e) => {
         if (e.target === letterModal) letterModal.classList.remove('show');
     });
-    // Show letter once on first visit, but not if updates modal is open
-    if (!localStorage.getItem('emojless_message_shown')) {
-        setTimeout(() => {
-            const updatesModal = document.getElementById('rlbUpdatesModal');
-            if (!updatesModal || !updatesModal.classList.contains('show')) {
-                letterModal.classList.add('show');
-            }
-            localStorage.setItem('emojless_message_shown', 'true');
-        }, 1500);
+    // Show letter button manually
+    if (!localStorage.getItem('emojless_message_shown') && letterModal) {
+        // Will show on first game start
     }
 }
 
@@ -629,14 +650,6 @@ if (finalizeBtn) {
     });
 }
 
-const leaderboardToggle = document.getElementById('leaderboardToggle');
-if (leaderboardToggle) {
-    leaderboardToggle.addEventListener('click', () => {
-        playSound('click');
-        const panel = document.getElementById('leaderboardPanel');
-        panel.classList.toggle('visible');
-    });
-}
 renderEmojlessLeaderboard();
 
 function renderEmojlessLeaderboard() {

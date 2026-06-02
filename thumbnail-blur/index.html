@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="../leaderboard.css" />
     <link rel="stylesheet" href="../updates.css" />
     <link rel="stylesheet" href="../easter-egg.css" />
+    <link rel="stylesheet" href="../volume.css" />
     <style>
         :root {
             color-scheme: dark;
@@ -192,9 +193,12 @@
         @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
         .mode-panel-content { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px; }
         .mode-diff-row { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 16px; width: 100%; flex-wrap: wrap; }
-        .mode-diff-btn { font-size: 1.1rem; font-weight: 900; padding: 14px 32px; border-radius: 50px; color: #fff; background: rgba(255,51,204,0.18); border: 2px solid rgba(255,51,204,0.5); transition: all 0.25s ease; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; }
-        .mode-diff-btn:hover { transform: translateY(-2px); background: rgba(255,51,204,0.3); border-color: rgba(255,51,204,0.8); }
-        .mode-diff-btn.active { background: linear-gradient(135deg, var(--yellow), var(--pink)); color: #0d0d10; border-color: transparent; box-shadow: 0 10px 35px rgba(255,51,204,0.45); }
+        .mode-diff-btn { font-size: 1.1rem; font-weight: 900; padding: 14px 32px; border-radius: 50px; color: #fff; background: rgba(255,51,204,0.18); border: none; position: relative; transition: all 0.25s ease; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; outline: none; }
+        .mode-diff-btn::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 2px; background: rgba(255,51,204,0.5); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; transition: background 0.25s ease; }
+        .mode-diff-btn:hover { transform: translateY(-2px); background: rgba(255,51,204,0.3); }
+        .mode-diff-btn:hover::before { background: rgba(255,51,204,0.8); }
+        .mode-diff-btn.active { background: linear-gradient(135deg, var(--yellow), var(--pink)); color: #0d0d10; box-shadow: 0 10px 35px rgba(255,51,204,0.45); }
+        .mode-diff-btn.active::before { background: transparent; }
         .mode-start-btn { font-size: 1.3rem; font-weight: 900; padding: 16px 48px; border-radius: 50px; color: #0d0d10; background: linear-gradient(135deg, var(--yellow), var(--pink)); box-shadow: 0 10px 35px rgba(255,51,204,0.45); transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; border: none; }
         .mode-start-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 15px 40px rgba(255,51,204,0.65); }
 
@@ -447,7 +451,6 @@
 
     <!-- Leaderboard -->
     <div style="width:100%;max-width:800px;margin:24px auto;padding:0 16px;">
-        <button class="leaderboard-toggle" id="leaderboardToggle" type="button"><img src="../Iconos/Trofeo leaderboard.png" alt="Trofeo" class="rlb-icon-img"> Leaderboard</button>
         <div class="leaderboard-panel visible" id="leaderboardPanel">
             <div id="leaderboardContainer"></div>
         </div>
@@ -467,6 +470,7 @@
     <script src="../leaderboard.js"></script>
     <script src="../updates.js"></script>
     <script src="../easter-egg.js"></script>
+    <script src="../volume.js"></script>
     <script src="game.js"></script>
 </body>
 

@@ -6,7 +6,7 @@
   'use strict';
 
   var LS_KEY = 'rlb_easter_eggs';
-  var TOTAL_EGGS = 6;
+  var TOTAL_EGGS = 7;
 
   var EASTER_EGGS = {
     calvo: {
@@ -26,21 +26,21 @@
     ricky: {
       id: 'ricky',
       image: 'Avatar Rickyedit.jpg',
-      title: '¡El founder! Has encontrado al Ricky original',
+      title: 'Felicidades, has encontrado a Ricky',
       subtitle: '',
       colors: ['#ff33cc', '#f1c40f', '#ff168c']
     },
     songless: {
       id: 'songless',
       image: 'icon_songless.png',
-      title: '¿Sin canciones? Pero si este juego va de canciones...',
+      title: 'Felicidades, has encontrado el minijuego con el que empezó esta web',
       subtitle: '',
       colors: ['#38d4ff', '#ff33cc', '#36e28a']
     },
     jan: {
       id: 'jan',
       image: 'Jan.png',
-      title: 'El creador de esta web.',
+      title: 'El creador de esta web, yo ;) (Obviamente el mejor)',
       subtitle: '',
       colors: ['#f1c40f', '#ff33cc', '#38d4ff']
     },
@@ -50,6 +50,13 @@
       title: '¿Qué es más caro? ¡Una Dragon Lore!',
       subtitle: 'Pista: bastante cara',
       colors: ['#f39c12', '#e74c3c', '#f1c40f']
+    },
+    letrless: {
+      id: 'letrless',
+      image: 'icon_songless.png',
+      title: '¡Letrless! Adivina por la letra',
+      subtitle: 'Palabra por palabra',
+      colors: ['#ff33cc', '#38d4ff', '#f1c40f']
     }
   };
 
@@ -84,7 +91,8 @@
     return p.indexOf('/songless') !== -1 ||
            p.indexOf('/emojless') !== -1 ||
            p.indexOf('/thumbnail-blur') !== -1 ||
-           p.indexOf('/mas-caro') !== -1;
+           p.indexOf('/mas-caro') !== -1 ||
+           p.indexOf('/letrless') !== -1;
   }
 
   function imgPath(file) {

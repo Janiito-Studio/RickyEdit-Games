@@ -694,24 +694,46 @@ footer p {
     border-radius: 50px;
     color: #fff;
     background: rgba(255, 51, 204, 0.18);
-    border: 2px solid rgba(255, 51, 204, 0.5);
+    border: none;
+    position: relative;
     transition: all 0.25s ease;
     text-transform: uppercase;
     letter-spacing: 1px;
     cursor: pointer;
+    outline: none;
+}
+
+.mode-diff-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 2px;
+    background: rgba(255, 51, 204, 0.5);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    transition: background 0.25s ease;
 }
 
 .mode-diff-btn:hover {
     transform: translateY(-2px);
     background: rgba(255, 51, 204, 0.3);
-    border-color: rgba(255, 51, 204, 0.8);
+}
+
+.mode-diff-btn:hover::before {
+    background: rgba(255, 51, 204, 0.8);
 }
 
 .mode-diff-btn.active {
     background: linear-gradient(135deg, var(--yellow), var(--pink));
     color: #0d0d10;
-    border-color: transparent;
     box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
+}
+
+.mode-diff-btn.active::before {
+    background: transparent;
 }
 
 .info-toggle-btn {

@@ -2,38 +2,13 @@
    Rickyedit Games — Leaderboard Styles v2
    ============================================================ */
 
-/* ── Toggle button ─────────────────────────────────────────── */
-.leaderboard-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: linear-gradient(135deg, rgba(255, 51, 204, 0.12), rgba(241, 196, 15, 0.08));
-  border: 1px solid rgba(255, 51, 204, 0.3);
-  border-radius: 14px;
-  color: #fff;
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: 800;
-  padding: 12px 24px;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  position: relative;
-  z-index: 1;
-}
-.leaderboard-toggle .rlb-icon-img { width: 22px; height: 22px; object-fit: contain; border-radius: 4px; }
-.leaderboard-toggle:hover {
-  background: linear-gradient(135deg, rgba(255, 51, 204, 0.22), rgba(241, 196, 15, 0.15));
-  border-color: rgba(255, 51, 204, 0.5);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(255, 51, 204, 0.25);
-}
-
 /* ── Icon images ──────────────────────────────────────────── */
 .rlb-icon-img { width: 1.2em; height: 1.2em; object-fit: contain; vertical-align: middle; }
+.rlb-title .rlb-icon-img { filter: drop-shadow(0 0 6px #ff33cc) brightness(1.4) saturate(2); width: 1.4em; height: 1.4em; }
 .rlb-name-icon .rlb-icon-img { width: 3rem; height: 3rem; border-radius: 12px; }
 
 /* ── Button icons ─────────────────────────────────────────── */
-.mode-diff-btn img { width: 1.2em; height: 1.2em; object-fit: contain; vertical-align: middle; margin-right: 4px; }
+.mode-diff-btn img { width: 1.2em; height: 1.2em; object-fit: contain; vertical-align: middle; margin-right: 4px; pointer-events: none; }
 
 /* ── Panel ─────────────────────────────────────────────────── */
 .leaderboard-panel {
@@ -85,18 +60,6 @@
 .rlb-filter:hover { border-color: var(--pink); color: #fff; }
 .rlb-filter.active { background: rgba(255, 51, 204, 0.15); border-color: var(--pink); color: #fff; }
 .rlb-filter:focus { outline: none; border-color: var(--pink); }
-.rlb-clear-btn {
-  background: rgba(231, 76, 60, 0.1);
-  border: 1px solid rgba(231, 76, 60, 0.3);
-  border-radius: 10px;
-  color: #e74c3c;
-  font-size: 0.85rem;
-  font-weight: 700;
-  padding: 8px 14px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.rlb-clear-btn:hover { background: rgba(231, 76, 60, 0.25); }
 
 /* ── Empty state ───────────────────────────────────────────── */
 .rlb-empty {
@@ -150,6 +113,14 @@
 .rlb-top-1 td.rlb-col-score,
 .rlb-top-2 td.rlb-col-score,
 .rlb-top-3 td.rlb-col-score { font-size: 1rem; }
+
+/* ── Jan developer row ────────────────────────────────────── */
+.rlb-jan-row td {
+  color: rgba(255, 255, 255, 0.3);
+  font-style: italic;
+  border-top: 2px dashed rgba(255, 255, 255, 0.1);
+}
+.rlb-jan-row td.rlb-col-name { color: rgba(255, 255, 255, 0.4); }
 
 /* ── Column widths ─────────────────────────────────────────── */
 .rlb-col-rank     { width: 40px; text-align: center; }
@@ -293,6 +264,94 @@
   box-shadow: 0 12px 30px rgba(255, 51, 204, 0.5);
 }
 
+/* ── Report button ─────────────────────────────────────────── */
+.rlb-report-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 4px 8px;
+  border-radius: 8px;
+  opacity: 0.4;
+  transition: all 0.2s ease;
+}
+.rlb-report-btn:hover {
+  opacity: 1;
+  background: rgba(231, 76, 60, 0.15);
+  transform: scale(1.15);
+}
+.rlb-report-btn.rlb-reported {
+  opacity: 1;
+  cursor: default;
+}
+.rlb-col-report { width: 40px; text-align: center; }
+
+/* ── Admin panel ──────────────────────────────────────────── */
+.rlb-admin-list {
+  max-height: 340px;
+  overflow-y: auto;
+  margin: 12px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.rlb-admin-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(231, 76, 60, 0.08);
+  border: 1px solid rgba(231, 76, 60, 0.2);
+  border-radius: 12px;
+}
+.rlb-admin-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.rlb-admin-name {
+  font-weight: 800;
+  color: #e74c3c;
+  font-size: 1rem;
+  word-break: break-word;
+}
+.rlb-admin-meta {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+.rlb-admin-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.rlb-admin-btn {
+  padding: 6px 14px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.rlb-admin-delete {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}
+.rlb-admin-delete:hover {
+  background: rgba(231, 76, 60, 0.4);
+  transform: translateY(-1px);
+}
+.rlb-admin-keep {
+  background: rgba(46, 204, 113, 0.15);
+  color: #2ecc71;
+}
+.rlb-admin-keep:hover {
+  background: rgba(46, 204, 113, 0.3);
+  transform: translateY(-1px);
+}
+
 /* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 600px) {
   .rlb-header { flex-direction: column; align-items: flex-start; }
@@ -302,4 +361,7 @@
   .rlb-table th, .rlb-table td { padding: 8px 8px; }
   .rlb-col-date, .rlb-col-streak { display: none; }
   .rlb-name-card { padding: 28px 20px; }
+  .rlb-admin-row { flex-direction: column; align-items: flex-start; }
+  .rlb-admin-actions { width: 100%; }
+  .rlb-admin-btn { flex: 1; }
 }
