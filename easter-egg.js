@@ -53,7 +53,7 @@
     },
     letrless: {
       id: 'letrless',
-      image: 'icon_songless.png',
+      image: 'Letrless.png',
       title: '¡Letrless! Adivina por la letra',
       subtitle: 'Palabra por palabra',
       colors: ['#ff33cc', '#38d4ff', '#f1c40f']
