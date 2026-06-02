@@ -6,7 +6,7 @@
   'use strict';
 
   var LS_KEY = 'rlb_easter_eggs';
-  var TOTAL_EGGS = 7;
+  var TOTAL_EGGS = 8;
 
   var EASTER_EGGS = {
     calvo: {
@@ -57,6 +57,13 @@
       title: '¡Letrless! Adivina por la letra',
       subtitle: 'Palabra por palabra',
       colors: ['#ff33cc', '#38d4ff', '#f1c40f']
+    },
+    lgbt: {
+      id: 'lgbt',
+      image: 'Logo_with_LGBT_colors_202606022013.jpeg',
+      title: 'Felicidades, nuevo logo del canal',
+      subtitle: '',
+      colors: ['#e74c3c', '#f39c12', '#f1c40f', '#27c93f', '#38d4ff', '#9b59b6']
     }
   };
 
