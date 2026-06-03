@@ -590,7 +590,36 @@ if (finalizeBtn) {
     });
 }
 
+const finalizeBtnMid = document.getElementById('finalizeBtnMid');
+if (finalizeBtnMid) {
+    finalizeBtnMid.addEventListener('click', () => {
+        playSound('click');
+        const elapsed = thumbblurGameStartTime ? ((Date.now() - thumbblurGameStartTime) / 1000).toFixed(1) : null;
+        const channel = currentChannel;
+        RickyLeaderboard.save('thumbblur', {
+            score: state.score,
+            difficulty: state.isExtreme ? 'extreme' : (state.isEasyMode ? 'easy' : 'normal'),
+            channel,
+            time: elapsed ? parseFloat(elapsed) : null,
+            correct: state.correct || 0,
+            total: state.total || 0,
+            maxStreak: state.maxStreak || 0
+        }, () => {
+            els.reveal.classList.remove('show');
+            startScreen.classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+            state.score = 0;
+            state.streak = 0;
+            state.correct = 0;
+            state.total = 0;
+            thumbblurGameStartTime = null;
+            renderThumbblurLeaderboard();
+        });
+    });
+}
+
 renderThumbblurLeaderboard();
+RickyLeaderboard.onScoresUpdated(function () { renderThumbblurLeaderboard(); });
 
 function renderThumbblurLeaderboard() {
     RickyLeaderboard.render('leaderboardContainer', 'thumbblur', {

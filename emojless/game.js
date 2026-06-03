@@ -31,7 +31,7 @@ const EMOJI_DATA = {
     "fórmula secreta": "🧪🤫🍔📝🔬🧫",
     "ABISMO": "🕳️🌑🧗‍♂️📉😵‍💫🖤",
     "romilar": "💊💐🤒🏥🤢🩸",
-    "Parche": "👁️🩹🚢🏴‍☠️🤕🛠️",
+    "parche": "👁️🩹🚢🏴‍☠️🤕🛠️",
     "Así Es Internet": "🌐💻🤡📱🔥🌍",
     "Querido Youtube": "🎥▶️💌📉💸😡",
     "Dolorfoda": "💔🤕🖤🥀🌧️😭",
@@ -650,7 +650,34 @@ if (finalizeBtn) {
     });
 }
 
+const finalizeBtnMid = document.getElementById('finalizeBtnMid');
+if (finalizeBtnMid) {
+    finalizeBtnMid.addEventListener('click', () => {
+        playSound('click');
+        const elapsed = emojlessGameStartTime ? ((Date.now() - emojlessGameStartTime) / 1000).toFixed(1) : null;
+        RickyLeaderboard.save('emojless', {
+            score: state.score,
+            difficulty: easyMode ? 'easy' : 'normal',
+            time: elapsed ? parseFloat(elapsed) : null,
+            correct: state.correct || 0,
+            total: state.total || 0,
+            maxStreak: state.maxStreak || 0
+        }, () => {
+            document.getElementById('reveal').classList.remove('show');
+            document.getElementById('startScreen').classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+            state.score = 0;
+            state.streak = 0;
+            state.correct = 0;
+            state.total = 0;
+            emojlessGameStartTime = null;
+            renderEmojlessLeaderboard();
+        });
+    });
+}
+
 renderEmojlessLeaderboard();
+RickyLeaderboard.onScoresUpdated(function () { renderEmojlessLeaderboard(); });
 
 function renderEmojlessLeaderboard() {
     RickyLeaderboard.render('leaderboardContainer', 'emojless', {

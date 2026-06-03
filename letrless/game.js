@@ -561,7 +561,34 @@
         });
     }
 
+    var finalizeBtnMid = document.getElementById('finalizeBtnMid');
+    if (finalizeBtnMid) {
+        finalizeBtnMid.addEventListener('click', function () {
+            playSound('click');
+            var elapsed = gameStartTime ? ((Date.now() - gameStartTime) / 1000).toFixed(1) : null;
+            RickyLeaderboard.save('letrless', {
+                score: state.score,
+                difficulty: minWords === 7 ? 'easy' : minWords === 3 ? 'hard' : 'normal',
+                time: elapsed ? parseFloat(elapsed) : null,
+                correct: state.correct || 0,
+                total: state.total || 0,
+                maxStreak: state.maxStreak || 0
+            }, function () {
+                document.getElementById('reveal').classList.remove('show');
+                document.getElementById('startScreen').classList.remove('hide');
+                document.body.style.overflow = 'hidden';
+                state.score = 0;
+                state.streak = 0;
+                state.correct = 0;
+                state.total = 0;
+                gameStartTime = null;
+                renderLetrlessLeaderboard();
+            });
+        });
+    }
+
     renderLetrlessLeaderboard();
+    RickyLeaderboard.onScoresUpdated(function () { renderLetrlessLeaderboard(); });
 
     function renderLetrlessLeaderboard() {
         RickyLeaderboard.render('leaderboardContainer', 'letrless', {

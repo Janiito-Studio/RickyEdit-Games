@@ -39,6 +39,10 @@
   display: block;
   pointer-events: none;
 }
+.rlb-volume-btn:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
 
 /* ── Slider container: hidden, slides in on hover ──────── */
 .rlb-volume-slider-wrap {
@@ -60,10 +64,21 @@
   width: 80px;
   height: 20px !important;
   background: transparent !important;
-  outline: none;
+  outline: none !important;
+  border: none !important;
   cursor: pointer;
   margin: 0;
   padding: 0;
+  box-shadow: none !important;
+}
+.rlb-volume-slider:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.rlb-volume-slider:focus::-webkit-slider-thumb {
+  outline: none !important;
+  box-shadow: 0 0 8px rgba(255, 51, 204, 0.6), 0 0 0 3px rgba(255, 51, 204, 0.12) !important;
 }
 
 /* ── Chrome/Edge: Track ────────────────────────────────── */

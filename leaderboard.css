@@ -114,14 +114,6 @@
 .rlb-top-2 td.rlb-col-score,
 .rlb-top-3 td.rlb-col-score { font-size: 1rem; }
 
-/* ── Jan developer row ────────────────────────────────────── */
-.rlb-jan-row td {
-  color: rgba(255, 255, 255, 0.3);
-  font-style: italic;
-  border-top: 2px dashed rgba(255, 255, 255, 0.1);
-}
-.rlb-jan-row td.rlb-col-name { color: rgba(255, 255, 255, 0.4); }
-
 /* ── Column widths ─────────────────────────────────────────── */
 .rlb-col-rank     { width: 40px; text-align: center; }
 .rlb-col-name     { min-width: 100px; }

@@ -6,7 +6,16 @@
   'use strict';
 
   var LS_KEY = 'rlb_easter_eggs';
-  var TOTAL_EGGS = 8;
+  var TOTAL_EGGS = 7;
+
+  /* Migration: remove letrless from discovered if it exists */
+  try {
+    var _disc = JSON.parse(localStorage.getItem(LS_KEY)) || [];
+    if (_disc.indexOf('letrless') !== -1) {
+      _disc = _disc.filter(function (k) { return k !== 'letrless'; });
+      localStorage.setItem(LS_KEY, JSON.stringify(_disc));
+    }
+  } catch (e) {}
 
   var EASTER_EGGS = {
     calvo: {
@@ -50,13 +59,6 @@
       title: '¿Qué es más caro? ¡Una Dragon Lore!',
       subtitle: 'Pista: bastante cara',
       colors: ['#f39c12', '#e74c3c', '#f1c40f']
-    },
-    letrless: {
-      id: 'letrless',
-      image: 'Letrless.png',
-      title: '¡Letrless! Adivina por la letra',
-      subtitle: 'Palabra por palabra',
-      colors: ['#ff33cc', '#38d4ff', '#f1c40f']
     },
     lgbt: {
       id: 'lgbt',
@@ -202,12 +204,23 @@
     }
 
     function tryCode() {
-      var val = input.value.trim().toLowerCase();
+      var val = input.value.trim();
       if (!val) return;
 
-      if (EASTER_EGGS[val]) {
-        var egg = EASTER_EGGS[val];
-        var isNew = discover(val);
+      /* Check secret notification code first (jan1119 in base64) */
+      if (typeof checkSecretCode === 'function' && checkSecretCode(val)) {
+        input.value = '';
+        feedback.textContent = 'Acceso concedido. Botón de notificaciones activado.';
+        feedback.className = 'rlb-ee-input-feedback success';
+        try { localStorage.setItem('rlb_notif_authorized', '1'); } catch (e) {}
+        showFloatingNotifButton();
+        return;
+      }
+
+      var valLower = val.toLowerCase();
+      if (EASTER_EGGS[valLower]) {
+        var egg = EASTER_EGGS[valLower];
+        var isNew = discover(valLower);
         if (isNew) {
           showEggReveal(egg);
           var newCount = getDiscovered().length;
@@ -294,6 +307,339 @@
       });
     });
   }
+
+  /* ── Secret Notification System (Jan's encrypted easter egg) ── */
+  var NOTIF_LS_KEY = 'rlb_notifications';
+  var NOTIF_AUTH_KEY = 'rlb_notif_authorized';
+  var NOTIF_SHOWN_KEY = 'rlb_notif_last_shown';
+  /* jan1119 encoded in base64 */
+  var SECRET_CODE_B64 = 'amFuMTExOQ==';
+
+  /* Firebase config for cross-device notifications */
+  var FIREBASE_DB_URL = 'https://rickyedit-notifications-default-rtdb.firebaseio.com';
+
+  /* Connection state tracking */
+  var _fbConnected = false;
+  var _fbFailCount = 0;
+  var _fbMaxRetries = 3;
+  var _fbRetryDelay = 1000; /* ms between retries */
+
+  function checkSecretCode(val) {
+    try { return btoa(val.trim()) === SECRET_CODE_B64; } catch (e) { return false; }
+  }
+
+  function isNotifAuthorized() {
+    try { return localStorage.getItem(NOTIF_AUTH_KEY) === '1'; } catch (e) { return false; }
+  }
+
+  /* ── Connection indicator (only visible for Jan) ── */
+  function _updateConnectionDot() {
+    if (!isNotifAuthorized()) return;
+    var dot = document.getElementById('rlbNotifDot');
+    if (!dot) {
+      dot = document.createElement('div');
+      dot.id = 'rlbNotifDot';
+      dot.title = 'Estado de Firebase';
+      dot.style.cssText = 'position:fixed;bottom:82px;right:38px;z-index:99999;width:12px;height:12px;border-radius:50%;border:2px solid #18191c;transition:background 0.3s ease;';
+      document.body.appendChild(dot);
+    }
+    dot.style.background = _fbConnected ? '#2ecc71' : '#e74c3c';
+    dot.title = _fbConnected ? 'Firebase: Conectado' : 'Firebase: Sin conexión';
+  }
+
+  function _testFirebaseConnection() {
+    return fetch(FIREBASE_DB_URL + '/notifications.json?shallow=true')
+      .then(function (r) {
+        _fbConnected = r.ok;
+        _fbFailCount = 0;
+        _updateConnectionDot();
+        return r.ok;
+      })
+      .catch(function () {
+        _fbConnected = false;
+        _fbFailCount++;
+        _updateConnectionDot();
+        return false;
+      });
+  }
+
+  /* ── Cleanup old notifications (>24h) in Firebase ── */
+  function _cleanupOldNotifications() {
+    var cutoff = Date.now() - (24 * 60 * 60 * 1000);
+    fetch(FIREBASE_DB_URL + '/notifications.json')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data || typeof data !== 'object') return;
+        var keys = Object.keys(data);
+        var updates = {};
+        var hasOld = false;
+        for (var i = 0; i < keys.length; i++) {
+          var n = data[keys[i]];
+          if (n && n.ts && n.ts < cutoff) {
+            updates['/notifications/' + keys[i]] = null;
+            hasOld = true;
+          }
+        }
+        if (hasOld) {
+          fetch(FIREBASE_DB_URL + '.json', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updates)
+          }).catch(function () {});
+        }
+      })
+      .catch(function () {});
+  }
+
+  function showNotificationModal() {
+    var existing = document.getElementById('rlbNotifModal');
+    if (existing) existing.remove();
+
+    var modal = document.createElement('div');
+    modal.id = 'rlbNotifModal';
+    modal.className = 'rlb-ee-modal';
+    modal.innerHTML =
+      '<div class="rlb-ee-card">' +
+        '<div class="rlb-ee-header">' +
+          '<h2 class="rlb-ee-title">Enviar Notificación</h2>' +
+          '<button class="rlb-ee-close" id="rlbNotifClose" type="button">×</button>' +
+        '</div>' +
+        '<div class="rlb-ee-body">' +
+          '<p style="color:var(--muted);font-size:0.9rem;margin-bottom:14px;">Envía una notificación a todos los jugadores conectados.</p>' +
+          '<textarea id="rlbNotifMsg" class="rlb-ee-input" rows="3" placeholder="Escribe el mensaje..." maxlength="200" style="width:100%;resize:vertical;font-family:inherit;"></textarea>' +
+          '<div class="rlb-ee-input-feedback" id="rlbNotifFeedback"></div>' +
+          '<div class="rlb-ee-input-row" style="margin-top:12px;">' +
+            '<button id="rlbNotifSend" class="rlb-ee-submit" type="button" style="width:100%;border-radius:12px;">Enviar</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(modal);
+    requestAnimationFrame(function () { modal.classList.add('show'); });
+
+    var closeBtn = document.getElementById('rlbNotifClose');
+    var sendBtn = document.getElementById('rlbNotifSend');
+    var msgInput = document.getElementById('rlbNotifMsg');
+    var feedback = document.getElementById('rlbNotifFeedback');
+
+    function close() {
+      modal.classList.remove('show');
+      setTimeout(function () { modal.remove(); }, 300);
+    }
+
+    closeBtn.addEventListener('click', close);
+    modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+
+    sendBtn.addEventListener('click', function () {
+      var msg = msgInput.value.trim();
+      if (!msg) {
+        feedback.textContent = 'Escribe un mensaje.';
+        feedback.className = 'rlb-ee-input-feedback error';
+        return;
+      }
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Enviando...';
+
+      var notification = { msg: msg, from: 'Jan', ts: Date.now() };
+
+      /* Send to Firebase with retry (cross-device) */
+      var retryCount = 0;
+      function trySend() {
+        fetch(FIREBASE_DB_URL + '/notifications.json', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(notification)
+        }).then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          _fbConnected = true;
+          _fbFailCount = 0;
+          _updateConnectionDot();
+          feedback.textContent = 'Notificación enviada a todos los dispositivos.';
+          feedback.className = 'rlb-ee-input-feedback success';
+          setTimeout(close, 1500);
+        }).catch(function () {
+          _fbConnected = false;
+          _fbFailCount++;
+          _updateConnectionDot();
+          retryCount++;
+          if (retryCount < _fbMaxRetries) {
+            sendBtn.textContent = 'Reintentando... (' + retryCount + '/' + _fbMaxRetries + ')';
+            setTimeout(trySend, _fbRetryDelay * retryCount);
+          } else {
+            /* Fallback to localStorage */
+            try {
+              var notifs = JSON.parse(localStorage.getItem(NOTIF_LS_KEY)) || [];
+              notifs.push(notification);
+              if (notifs.length > 50) notifs = notifs.slice(-50);
+              localStorage.setItem(NOTIF_LS_KEY, JSON.stringify(notifs));
+            } catch (e) {}
+            feedback.textContent = 'Enviado (solo local). Firebase no disponible.';
+            feedback.className = 'rlb-ee-input-feedback error';
+            setTimeout(close, 1500);
+          }
+        });
+      }
+      trySend();
+    });
+  }
+
+  function showFloatingNotifButton() {
+    if (document.getElementById('rlbNotifFloatBtn')) return;
+    var btn = document.createElement('button');
+    btn.id = 'rlbNotifFloatBtn';
+    btn.type = 'button';
+    btn.title = 'Enviar notificación';
+    btn.textContent = '\uD83D\uDD14';
+    btn.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:99999;width:52px;height:52px;border-radius:50%;border:2px solid rgba(241,196,15,0.5);background:linear-gradient(135deg,#18191c,#23242a);color:#fff;font-size:1.5rem;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,0.5);transition:transform 0.2s ease,box-shadow 0.2s ease;display:flex;align-items:center;justify-content:center;';
+    btn.addEventListener('mouseenter', function () { btn.style.transform = 'scale(1.1)'; btn.style.boxShadow = '0 6px 28px rgba(241,196,15,0.3)'; });
+    btn.addEventListener('mouseleave', function () { btn.style.transform = 'scale(1)'; btn.style.boxShadow = '0 4px 20px rgba(0,0,0,0.5)'; });
+    btn.addEventListener('click', function (e) { e.stopPropagation(); showNotificationModal(); });
+    document.body.appendChild(btn);
+    _updateConnectionDot();
+    _testFirebaseConnection();
+  }
+
+  /* ── Stacked persistent toasts ── */
+  var _activeToasts = [];
+  var _toastBaseTop = 20;
+
+  function showPersistentToast(message) {
+    var container = document.getElementById('rlbNotifToastContainer');
+    if (!container) {
+      container = document.createElement('div');
+      container.id = 'rlbNotifToastContainer';
+      container.style.cssText = 'position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:99999;display:flex;flex-direction:column;align-items:center;gap:10px;pointer-events:none;padding-top:' + _toastBaseTop + 'px;';
+      document.body.appendChild(container);
+    }
+
+    var toast = document.createElement('div');
+    toast.className = 'rlb-notif-toast-item';
+    toast.style.cssText = 'background:linear-gradient(135deg,#18191c,#23242a);color:#fff;padding:14px 24px;border-radius:14px;border:1px solid rgba(241,196,15,0.4);box-shadow:0 8px 32px rgba(0,0,0,0.6);font-family:inherit;font-size:0.95rem;font-weight:700;max-width:90vw;min-width:300px;text-align:center;opacity:0;transition:opacity 0.3s ease;display:flex;align-items:center;gap:10px;pointer-events:auto;';
+
+    var textSpan = document.createElement('span');
+    textSpan.style.cssText = 'flex:1;';
+    textSpan.textContent = message;
+    toast.appendChild(textSpan);
+
+    var closeBtn = document.createElement('button');
+    closeBtn.textContent = '\u00D7';
+    closeBtn.style.cssText = 'background:none;border:none;color:#b9bbbe;font-size:1.3rem;cursor:pointer;padding:0 0 0 8px;line-height:1;flex-shrink:0;';
+    closeBtn.addEventListener('click', function () { _removeToast(toast); });
+    toast.appendChild(closeBtn);
+
+    container.appendChild(toast);
+    _activeToasts.push(toast);
+    requestAnimationFrame(function () { toast.style.opacity = '1'; });
+
+    /* Auto-dismiss after 8 seconds */
+    setTimeout(function () { _removeToast(toast); }, 8000);
+  }
+
+  function _removeToast(toast) {
+    if (!toast || !toast.parentNode) return;
+    toast.style.opacity = '0';
+    setTimeout(function () {
+      if (toast.parentNode) toast.parentNode.removeChild(toast);
+      _activeToasts = _activeToasts.filter(function (t) { return t !== toast; });
+    }, 300);
+  }
+
+  /* Listen for new notifications from Firebase */
+  var _lastNotifTs = parseInt(localStorage.getItem(NOTIF_SHOWN_KEY) || '0', 10);
+  var _notifInitialized = false;
+  var _pollRetryCount = 0;
+
+  function pollFirebase() {
+    fetch(FIREBASE_DB_URL + '/notifications.json')
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (data) {
+        _fbConnected = true;
+        _fbFailCount = 0;
+        _pollRetryCount = 0;
+        _updateConnectionDot();
+
+        if (!data || typeof data !== 'object') return;
+        var keys = Object.keys(data);
+        if (!keys.length) return;
+
+        /* Collect ALL new notifications (not just the latest) */
+        var newNotifs = [];
+        for (var i = 0; i < keys.length; i++) {
+          var n = data[keys[i]];
+          if (n && n.ts && n.ts > _lastNotifTs) newNotifs.push(n);
+        }
+        if (!newNotifs.length) return;
+
+        /* Sort by timestamp ascending */
+        newNotifs.sort(function (a, b) { return a.ts - b.ts; });
+
+        /* On first poll, just set the baseline without showing old notifications */
+        if (!_notifInitialized) {
+          _notifInitialized = true;
+          var newest = newNotifs[newNotifs.length - 1];
+          _lastNotifTs = newest.ts;
+          localStorage.setItem(NOTIF_SHOWN_KEY, String(newest.ts));
+          return;
+        }
+
+        /* Show all new notifications stacked */
+        for (var j = 0; j < newNotifs.length; j++) {
+          showPersistentToast('Notificación de Jan: ' + newNotifs[j].msg);
+        }
+        _lastNotifTs = newNotifs[newNotifs.length - 1].ts;
+        localStorage.setItem(NOTIF_SHOWN_KEY, String(_lastNotifTs));
+      })
+      .catch(function () {
+        _fbConnected = false;
+        _fbFailCount++;
+        _pollRetryCount++;
+        _updateConnectionDot();
+
+        /* Retry a few times before giving up */
+        if (_pollRetryCount < _fbMaxRetries) {
+          /* Will retry on next poll cycle (3s interval) */
+        } else if (_pollRetryCount === _fbMaxRetries) {
+          /* Mark as disconnected after max retries */
+          _updateConnectionDot();
+        }
+
+        /* Fallback: check localStorage for notifications */
+        if (_notifInitialized) {
+          try {
+            var localNotifs = JSON.parse(localStorage.getItem(NOTIF_LS_KEY)) || [];
+            for (var k = 0; k < localNotifs.length; k++) {
+              if (localNotifs[k].ts && localNotifs[k].ts > _lastNotifTs) {
+                showPersistentToast('Notificación (local): ' + localNotifs[k].msg);
+              }
+            }
+          } catch (e) {}
+        }
+      });
+  }
+
+  /* Init on load */
+  function _notifInit() {
+    if (isNotifAuthorized()) showFloatingNotifButton();
+    /* Test Firebase connection on startup */
+    _testFirebaseConnection();
+    /* Cleanup old notifications on startup */
+    _cleanupOldNotifications();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', _notifInit);
+  } else {
+    _notifInit();
+  }
+
+  /* Poll Firebase every 3 seconds for new notifications */
+  setInterval(pollFirebase, 3000);
+  pollFirebase();
+
+  /* Cleanup old notifications every 10 minutes */
+  setInterval(_cleanupOldNotifications, 10 * 60 * 1000);
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', setupTripleClick);

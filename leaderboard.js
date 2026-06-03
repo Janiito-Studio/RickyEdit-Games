@@ -10,8 +10,9 @@
   const NAME_KEY = 'rlb_player_name';
   const PLAYER_ID_KEY = 'rlb_player_id';
   const REPORTED_KEY = 'rlb_reported_names';
-  const GAMES = ['songless', 'emojless', 'thumbblur', 'mascaro'];
+  const GAMES = ['songless', 'emojless', 'thumbblur', 'mascaro', 'letrless'];
   const REPORT_WEBHOOK = 'https://discord.com/api/webhooks/1509215622310006915/9kqCW6JMtnNJqUqJALLfcxiBbcAK6_bLwqbANAPYKBp8Kb928VcrIU8xHCwrQn2dp91g';
+  const FIREBASE_DB_URL = 'https://rickyedit-notifications-default-rtdb.firebaseio.com';
 
   function storageKey(gameId) { return LS_PREFIX + gameId; }
 
@@ -22,6 +23,96 @@
 
   function saveScores(gameId, arr) {
     localStorage.setItem(storageKey(gameId), JSON.stringify(arr));
+  }
+
+  /* ── Firebase sync (with retry) ───────────────────────── */
+  var _fbSyncRetries = {};
+  var _fbSyncMaxRetries = 3;
+
+  function syncToFirebase(gameId) {
+    var scores = loadScores(gameId);
+    if (!_fbSyncRetries[gameId]) _fbSyncRetries[gameId] = 0;
+
+    /* Fetch remote first, merge, then PUT the merged result */
+    fetch(FIREBASE_DB_URL + '/leaderboard/' + gameId + '.json')
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (remoteScores) {
+        var merged = mergeScores(scores, Array.isArray(remoteScores) ? remoteScores : []);
+        saveScores(gameId, merged);
+        _fbSyncRetries[gameId] = 0;
+        return fetch(FIREBASE_DB_URL + '/leaderboard/' + gameId + '.json', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(merged)
+        });
+      })
+      .catch(function () {
+        _fbSyncRetries[gameId]++;
+        if (_fbSyncRetries[gameId] <= _fbSyncMaxRetries) {
+          /* Retry after delay */
+          setTimeout(function () { syncToFirebase(gameId); }, 2000 * _fbSyncRetries[gameId]);
+        } else {
+          /* Fallback: just push local scores */
+          _fbSyncRetries[gameId] = 0;
+          fetch(FIREBASE_DB_URL + '/leaderboard/' + gameId + '.json', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(scores)
+          }).catch(function () {});
+        }
+      });
+  }
+
+  var _fbPullRetries = {};
+
+  function syncFromFirebase(gameId, callback) {
+    if (!_fbPullRetries[gameId]) _fbPullRetries[gameId] = 0;
+
+    fetch(FIREBASE_DB_URL + '/leaderboard/' + gameId + '.json')
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (remoteScores) {
+        _fbPullRetries[gameId] = 0;
+        if (!remoteScores || !Array.isArray(remoteScores)) {
+          if (callback) callback();
+          return;
+        }
+        var localScores = loadScores(gameId);
+        var merged = mergeScores(localScores, remoteScores);
+        saveScores(gameId, merged);
+        if (callback) callback();
+      })
+      .catch(function () {
+        _fbPullRetries[gameId]++;
+        if (_fbPullRetries[gameId] <= _fbSyncMaxRetries) {
+          /* Retry after delay */
+          setTimeout(function () { syncFromFirebase(gameId, callback); }, 2000 * _fbPullRetries[gameId]);
+        } else {
+          _fbPullRetries[gameId] = 0;
+          if (callback) callback();
+        }
+      });
+  }
+
+  function mergeScores(local, remote) {
+    var best = {};
+    local.forEach(function (s) {
+      var pid = s.playerId || s.name || '';
+      if (!best[pid] || (s.score || 0) > (best[pid].score || 0)) best[pid] = s;
+    });
+    remote.forEach(function (s) {
+      var pid = s.playerId || s.name || '';
+      if (!best[pid] || (s.score || 0) > (best[pid].score || 0)) best[pid] = s;
+    });
+    var merged = Object.values(best);
+    merged.sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
+    if (merged.length > 100) merged.length = 100;
+    return merged;
   }
 
   function escapeHtml(value) {
@@ -358,37 +449,84 @@
 
   /* ── Report System ─────────────────────────────────────── */
   function reportName(name, gameId) {
-    if (!name || name === 'Anónimo' || name === 'Jan 🐼') return;
+    if (!name || name === 'Anónimo') return;
     const reporter = getSavedName() || getPlayerId();
     const added = addReportedName(name, reporter, gameId);
     if (!added) return;
 
-    /* Send webhook to Discord */
+    /* Sync reported names to Firebase */
+    syncReportedToFirebase();
+
+    /* Send webhook to Discord with delete button */
     try {
+      const adminUrl = window.location.origin + window.location.pathname + '#admin';
       const embed = {
         title: '🚨 Nombre reportado en el leaderboard',
         color: 0xff3333,
         fields: [
           { name: '📛 Nombre reportado', value: '`' + name + '`', inline: true },
           { name: '🎮 Juego', value: gameId || 'Desconocido', inline: true },
-          { name: '👤 Reportado por', value: reporter, inline: true },
-          { name: '⚠️ Acción', value: 'Revisa y elimina o conserva en el panel de administración (`#admin`)' }
+          { name: '👤 Reportado por', value: reporter, inline: true }
         ],
         timestamp: new Date().toISOString()
+      };
+      const payload = {
+        embeds: [embed],
+        components: [{
+          type: 1,
+          components: [{
+            type: 2,
+            style: 4,
+            label: 'Eliminar nombre',
+            url: adminUrl
+          }]
+        }]
       };
       fetch(REPORT_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ embeds: [embed] })
+        body: JSON.stringify(payload)
       }).catch(() => {});
     } catch (e) {}
+  }
 
-    /* Remove from all leaderboards */
-    GAMES.forEach(g => {
-      const scores = loadScores(g);
-      const filtered = scores.filter(s => s.name && s.name.toLowerCase() !== name.toLowerCase());
-      if (filtered.length !== scores.length) saveScores(g, filtered);
+  /* ── Reported Names Firebase sync (with retry) ────────── */
+  var _reportedSyncRetry = 0;
+
+  function syncReportedToFirebase() {
+    var reported = getReportedNames();
+    fetch(FIREBASE_DB_URL + '/reported_names.json', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(reported)
+    }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      _reportedSyncRetry = 0;
+    }).catch(function () {
+      _reportedSyncRetry++;
+      if (_reportedSyncRetry <= _fbSyncMaxRetries) {
+        setTimeout(syncReportedToFirebase, 2000 * _reportedSyncRetry);
+      } else {
+        _reportedSyncRetry = 0;
+      }
     });
+  }
+
+  function syncReportedFromFirebase(callback) {
+    fetch(FIREBASE_DB_URL + '/reported_names.json')
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function (data) {
+        if (data && Array.isArray(data)) {
+          localStorage.setItem(REPORTED_KEY, JSON.stringify(data));
+        }
+        if (callback) callback();
+      })
+      .catch(function () {
+        if (callback) callback();
+      });
   }
 
   /* ── Admin Panel ───────────────────────────────────────── */
@@ -571,9 +709,17 @@
         data.date = data.date || new Date().toISOString();
         const scores = loadScores(gameId);
         scores.push(data);
-        scores.sort((a, b) => (b.score || 0) - (a.score || 0));
-        if (scores.length > 100) scores.length = 100;
-        saveScores(gameId, scores);
+        /* Keep only best score per player */
+        const best = {};
+        scores.forEach(function (s) {
+          var pid = s.playerId || s.name || '';
+          if (!best[pid] || (s.score || 0) > (best[pid].score || 0)) best[pid] = s;
+        });
+        const deduped = Object.values(best);
+        deduped.sort((a, b) => (b.score || 0) - (a.score || 0));
+        if (deduped.length > 100) deduped.length = 100;
+        saveScores(gameId, deduped);
+        syncToFirebase(gameId);
         if (callback) callback(data);
       };
 
@@ -610,8 +756,8 @@
       const maxRows = opts.maxRows || 20;
       const columns = opts.columns || ['rank', 'name', 'correct', 'total', 'percent', 'time', 'difficulty', 'date'];
 
-      const diffLabels = { easy: '<img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado', normal: '<img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal', extreme: '<img src="../Extremo.png" alt="" class="rlb-icon-img"> Extremo', none: '—' };
-      const diffKeys = opts.difficulties || ['easy', 'normal', 'extreme'];
+      const diffLabels = { easy: '<img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado', normal: '<img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal', extreme: '<img src="../Extremo.png" alt="" class="rlb-icon-img"> Extremo', hard: '<img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Difícil', none: '—' };
+      const diffKeys = opts.difficulties || ['easy', 'normal', 'extreme', 'hard'];
       const channelLabels = opts.channels || {};
       const channelKeys = Object.keys(channelLabels);
 
@@ -706,7 +852,7 @@
                 case 'total': val = s.total != null ? s.total : '—'; break;
                 case 'percent': val = pct + '%'; break;
                 case 'report':
-                  if (isOwn || s.name === 'Jan 🐼') {
+                  if (isOwn) {
                     val = '';
                   } else {
                     val = `<button class="rlb-report-btn" data-name="${escapeHtml(s.name || '')}" title="Reportar nombre">⚠️</button>`;
@@ -719,28 +865,7 @@
           });
         }
 
-        /* Jan row */
-        html += `<tr class="rlb-jan-row">`;
-        allCols.forEach(c => {
-          let val = '';
-          switch (c) {
-            case 'rank': val = '—'; break;
-            case 'name': val = 'Jan 🐼'; break;
-            case 'score': val = '—'; break;
-            case 'difficulty': val = '🐼'; break;
-            case 'channel': val = '—'; break;
-            case 'round': val = '—'; break;
-            case 'time': val = '🐼'; break;
-            case 'date': val = '—'; break;
-            case 'streak': val = '—'; break;
-            case 'correct': val = '—'; break;
-            case 'total': val = '—'; break;
-            case 'percent': val = '—'; break;
-            case 'report': val = ''; break;
-          }
-          html += `<td class="rlb-col-${c}">${val}</td>`;
-        });
-        html += `</tr>`;
+
 
         html += `</tbody></table></div>`;
 
@@ -780,4 +905,22 @@
   } else {
     checkAdminHash();
   }
+
+  /* ── Firebase periodic sync (every 15s) ──────────────────── */
+  function syncAllFromFirebase() {
+    var pending = GAMES.length;
+    GAMES.forEach(function (g) {
+      syncFromFirebase(g, function () {
+        if (--pending === 0) window.RickyLeaderboard._fireScoreUpdate();
+      });
+    });
+  }
+  setInterval(syncAllFromFirebase, 15000);
+  /* Initial sync after a short delay so game renderers are ready */
+  setTimeout(syncAllFromFirebase, 2000);
+
+  /* Allow games to register a callback for live leaderboard refresh */
+  var _scoreUpdateCallbacks = [];
+  window.RickyLeaderboard.onScoresUpdated = function (fn) { _scoreUpdateCallbacks.push(fn); };
+  window.RickyLeaderboard._fireScoreUpdate = function () { _scoreUpdateCallbacks.forEach(function (fn) { fn(); }); };
 })();

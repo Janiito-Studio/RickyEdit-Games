@@ -31,8 +31,8 @@ window.RICKY_SONGS = [
   { id: "ihsNu6o0qPM", title: "mansana - rickyedit", duration: 170, year: 2023 },
   { id: "mNy3RIaRBzI", title: "fórmula secreta - rickyedit", duration: 194, year: 2023 },
   { id: "TG8l6Uevzkg", title: "ABISMO - magus x rickyedit", duration: 154, year: 2022 },
-  { id: "EymO8iWd2m8", title: "romilar - dripseasonX ft. rickyedit", duration: 181, year: 2022 },
-  { id: "T89gq41LuAo", title: "Parche - dripseasonX ft. rickyedit", duration: 150, year: 2023 },
+  { id: "T89gq41LuAo", title: "romilar - dripseasonX ft. rickyedit", duration: 181, year: 2022 },
+  { id: "EymO8iWd2m8", title: "Parche - dripseasonX ft. rickyedit", duration: 150, year: 2023 },
 
   // ── ERA YOUTUBE / ANTIGUAS ───────────────────────────────────────────────
   { id: "kcIhInRWtJ0", title: "Así Es Internet (2015) - rickyedit", duration: 136, year: 2015 },
