@@ -1145,6 +1145,13 @@
             transform: translateY(-1px) scale(1.02);
         }
 
+        .mode-start-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
         .mode-diff-btn {
             font-size: 1.1rem;
             font-weight: 900;
@@ -1490,7 +1497,7 @@
                             <div class="mode-year-chips" id="songsYearChips"></div>
                         </div>
                         <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
-                        <button class="mode-start-btn" id="startSongsGameBtn" type="button">Empezar</button>
+                        <button class="mode-start-btn" id="startSongsGameBtn" type="button" disabled>Empezar</button>
                     </div>
                 </div>
             </div>
@@ -1799,9 +1806,9 @@
                     Has completado el reto sin repetir ningún vídeo. ¡Eres un verdadero experto en el contenido de Ricky!
                 </p>
                 <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
-                    <button id="completionRestartBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px;">🔁 Volver a empezar</button>
-                    <button id="completionFinalizeBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px; background: linear-gradient(135deg, var(--yellow), var(--pink));">📝 Finalizar</button>
-                    <button id="completionHomeBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px; background: rgba(255,255,255,0.1); color: var(--muted); border: 1px solid var(--line); box-shadow: none;">🏠 Volver al inicio</button>
+                    <button id="completionRestartBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px;"><img src="../Reiniciar.png" alt="" class="rlb-icon-img" style="width:1.2em;height:1.2em;vertical-align:middle;margin-right:6px;"> Volver a empezar</button>
+                    <button id="completionFinalizeBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px; background: linear-gradient(135deg, var(--yellow), var(--pink));"><img src="../Finalizar.png" alt="" class="rlb-icon-img" style="width:1.2em;height:1.2em;vertical-align:middle;margin-right:6px;"> Finalizar</button>
+                    <button id="completionHomeBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px; background: rgba(255,255,255,0.1); color: var(--muted); border: 1px solid var(--line); box-shadow: none;"><img src="../Inicio.png" alt="" class="rlb-icon-img" style="width:1.2em;height:1.2em;vertical-align:middle;margin-right:6px;"> Volver al inicio</button>
                 </div>
                 <p style="color: var(--yellow); font-size: 0.85rem; font-weight: 700; margin-top: 16px;">📌 Dale a "Finalizar" para guardar tu puntuación en el leaderboard.</p>
             </div>
@@ -1993,6 +2000,9 @@
                 modestbranding: 1,
                 playsinline: 1,
                 rel: 0,
+                iv_load_policy: 3,
+                cc_load_policy: 0,
+                hl: "es",
             };
 
             if (
@@ -2069,8 +2079,8 @@
         function loadYouTubeApi() {
             // YouTube blocks ALL embeds from file:// — show a clear warning immediately
             if (location.protocol === "file:") {
-                els.status.textContent =
-                    "🚫 Abre el juego desde un servidor HTTP, no desde file://. Arrastra la carpeta a VS Code y usa Live Server, o ejecuta: npx serve .";
+                els.status.innerHTML =
+                    '<img src="../Aviso.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> Abre el juego desde un servidor HTTP, no desde file://. Arrastra la carpeta a VS Code y usa Live Server, o ejecuta: npx serve .';
                 els.playBtn.disabled = true;
                 // Disable start buttons too
                 [
@@ -2092,8 +2102,8 @@
                 const warn = document.createElement("p");
                 warn.style.cssText =
                     "color:#ff5555;font-weight:bold;margin-top:16px;padding:12px;background:rgba(255,85,85,0.15);border-radius:8px;max-width:400px;text-align:center";
-                warn.textContent =
-                    "🚫 YouTube no permite embeds desde file://. Sirve la carpeta con un servidor local (VS Code Live Server, npx serve ., etc.)";
+                warn.innerHTML =
+                    '<img src="../Aviso.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> YouTube no permite embeds desde file://. Sirve la carpeta con un servidor local (VS Code Live Server, npx serve ., etc.)';
                 els.startScreen.appendChild(warn);
                 return;
             }
@@ -2202,9 +2212,12 @@
             });
 
             // ---- Accordion toggles ----
-            let mainYear = null;
-            let songsYear = null;
-            let secondaryYear = null;
+            let songsSelectedYears = new Set();
+            let songsTodasActive = false;
+
+            function updateStartBtnState() {
+                els.startSongsGameBtn.disabled = !songsTodasActive && songsSelectedYears.size === 0;
+            }
 
             function setupAccordion(
                 toggleId,
@@ -2262,15 +2275,39 @@
                     chipsEl.addEventListener("click", (e) => {
                         const chip = e.target.closest(".year-chip");
                         if (!chip) return;
-                        chipsEl
-                            .querySelectorAll(".year-chip")
-                            .forEach((c) => c.classList.remove("active"));
-                        chip.classList.add("active");
-                        onYearChange(
-                            chip.dataset.year
-                                ? Number(chip.dataset.year)
-                                : null,
-                        );
+                        const yearVal = chip.dataset.year;
+                        if (yearVal === "") {
+                            /* "Todas" — select all available years */
+                            const allYears = chipsEl.querySelectorAll(".year-chip:not([data-year=''])");
+                            const allAlreadyActive = allYears.length === chipsEl.querySelectorAll(".year-chip.active:not([data-year=''])").length;
+                            chipsEl.querySelectorAll(".year-chip").forEach(c => c.classList.remove("active"));
+                            if (!allAlreadyActive) {
+                                chip.classList.add("active");
+                                allYears.forEach(c => c.classList.add("active"));
+                                onYearChange(null); /* null = all */
+                                if (chipsId === "songsYearChips") songsTodasActive = true;
+                            } else {
+                                onYearChange(new Set()); /* empty = none */
+                                if (chipsId === "songsYearChips") songsTodasActive = false;
+                            }
+                        } else {
+                            /* Individual year — toggle */
+                            chipsEl.querySelector(".year-chip[data-year='']").classList.remove("active");
+                            if (chipsId === "songsYearChips") songsTodasActive = false;
+                            chip.classList.toggle("active");
+                            const selected = new Set();
+                            chipsEl.querySelectorAll(".year-chip.active:not([data-year=''])").forEach(c => {
+                                selected.add(Number(c.dataset.year));
+                            });
+                            /* If all individual years are selected, also highlight "Todas" */
+                            const allIndiv = chipsEl.querySelectorAll(".year-chip:not([data-year=''])");
+                            if (selected.size === allIndiv.length) {
+                                chipsEl.querySelector(".year-chip[data-year='']").classList.add("active");
+                                if (chipsId === "songsYearChips") songsTodasActive = true;
+                            }
+                            onYearChange(selected);
+                        }
+                        if (chipsId === "songsYearChips") updateStartBtnState();
                     });
                 }
             }
@@ -2278,25 +2315,25 @@
             setupAccordion(
                 "mainModeToggle",
                 "mainModeCard",
-                "mainYearChips",
-                (y) => {
-                    mainYear = y;
-                },
+                null,
+                () => {},
             );
             setupAccordion(
                 "secondaryModeToggle",
                 "secondaryModeCard",
-                "secondaryYearChips",
-                (y) => {
-                    secondaryYear = y;
-                },
+                null,
+                () => {},
             );
             setupAccordion(
                 "songsModeToggle",
                 "songsModeCard",
                 "songsYearChips",
                 (y) => {
-                    songsYear = y;
+                    if (y === null) {
+                        songsSelectedYears = new Set();
+                    } else {
+                        songsSelectedYears = y;
+                    }
                 },
             );
             setupAccordion(
@@ -2323,7 +2360,10 @@
                 state.isEasyMode = isEasy;
                 state.isSecondaryMode = customPool === window.RICKY_SECONDARY;
                 state.isSongsMode = customPool === window.RICKY_SONGS;
-                state.yearFilter = yearFilter || null;
+                /* yearFilter is now a Set — empty = all, non-empty = filter */
+                state.yearFilter = (yearFilter instanceof Set && yearFilter.size > 0)
+                    ? new Set(yearFilter)
+                    : null;
                 state.noRepeat = !!noRepeat;
                 state.playedSongs.clear();
 
@@ -2414,7 +2454,7 @@
             });
             els.startMainGameBtn.addEventListener("click", () => {
                 playSound('success');
-                startGame(mainEasyMode, null, mainYear, false);
+                startGame(mainEasyMode, null, null, false);
             });
 
             // ---- Canal Secundario buttons ----
@@ -2432,7 +2472,7 @@
             });
             els.startSecondaryGameBtn.addEventListener("click", () => {
                 playSound('success');
-                startGame(secondaryEasyMode, window.RICKY_SECONDARY, secondaryYear, false);
+                startGame(secondaryEasyMode, window.RICKY_SECONDARY, null, false);
             });
 
             // ---- Canciones buttons ----
@@ -2464,7 +2504,7 @@
             });
             els.startSongsGameBtn.addEventListener("click", () => {
                 playSound('click');
-                startGame(songsEasyMode, window.RICKY_SONGS, songsYear, songsNoRepeat);
+                startGame(songsEasyMode, window.RICKY_SONGS, songsTodasActive ? null : songsSelectedYears, songsNoRepeat);
             });
 
             // ---- Los 2 canales buttons ----
@@ -2537,44 +2577,6 @@
         }
 
         function buildYearChips() {
-            // ---- Canal Principal ----
-            const yearSet = new Set();
-            state.pool.forEach((v) => yearSet.add(v.year));
-            const mainYears = [...yearSet].sort((a, b) => b - a);
-            const mainEl = document.getElementById("mainYearChips");
-            if (mainEl) {
-                mainEl.innerHTML =
-                    `<button class="year-chip active" data-year="">Todos</button>` +
-                    mainYears
-                        .map(
-                            (y) =>
-                                `<button class="year-chip" data-year="${y}">${y}</button>`,
-                        )
-                        .join("");
-            }
-
-            // ---- Canal Secundario ----
-            const secondaryPool = sanitizeVideos(
-                window.RICKY_SECONDARY || [],
-            );
-            const secondaryYearSet = new Set();
-            secondaryPool.forEach((v) => secondaryYearSet.add(v.year));
-            const secondaryYears = [...secondaryYearSet].sort(
-                (a, b) => b - a,
-            );
-            const secondaryEl =
-                document.getElementById("secondaryYearChips");
-            if (secondaryEl) {
-                secondaryEl.innerHTML =
-                    `<button class="year-chip active" data-year="">Todos</button>` +
-                    secondaryYears
-                        .map(
-                            (y) =>
-                                `<button class="year-chip" data-year="${y}">${y}</button>`,
-                        )
-                        .join("");
-            }
-
             // ---- Canciones ----
             const songPool = sanitizeVideos(window.RICKY_SONGS || []);
             const songYearSet = new Set();
@@ -2583,7 +2585,7 @@
             const songsEl = document.getElementById("songsYearChips");
             if (songsEl) {
                 songsEl.innerHTML =
-                    `<button class="year-chip active" data-year="">Todos</button>` +
+                    `<button class="year-chip" data-year="">Todas</button>` +
                     songYears
                         .map(
                             (y) =>
@@ -2802,10 +2804,10 @@
         function chooseRandomVideo(excludeId = "") {
             let candidates = state.pool;
 
-            // Year filter (only for songs mode)
-            if (state.isSongsMode && state.yearFilter) {
+            /* Year filter (only songs mode) */
+            if (state.isSongsMode && state.yearFilter instanceof Set && state.yearFilter.size > 0) {
                 const byYear = candidates.filter(
-                    (v) => v.year === state.yearFilter,
+                    (v) => state.yearFilter.has(v.year),
                 );
                 if (byYear.length > 0) candidates = byYear;
             }
@@ -3000,8 +3002,7 @@
                 return;
             }
             if (
-                answer === guess ||
-                tokenScore(guess, answer) >= 0.68
+                answer === guess
             ) {
                 const points = Math.max(10, 80 - state.round * 12);
                 state.score += points;

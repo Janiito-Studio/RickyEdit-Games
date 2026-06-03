@@ -766,7 +766,7 @@
             const suggestion = document.getElementById('inputSuggestion').value.trim();
 
             if (!webhook) {
-                statusDiv.textContent = '⚠️ No hay webhook configurado. Contacta al admin para activar las sugerencias.';
+                statusDiv.innerHTML = '<img src="Aviso.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> No hay webhook configurado. Contacta al admin para activar las sugerencias.';
                 statusDiv.className = 'form-status error';
                 return;
             }
@@ -794,11 +794,11 @@
 
                 if (!response.ok) throw new Error('Error al enviar');
 
-                statusDiv.textContent = '✅ ¡Sugerencia enviada con éxito! Muchas gracias.';
+                statusDiv.innerHTML = '<img src="Exito.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> ¡Sugerencia enviada con éxito! Muchas gracias.';
                 statusDiv.className = 'form-status success';
                 document.getElementById('inputSuggestion').value = '';
             } catch (err) {
-                statusDiv.textContent = '❌ Ocurrió un error al enviar la sugerencia.';
+                statusDiv.innerHTML = '<img src="Error.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> Ocurrió un error al enviar la sugerencia.';
                 statusDiv.className = 'form-status error';
             } finally {
                 btnSubmit.disabled = false;
@@ -822,7 +822,7 @@
             </ul>
             <hr class="upd-sep">
             <div style="background:rgba(241,196,15,0.1);border:1px solid rgba(241,196,15,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
-                <p style="margin:0 0 8px;color:var(--yellow);font-weight:800;font-size:0.9rem;">⚠️ Aviso importante para Ricky</p>
+                <p style="margin:0 0 8px;color:var(--yellow);font-weight:800;font-size:0.9rem;"><img src="Aviso.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> Aviso importante para Ricky</p>
                 <p style="margin:0;color:var(--muted);line-height:1.6;">Para la próxima, pon el enlace en <span style="color:#fff;font-weight:700;">la descripción o en el vídeo</span>, porque la gente no lo encuentra. Puedes usar este enlace: <a href="https://janiito-studio.github.io/RickyEdit-Games/index.html" target="_blank" style="color:var(--cyan);text-decoration:underline;font-weight:700;">https://janiito-studio.github.io/RickyEdit-Games/index.html</a></p>
             </div>
 
@@ -868,7 +868,7 @@
                 </ul>
                 <hr class="upd-sep">
                 <div style="background:rgba(241,196,15,0.1);border:1px solid rgba(241,196,15,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
-                    <p style="margin:0 0 8px;color:var(--yellow);font-weight:800;font-size:0.9rem;">⚠️ Aviso importante para Ricky</p>
+                    <p style="margin:0 0 8px;color:var(--yellow);font-weight:800;font-size:0.9rem;"><img src="Aviso.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> Aviso importante para Ricky</p>
                     <p style="margin:0;color:var(--muted);line-height:1.6;">Para la próxima, pon el enlace en <span style="color:#fff;font-weight:700;">la descripción o en el vídeo</span>, porque la gente no lo encuentra. Puedes usar este enlace: <a href="https://janiito-studio.github.io/RickyEdit-Games/index.html" target="_blank" style="color:var(--cyan);text-decoration:underline;font-weight:700;">https://janiito-studio.github.io/RickyEdit-Games/index.html</a></p>
                 </div>
 

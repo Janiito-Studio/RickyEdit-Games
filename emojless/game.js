@@ -225,10 +225,19 @@ function renderRounds() {
 
 function selectRandomSong() {
     const keys = Object.keys(EMOJI_DATA);
-    if (noRepeatMode && usedSongs.length >= keys.length) usedSongs = [];
-    let available = noRepeatMode ? keys.filter(k => !usedSongs.includes(k)) : keys;
-    if (!available.length) available = keys;
-    const key = available[Math.floor(Math.random() * available.length)];
+    let available = keys;
+    /* Filter by selected years if any (skip if Todas is active) */
+    if (!todasActive && selectedYears.size > 0) {
+        available = keys.filter(k => {
+            const song = SONG_MAP[k];
+            return song && selectedYears.has(song.year);
+        });
+        if (!available.length) available = keys;
+    }
+    if (noRepeatMode && usedSongs.length >= available.length) usedSongs = [];
+    let filtered = noRepeatMode ? available.filter(k => !usedSongs.includes(k)) : available;
+    if (!filtered.length) filtered = available;
+    const key = filtered[Math.floor(Math.random() * filtered.length)];
     usedSongs.push(key);
     return { title: key, emojis: EMOJI_DATA[key] };
 }
@@ -268,7 +277,7 @@ function submitGuess() {
     }
     const songInfo = SONG_MAP[state.current.title];
     const fullTitle = songInfo ? normalize(songInfo.title) : answer;
-    if (fullTitle === guess || answer === guess || tokenScore(guess, answer) >= 0.68) {
+    if (fullTitle === guess || answer === guess) {
         const points = Math.max(10, 60 - state.round * 10);
         state.score += points;
         state.streak += 1;
@@ -461,6 +470,66 @@ const normalCard = document.getElementById("normalModeCard");
 const startEasyBtn = document.getElementById("startEasyBtn");
 const startNormalBtn = document.getElementById("startNormalBtn");
 const startGameBtn = document.getElementById("startGameBtn");
+
+/* ── Year filter ── */
+let selectedYears = new Set();
+let todasActive = false;
+const yearChipsEl = document.getElementById("yearChips");
+
+function buildEmojlessYearChips() {
+    const yearSet = new Set();
+    SONGS.forEach(s => { if (s.year) yearSet.add(s.year); });
+    const years = [...yearSet].sort((a, b) => b - a);
+    if (yearChipsEl) {
+        yearChipsEl.innerHTML =
+            '<button class="year-chip" data-year="">Todas</button>' +
+            years.map(y => '<button class="year-chip" data-year="' + y + '">' + y + '</button>').join("");
+    }
+}
+
+function updateEmojlessStartBtn() {
+    if (startGameBtn) startGameBtn.disabled = !todasActive && selectedYears.size === 0;
+}
+
+if (yearChipsEl) {
+    yearChipsEl.addEventListener("click", (e) => {
+        const chip = e.target.closest(".year-chip");
+        if (!chip) return;
+        const yearVal = chip.dataset.year;
+        if (yearVal === "") {
+            const allYears = yearChipsEl.querySelectorAll(".year-chip:not([data-year=''])");
+            const allActive = allYears.length === yearChipsEl.querySelectorAll(".year-chip.active:not([data-year=''])").length;
+            yearChipsEl.querySelectorAll(".year-chip").forEach(c => c.classList.remove("active"));
+            if (!allActive) {
+                chip.classList.add("active");
+                allYears.forEach(c => c.classList.add("active"));
+                selectedYears = new Set();
+                todasActive = true;
+            } else {
+                selectedYears = new Set();
+                todasActive = false;
+            }
+        } else {
+            yearChipsEl.querySelector(".year-chip[data-year='']").classList.remove("active");
+            todasActive = false;
+            chip.classList.toggle("active");
+            selectedYears = new Set();
+            yearChipsEl.querySelectorAll(".year-chip.active:not([data-year=''])").forEach(c => {
+                selectedYears.add(Number(c.dataset.year));
+            });
+            const allIndiv = yearChipsEl.querySelectorAll(".year-chip:not([data-year=''])");
+            if (selectedYears.size === allIndiv.length) {
+                yearChipsEl.querySelector(".year-chip[data-year='']").classList.add("active");
+                todasActive = true;
+                selectedYears = new Set();
+            }
+        }
+        updateEmojlessStartBtn();
+    });
+}
+
+buildEmojlessYearChips();
+updateEmojlessStartBtn();
 
 if (normalToggle && normalCard) {
     normalToggle.addEventListener("click", () => {

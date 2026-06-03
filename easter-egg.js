@@ -120,7 +120,7 @@
       var dataAttr = found ? ' data-egg="' + key + '"' : '';
       var clickableClass = found ? ' rlb-ee-egg-clickable' : '';
       return '<div class="rlb-ee-egg-item ' + (found ? 'found' : '') + clickableClass + '"' + dataAttr + '>' +
-        '<span class="rlb-ee-egg-icon">' + (found ? '<img class="rlb-ee-egg-img" src="' + imgPath('ester_egg.png') + '" alt="egg" />' : '🔒') + '</span>' +
+        '<span class="rlb-ee-egg-icon">' + (found ? '<img class="rlb-ee-egg-img" src="' + imgPath('ester_egg.png') + '" alt="egg" />' : '<img class="rlb-ee-egg-img" src="' + imgPath('Bloqueado.png') + '" alt="locked" style="filter:brightness(0.6);" />') + '</span>' +
         '<span class="rlb-ee-egg-name">' + (found ? egg.title : '???') + '</span>' +
         '</div>';
     }).join('');
@@ -183,7 +183,7 @@
         var dataAttr = found ? ' data-egg="' + key + '"' : '';
         var clickableClass = found ? ' rlb-ee-egg-clickable' : '';
         return '<div class="rlb-ee-egg-item ' + (found ? 'found' : '') + clickableClass + '"' + dataAttr + '>' +
-        '<span class="rlb-ee-egg-icon">' + (found ? '<img class="rlb-ee-egg-img" src="' + imgPath('ester_egg.png') + '" alt="egg" />' : '🔒') + '</span>' +
+        '<span class="rlb-ee-egg-icon">' + (found ? '<img class="rlb-ee-egg-img" src="' + imgPath('ester_egg.png') + '" alt="egg" />' : '<img class="rlb-ee-egg-img" src="' + imgPath('Bloqueado.png') + '" alt="locked" style="filter:brightness(0.6);" />') + '</span>' +
         '<span class="rlb-ee-egg-name">' + (found ? egg.title : '???') + '</span>' +
         '</div>';
       }).join('');
@@ -531,8 +531,7 @@
     _activeToasts.push(toast);
     requestAnimationFrame(function () { toast.style.opacity = '1'; });
 
-    /* Auto-dismiss after 8 seconds */
-    setTimeout(function () { _removeToast(toast); }, 8000);
+    /* No auto-dismiss — only manual close */
   }
 
   function _removeToast(toast) {

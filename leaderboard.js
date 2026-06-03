@@ -831,7 +831,11 @@
           html += `<tr><td colspan="${allCols.length}" style="text-align:center;padding:30px 16px;color:var(--muted);">No hay puntuaciones todavía — ¡Juega para registrar tu primera!</td></tr>`;
         } else {
           rows.forEach((s, i) => {
-            const medals = ['🥇', '🥈', '🥉'];
+            const medals = [
+              '<img src="../Medalla 1.png" alt="1st" class="rlb-medal">',
+              '<img src="../Medalla 2.png" alt="2nd" class="rlb-medal">',
+              '<img src="../Medalla 3.png" alt="3rd" class="rlb-medal">'
+            ];
             const rankDisplay = i < 3 ? medals[i] : (i + 1);
             const pct = s.total ? Math.round((s.correct / s.total) * 100) : (s.percent || 0);
             const isOwn = s.playerId === getPlayerId();

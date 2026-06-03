@@ -841,6 +841,52 @@
             transform: translateY(-3px) scale(1.05);
             box-shadow: 0 15px 40px rgba(255, 51, 204, 0.65);
         }
+        .mode-start-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .mode-year-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            align-items: center;
+        }
+        .mode-year-label {
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .mode-year-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+        .year-chip {
+            padding: 4px 13px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--muted);
+            font-size: 0.8rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .year-chip:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+        .year-chip.active {
+            background: rgba(255, 51, 204, 0.25);
+            border-color: var(--pink);
+            color: #fff;
+        }
     </style>
 </head>
 
@@ -879,8 +925,12 @@
                             <button id="startNoRepeatBtn" class="mode-diff-btn active" type="button"><img src="../Iconos/Modo sin repetir.png" alt="" class="rlb-icon-img"> Sin repetir</button>
                             <button id="startRandomBtn" class="mode-diff-btn" type="button"><img src="../Iconos/Modo aleatorio.png" alt="" class="rlb-icon-img"> Aleatorio</button>
                         </div>
+                        <div class="mode-year-section">
+                            <span class="mode-year-label">Año</span>
+                            <div class="mode-year-chips" id="yearChips"></div>
+                        </div>
                         <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
-                        <button class="mode-start-btn" id="startGameBtn" type="button">Empezar</button>
+                        <button class="mode-start-btn" id="startGameBtn" type="button" disabled>Empezar</button>
                     </div>
                 </div>
             </div>
@@ -1089,7 +1139,7 @@
     <script src="../updates.js"></script>
     <script src="../easter-egg.js?v=2.0"></script>
     <script src="../volume.js"></script>
-    <script src="game.js"></script>
+    <script src="game.js?v=2.0"></script>
 </body>
 
 </html>

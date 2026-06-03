@@ -187,10 +187,19 @@
 
     function selectRandomSong() {
         var keys = Object.keys(LYRICS);
-        if (noRepeatMode && usedSongs.length >= keys.length) usedSongs = [];
-        var available = noRepeatMode ? keys.filter(function (k) { return usedSongs.indexOf(k) === -1; }) : keys;
-        if (!available.length) available = keys;
-        var key = available[Math.floor(Math.random() * available.length)];
+        var available = keys;
+        /* Filter by selected years if any (skip if Todas is active) */
+        if (!todasActive && selectedYears.size > 0) {
+            available = keys.filter(function (k) {
+                var song = SONG_MAP[k];
+                return song && selectedYears.has(song.year);
+            });
+            if (!available.length) available = keys;
+        }
+        if (noRepeatMode && usedSongs.length >= available.length) usedSongs = [];
+        var filtered = noRepeatMode ? available.filter(function (k) { return usedSongs.indexOf(k) === -1; }) : available;
+        if (!filtered.length) filtered = available;
+        var key = filtered[Math.floor(Math.random() * filtered.length)];
         usedSongs.push(key);
 
         // Pick a random line with enough words
@@ -244,7 +253,7 @@
 
         var songInfo = SONG_MAP[state.current.title];
         var fullTitle = songInfo ? normalize(songInfo.title) : answer;
-        if (fullTitle === guess || answer === guess || tokenScore(guess, answer) >= 0.68) {
+        if (fullTitle === guess || answer === guess) {
             var points = Math.max(10, 60 - state.round * 10);
             state.score += points;
             state.streak += 1;
@@ -430,6 +439,66 @@
     var startNormalBtn = document.getElementById('startNormalBtn');
     var startHardBtn = document.getElementById('startHardBtn');
     var startGameBtn = document.getElementById('startGameBtn');
+
+    /* ── Year filter ── */
+    var selectedYears = new Set();
+    var todasActive = false;
+    var yearChipsEl = document.getElementById('yearChips');
+
+    function buildLetrlessYearChips() {
+        var yearSet = new Set();
+        SONGS.forEach(function (s) { if (s.year) yearSet.add(s.year); });
+        var years = Array.from(yearSet).sort(function (a, b) { return b - a; });
+        if (yearChipsEl) {
+            yearChipsEl.innerHTML =
+                '<button class="year-chip" data-year="">Todas</button>' +
+                years.map(function (y) { return '<button class="year-chip" data-year="' + y + '">' + y + '</button>'; }).join("");
+        }
+    }
+
+    function updateLetrlessStartBtn() {
+        if (startGameBtn) startGameBtn.disabled = !todasActive && selectedYears.size === 0;
+    }
+
+    if (yearChipsEl) {
+        yearChipsEl.addEventListener("click", function (e) {
+            var chip = e.target.closest(".year-chip");
+            if (!chip) return;
+            var yearVal = chip.dataset.year;
+            if (yearVal === "") {
+                var allYears = yearChipsEl.querySelectorAll(".year-chip:not([data-year=''])");
+                var allActive = allYears.length === yearChipsEl.querySelectorAll(".year-chip.active:not([data-year=''])").length;
+                yearChipsEl.querySelectorAll(".year-chip").forEach(function (c) { c.classList.remove("active"); });
+                if (!allActive) {
+                    chip.classList.add("active");
+                    allYears.forEach(function (c) { c.classList.add("active"); });
+                    selectedYears = new Set();
+                    todasActive = true;
+                } else {
+                    selectedYears = new Set();
+                    todasActive = false;
+                }
+            } else {
+                yearChipsEl.querySelector(".year-chip[data-year='']").classList.remove("active");
+                todasActive = false;
+                chip.classList.toggle("active");
+                selectedYears = new Set();
+                yearChipsEl.querySelectorAll(".year-chip.active:not([data-year=''])").forEach(function (c) {
+                    selectedYears.add(Number(c.dataset.year));
+                });
+                var allIndiv = yearChipsEl.querySelectorAll(".year-chip:not([data-year=''])");
+                if (selectedYears.size === allIndiv.length) {
+                    yearChipsEl.querySelector(".year-chip[data-year='']").classList.add("active");
+                    todasActive = true;
+                    selectedYears = new Set();
+                }
+            }
+            updateLetrlessStartBtn();
+        });
+    }
+
+    buildLetrlessYearChips();
+    updateLetrlessStartBtn();
 
     if (normalToggle && normalCard) {
         normalToggle.addEventListener('click', function () {
