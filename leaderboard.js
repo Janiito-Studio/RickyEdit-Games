@@ -554,7 +554,7 @@
             </div>
             <div class="rlb-admin-actions">
               <button class="rlb-admin-btn rlb-admin-delete" data-name="${escapeHtml(r.name)}">🗑️ Eliminar</button>
-              <button class="rlb-admin-btn rlb-admin-keep" data-name="${escapeHtml(r.name)}">✅ Conservar</button>
+              <button class="rlb-admin-btn rlb-admin-keep" data-name="${escapeHtml(r.name)}"><img src="../Exito.png" alt="" class="rlb-icon-img" style="width:1em;height:1em;vertical-align:middle;margin-right:4px;"> Conservar</button>
             </div>
           </div>`;
       });
@@ -859,7 +859,7 @@
                   if (isOwn) {
                     val = '';
                   } else {
-                    val = `<button class="rlb-report-btn" data-name="${escapeHtml(s.name || '')}" title="Reportar nombre">⚠️</button>`;
+                    val = `<button class="rlb-report-btn" data-name="${escapeHtml(s.name || '')}" title="Reportar nombre"><img src="../Aviso.png" alt="" class="rlb-icon-img"></button>`;
                   }
                   break;
               }
@@ -892,7 +892,7 @@
             if (confirm('¿Reportar el nombre "' + name + '"? Se eliminará de todos los leaderboards.')) {
               reportName(name, gameId);
               btn.classList.add('rlb-reported');
-              btn.textContent = '✅';
+              btn.innerHTML = '<img src="../Exito.png" alt="" class="rlb-icon-img">';
               btn.title = 'Ya reportado';
             }
           });

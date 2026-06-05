@@ -688,6 +688,11 @@
                     <input type="text" id="inputName" required placeholder="ej. Jan">
                 </div>
                 <div class="form-group">
+                    <label for="inputContact">📞 Método de contacto :</label>
+                    <input type="text" id="inputContact" placeholder="(Opcional) Tu Discord o Correo Electrónico">
+                    <p style="color: var(--muted); font-size: 0.75rem; margin: 4px 0 0;">Te ayudaría mucho si pones alguna forma de poder contactarte por tu sugerencia</p>
+                </div>
+                <div class="form-group">
                     <label for="inputSuggestion">Idea del Minijuego:</label>
                     <textarea id="inputSuggestion" rows="4" required
                         placeholder="Describe tu idea de juego, reglas, etc. PD: Si eres Rickyedit lo puedes decir por voz."></textarea>
@@ -763,6 +768,7 @@
             // Webhook de Discord configurado directamente
             const webhook = 'https://discord.com/api/webhooks/1509215622310006915/9kqCW6JMtnNJqUqJALLfcxiBbcAK6_bLwqbANAPYKBp8Kb928VcrIU8xHCwrQn2dp91g';
             const name = document.getElementById('inputName').value.trim();
+            const contact = document.getElementById('inputContact').value.trim();
             const suggestion = document.getElementById('inputSuggestion').value.trim();
 
             if (!webhook) {
@@ -785,6 +791,7 @@
                             color: 16724684,
                             fields: [
                                 { name: "👤 Sugerido por", value: name, inline: true },
+                                ...(contact ? [{ name: "📞 Contacto", value: contact, inline: true }] : []),
                                 { name: "💡 Idea del juego", value: suggestion }
                             ],
                             timestamp: new Date().toISOString()
@@ -797,6 +804,7 @@
                 statusDiv.innerHTML = '<img src="Exito.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> ¡Sugerencia enviada con éxito! Muchas gracias.';
                 statusDiv.className = 'form-status success';
                 document.getElementById('inputSuggestion').value = '';
+                document.getElementById('inputContact').value = '';
             } catch (err) {
                 statusDiv.innerHTML = '<img src="Error.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> Ocurrió un error al enviar la sugerencia.';
                 statusDiv.className = 'form-status error';
