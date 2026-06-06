@@ -684,16 +684,17 @@
 
             <form id="suggestionForm" style="display: flex; flex-direction: column; gap: 16px;">
                 <div class="form-group">
-                    <label for="inputName">Tu Nombre :</label>
+                    <label for="inputName"><img src="Iconos/Guardar nombre.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:4px;"> Tu Nombre :</label>
                     <input type="text" id="inputName" required placeholder="ej. Jan">
                 </div>
                 <div class="form-group">
-                    <label for="inputContact">📞 Método de contacto :</label>
+                    <label for="inputContact"><img src="telefono.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:4px;"> Método de contacto :</label>
                     <input type="text" id="inputContact" placeholder="(Opcional) Tu Discord o Correo Electrónico">
                     <p style="color: var(--muted); font-size: 0.75rem; margin: 4px 0 0;">Te ayudaría mucho si pones alguna forma de poder contactarte por tu sugerencia</p>
+                    <p style="color: var(--cyan); font-size: 0.75rem; margin: 4px 0 0;"><img src="Info.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Recomiendo que pongas tu <strong>Discord</strong> en vez de un correo electrónico, es más rápido de contactar.</p>
                 </div>
                 <div class="form-group">
-                    <label for="inputSuggestion">Idea del Minijuego:</label>
+                    <label for="inputSuggestion"><img src="Iconos RickyEdit Web/💡.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:4px;"> Idea del Minijuego:</label>
                     <textarea id="inputSuggestion" rows="4" required
                         placeholder="Describe tu idea de juego, reglas, etc. PD: Si eres Rickyedit lo puedes decir por voz."></textarea>
                 </div>
@@ -772,7 +773,7 @@
             const suggestion = document.getElementById('inputSuggestion').value.trim();
 
             if (!webhook) {
-                statusDiv.innerHTML = '<img src="Aviso.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> No hay webhook configurado. Contacta al admin para activar las sugerencias.';
+                statusDiv.innerHTML = '<img src="Aviso.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> No hay webhook configurado. Contacta al admin para activar las sugerencias.';
                 statusDiv.className = 'form-status error';
                 return;
             }
@@ -801,12 +802,12 @@
 
                 if (!response.ok) throw new Error('Error al enviar');
 
-                statusDiv.innerHTML = '<img src="Exito.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> ¡Sugerencia enviada con éxito! Muchas gracias.';
+                statusDiv.innerHTML = '<img src="Exito.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> ¡Sugerencia enviada con éxito! Muchas gracias.';
                 statusDiv.className = 'form-status success';
                 document.getElementById('inputSuggestion').value = '';
                 document.getElementById('inputContact').value = '';
             } catch (err) {
-                statusDiv.innerHTML = '<img src="Error.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> Ocurrió un error al enviar la sugerencia.';
+                statusDiv.innerHTML = '<img src="Error.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Ocurrió un error al enviar la sugerencia.';
                 statusDiv.className = 'form-status error';
             } finally {
                 btnSubmit.disabled = false;
@@ -817,11 +818,37 @@
     <script src="easter-egg.js?v=2.0"></script>
     <script src="volume.js"></script>
     <script>
+        function getBirthdayText() {
+            var now = new Date();
+            var month = now.getMonth() + 1;
+            var day = now.getDate();
+            var birthday = new Date(now.getFullYear(), 5, 16);
+            if (now > birthday) birthday.setFullYear(birthday.getFullYear() + 1);
+            var diff = Math.ceil((birthday - now) / (1000 * 60 * 60 * 24));
+            var msg = '';
+            if (month < 6 || (month === 6 && day < 16)) {
+                msg = '<img src="Iconos RickyEdit Web/🎉.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:4px;"> Felicidades adelantadas Ricky!!! Feliz cumpleaños! <img src="Iconos RickyEdit Web/Cumpleaños Rick 29.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;"> ¡Faltan ' + diff + ' días!';
+            } else if (month === 6 && day === 16) {
+                msg = '<img src="Iconos RickyEdit Web/🎉.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:4px;"><img src="Iconos RickyEdit Web/🎉.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;margin-left:4px;"> Felicitaciones Ricky!!!! <img src="Iconos RickyEdit Web/🎉.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:4px;"><img src="Iconos RickyEdit Web/🎉.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;margin-left:4px;"> ¡Hoy es tu día! <img src="Iconos RickyEdit Web/Cumpleaños Rick 29.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;">';
+            } else {
+                msg = '<img src="Iconos RickyEdit Web/🎉.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:4px;"> Felicidades atrasadas Ricky!!! <img src="Iconos RickyEdit Web/Cumpleaños Rick 29.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;"> Tu cumpleaños fue hace ' + diff + ' días';
+            }
+            var sub = '';
+            if (month < 6 || (month === 6 && day < 11)) {
+                sub = '<img src="Iconos RickyEdit Web/💜.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:4px;"> Por cierto, mi cumpleaños será el 11 de junio, 5 días antes de ti :)';
+            } else if (month === 6 && day === 11) {
+                sub = '<img src="Iconos RickyEdit Web/💜.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:4px;"> Por cierto, mi cumpleaños es hoy! El 11 de junio, 5 días antes de ti :)';
+            } else {
+                sub = '<img src="Iconos RickyEdit Web/💜.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:4px;"> Por cierto, mi cumpleaños fue el 11 de junio, 5 días antes de ti :)';
+            }
+            return { msg: msg, sub: sub };
+        }
+        var _bday = getBirthdayText();
         RickyUpdates.show('lobby', 'v1.0', `
-            <h3>🎮 ¡Bienvenido a Rickyedit Games!</h3>
+            <h3><img src="Iconos RickyEdit Web/🎮.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> ¡Bienvenido a Rickyedit Games!</h3>
             <p>Esta es la plataforma de <span class="upd-highlight">minijuegos de Rickyedit</span>. ¡Aquí encontrarás todo tipo de retos para poner a prueba tu conocimiento!</p>
             <hr class="upd-sep">
-            <h3>🕹️ Juegos disponibles</h3>
+            <h3><img src="Iconos RickyEdit Web/🕹️.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Juegos disponibles</h3>
             <ul>
                 <li><span class="upd-highlight">Songless</span> — Adivina la canción de Rickyedit solo por el audio. Con buscador, miniaturas, y varios modos</li>
                 <li><span class="upd-highlight">Emojless</span> — Adivina la canción solo por emojis. ¿Conoces la discografía?</li>
@@ -830,83 +857,92 @@
             </ul>
             <hr class="upd-sep">
             <div style="background:rgba(241,196,15,0.1);border:1px solid rgba(241,196,15,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
-                <p style="margin:0 0 8px;color:var(--yellow);font-weight:800;font-size:0.9rem;"><img src="Aviso.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> Aviso importante para Ricky</p>
+                <p style="margin:0 0 8px;color:var(--yellow);font-weight:800;font-size:0.9rem;"><img src="Aviso.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Aviso importante para Ricky</p>
                 <p style="margin:0;color:var(--muted);line-height:1.6;">Para la próxima, pon el enlace en <span style="color:#fff;font-weight:700;">la descripción o en el vídeo</span>, porque la gente no lo encuentra. Puedes usar este enlace: <a href="https://janiito-studio.github.io/RickyEdit-Games/index.html" target="_blank" style="color:var(--cyan);text-decoration:underline;font-weight:700;">https://janiito-studio.github.io/RickyEdit-Games/index.html</a></p>
             </div>
 
                 <div style="background:rgba(255,51,204,0.1);border:1px solid rgba(255,51,204,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
-                    <p style="margin:0 0 8px;color:var(--pink);font-weight:800;font-size:0.9rem;">🛡️ Cuenta oficial</p>
-                    <p style="margin:0;color:var(--muted);line-height:1.6;">Hay gente en los comentarios diciendo que no soy el verdadero y algunos incluso se hacen pasar por mí. Mi cuenta oficial de YouTube es <span style="color:#fff;font-weight:700;background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:6px;">@JANIITO_YT</span> y la de twitch: <span style="color:#fff;font-weight:700;background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:6px;">@jasanzo</span>.</p>
+                    <p style="margin:0 0 8px;color:var(--pink);font-weight:800;font-size:0.9rem;"><img src="Iconos RickyEdit Web/🛡️.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Cuenta oficial</p>
+                    <p style="margin:0;color:var(--muted);line-height:1.6;">Hay gente en los comentarios diciendo que no soy el verdadero y algunos incluso se hacen pasar por mí. Mi cuenta oficial de YouTube es <span style="color:#fff;font-weight:700;background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:6px;">@JANIITO_YT</span> y la de twitch: <span style="color:#fff;font-weight:700;background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:6px;">@jasanzo</span>. Si quieres, me puedes dar VIP en Twitch, ya que le he hecho 2 webs a Ricky, ningún problema <img src="icon_emojless.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;">.</p>
                 </div>
 
             <div style="background:rgba(56,212,255,0.1);border:1px solid rgba(56,212,255,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
-                <p style="margin:0 0 8px;color:var(--cyan);font-weight:800;font-size:0.9rem;">🤖 Sobre el uso de IA</p>
+                <p style="margin:0 0 8px;color:var(--cyan);font-weight:800;font-size:0.9rem;"><img src="Iconos RickyEdit Web/🤖.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Sobre el uso de IA</p>
                 <p style="margin:0;color:var(--muted);line-height:1.6;">Creo que alrededor del <span style="color:#fff;font-weight:700;">49,2 %</span> de la web la hizo la IA (esa cifra creo que es bastante realista). Sí, he usado IA, pero es una herramienta completamente útil y <span style="color:var(--green);font-weight:700;">no tiene nada de malo</span>. Si puede ayudarme a agilizar el trabajo, es lógico aprovecharla. Aun así, no es perfecta: voy añadiéndole cosas, corrigiendo código, solucionando errores y mejorando muchos aspectos manualmente.</p>
             </div>
 
             <div style="background:rgba(54,226,138,0.1);border:1px solid rgba(54,226,138,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
-                <p style="margin:0 0 8px;color:var(--green);font-weight:800;font-size:0.9rem;">🔮 Sobre las notificaciones</p>
+                <p style="margin:0 0 8px;color:var(--green);font-weight:800;font-size:0.9rem;"><img src="Iconos RickyEdit Web/🔮.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Sobre las notificaciones</p>
                 <p style="margin:0;color:var(--muted);line-height:1.6;">Por cierto, he añadido un sistema de notificaciones para poder comunicarme contigo a través de la página por si pasa cualquier cosa, o para una cosa que te diré más adelante... jsjsjsjs. (Ahora se supone que mi yo del directo va a mandarte un ejemplo de notificación por aquí, sale en la pantalla, arriba. Por favor Jan...).</p>
                 <p style="margin:10px 0 0;color:var(--muted);line-height:1.6;">Ahora estás obligado a quedarte para descubrir qué es. No sé si te va a encantar o vas a querer matarme después...</p>
             </div>
 
             <div style="background:rgba(241,196,15,0.1);border:1px solid rgba(241,196,15,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
-                <p style="margin:0 0 8px;color:var(--yellow);font-weight:800;font-size:0.9rem;">🎨 Sobre los iconos</p>
+                <p style="margin:0 0 8px;color:var(--yellow);font-weight:800;font-size:0.9rem;"><img src="Iconos RickyEdit Web/🎨.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Sobre los iconos</p>
                 <p style="margin:0;color:var(--muted);line-height:1.6;">He creado iconos personalizados para darle más vida a la web, como en las dificultades, etc, en vez de usar emojis. (Sí, los he creado con Gemini, si los creara yo, bueno...)</p>
             </div>
 
-            <p style="color:var(--muted);line-height:1.6;margin-bottom:16px;">Aparte de eso, mucha suerte, y recuerda que eres una persona válida y valiosa y gracias por alegrarnos el día, casi cada día a las 3pm y cuando abres directo. Un fuerte abrazo Ricky 💜</p>
+            <p style="color:var(--muted);line-height:1.6;margin-bottom:16px;">Aparte de eso, mucha suerte, y recuerda que eres una persona válida y valiosa y gracias por alegrarnos el día, casi cada día a las 3pm y cuando abres directo. Un fuerte abrazo Ricky <img src="Iconos RickyEdit Web/💜.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:2px;"></p>
+
+            <div style="background:rgba(255,51,204,0.1);border:1px solid rgba(255,51,204,0.25);border-radius:12px;padding:16px;margin-bottom:16px;text-align:center;">
+<img src="Iconos RickyEdit Web/Cumpleaños Rick 29.png" alt="" style="width:120px;margin-bottom:8px;">
+                <p style="margin:0;color:var(--pink);font-weight:800;font-size:1.1rem;">${_bday.msg}</p>
+                <p style="margin:6px 0 0;color:var(--muted);font-size:0.85rem;">${_bday.sub}</p>
+            </div>
 
             <hr class="upd-sep">
             <p>¡Dale a <span class="upd-highlight">¡Entendido!</span> y a explorar!</p>
         `);
 
-        document.getElementById('openUpdatesBtn').addEventListener('click', () => {
-            playSound('click');
-            RickyUpdates.forceShow(`
-                <h3>🎮 ¡Bienvenido a Rickyedit Games!</h3>
-                <p>Esta es la plataforma de <span class="upd-highlight">minijuegos de Rickyedit</span>. ¡Aquí encontrarás todo tipo de retos para poner a prueba tu conocimiento!</p>
-                <hr class="upd-sep">
-                <h3>🕹️ Juegos disponibles</h3>
-                <ul>
-                    <li><span class="upd-highlight">Songless</span> — Adivina la canción de Rickyedit solo por el audio. Con buscador, miniaturas, y varios modos</li>
-                    <li><span class="upd-highlight">Emojless</span> — Adivina la canción solo por emojis. ¿Conoces la discografía?</li>
-                    <li><span class="upd-highlight">Miniatura Borrosa</span> — Adivina el vídeo con la miniatura borrosa. Cada intento la enfoca un poco más</li>
-                    <li><span class="upd-highlight">¿Qué es más caro?</span> — Compara precios de skins de Counter Strike y objetos. ¿Cuál cuesta más?</li>
-                </ul>
-                <hr class="upd-sep">
-                <div style="background:rgba(241,196,15,0.1);border:1px solid rgba(241,196,15,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
-                    <p style="margin:0 0 8px;color:var(--yellow);font-weight:800;font-size:0.9rem;"><img src="Aviso.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> Aviso importante para Ricky</p>
-                    <p style="margin:0;color:var(--muted);line-height:1.6;">Para la próxima, pon el enlace en <span style="color:#fff;font-weight:700;">la descripción o en el vídeo</span>, porque la gente no lo encuentra. Puedes usar este enlace: <a href="https://janiito-studio.github.io/RickyEdit-Games/index.html" target="_blank" style="color:var(--cyan);text-decoration:underline;font-weight:700;">https://janiito-studio.github.io/RickyEdit-Games/index.html</a></p>
-                </div>
-
-                <div style="background:rgba(255,51,204,0.1);border:1px solid rgba(255,51,204,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
-                    <p style="margin:0 0 8px;color:var(--pink);font-weight:800;font-size:0.9rem;">🛡️ Cuenta oficial</p>
-                    <p style="margin:0;color:var(--muted);line-height:1.6;">Hay gente en los comentarios diciendo que no soy el verdadero y algunos incluso se hacen pasar por mí. Mi cuenta oficial de YouTube es <span style="color:#fff;font-weight:700;background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:6px;">@JANIITO_YT</span> y la de twitch: <span style="color:#fff;font-weight:700;background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:6px;">@jasanzo</span>.</p>
-                </div>
-
-                <div style="background:rgba(56,212,255,0.1);border:1px solid rgba(56,212,255,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
-                    <p style="margin:0 0 8px;color:var(--cyan);font-weight:800;font-size:0.9rem;">🤖 Sobre el uso de IA</p>
-                    <p style="margin:0;color:var(--muted);line-height:1.6;">Creo que alrededor del <span style="color:#fff;font-weight:700;">49,2 %</span> de la web la hizo la IA (esa cifra creo que es bastante realista). Sí, he usado IA, pero es una herramienta completamente útil y <span style="color:var(--green);font-weight:700;">no tiene nada de malo</span>. Si puede ayudarme a agilizar el trabajo, es lógico aprovecharla. Aun así, no es perfecta: voy añadiéndole cosas, corrigiendo código, solucionando errores y mejorando muchos aspectos manualmente.</p>
-                </div>
-
-                <div style="background:rgba(54,226,138,0.1);border:1px solid rgba(54,226,138,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
-                    <p style="margin:0 0 8px;color:var(--green);font-weight:800;font-size:0.9rem;">🔮 Sobre las notificaciones</p>
-                    <p style="margin:0;color:var(--muted);line-height:1.6;">Por cierto, he añadido un sistema de notificaciones para poder comunicarme contigo a través de la página por si pasa cualquier cosa, o para una cosa que te diré más adelante... jsjsjsjs. (Ahora se supone que mi yo del directo va a mandarte un ejemplo de notificación por aquí, sale en la pantalla, arriba. Por favor Jan...).</p>
-                    <p style="margin:10px 0 0;color:var(--muted);line-height:1.6;">Ahora estás obligado a quedarte para descubrir qué es. No sé si te va a encantar o vas a querer matarme después...</p>
-                </div>
-
-                <div style="background:rgba(241,196,15,0.1);border:1px solid rgba(241,196,15,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
-                    <p style="margin:0 0 8px;color:var(--yellow);font-weight:800;font-size:0.9rem;">🎨 Sobre los iconos</p>
-                    <p style="margin:0;color:var(--muted);line-height:1.6;">He creado iconos personalizados para darle más vida a la web, como en las dificultades, etc, en vez de usar emojis. (Sí, los he creado con Gemini, si los creara yo, bueno...)</p>
-                </div>
-
-                <p style="color:var(--muted);line-height:1.6;margin-bottom:16px;">Aparte de eso, mucha suerte, y recuerda que eres una persona válida y valiosa y gracias por alegrarnos el día, casi cada día a las 3pm y cuando abres directo. Un fuerte abrazo Ricky 💜</p>
-
-                <hr class="upd-sep">
-                <p>¡Dale a <span class="upd-highlight">¡Entendido!</span> y a explorar!</p>
-            `);
-        });
+        var _updContent = `
+            <h3><img src="Iconos RickyEdit Web/🎮.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> ¡Bienvenido a Rickyedit Games!</h3>
+            <p>Esta es la plataforma de <span class="upd-highlight">minijuegos de Rickyedit</span>. ¡Aquí encontrarás todo tipo de retos para poner a prueba tu conocimiento!</p>
+            <hr class="upd-sep">
+            <h3><img src="Iconos RickyEdit Web/🕹️.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Juegos disponibles</h3>
+            <ul>
+                <li><span class="upd-highlight">Songless</span> — Adivina la canción de Rickyedit solo por el audio. Con buscador, miniaturas, y varios modos</li>
+                <li><span class="upd-highlight">Emojless</span> — Adivina la canción solo por emojis. ¿Conoces la discografía?</li>
+                <li><span class="upd-highlight">Miniatura Borrosa</span> — Adivina el vídeo con la miniatura borrosa. Cada intento la enfoca un poco más</li>
+                <li><span class="upd-highlight">¿Qué es más caro?</span> — Compara precios de skins de Counter Strike y objetos. ¿Cuál cuesta más?</li>
+            </ul>
+            <hr class="upd-sep">
+            <div style="background:rgba(241,196,15,0.1);border:1px solid rgba(241,196,15,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
+                <p style="margin:0 0 8px;color:var(--yellow);font-weight:800;font-size:0.9rem;"><img src="Aviso.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Aviso importante para Ricky</p>
+                <p style="margin:0;color:var(--muted);line-height:1.6;">Para la próxima, pon el enlace en <span style="color:#fff;font-weight:700;">la descripción o en el vídeo</span>, porque la gente no lo encuentra. Puedes usar este enlace: <a href="https://janiito-studio.github.io/RickyEdit-Games/index.html" target="_blank" style="color:var(--cyan);text-decoration:underline;font-weight:700;">https://janiito-studio.github.io/RickyEdit-Games/index.html</a></p>
+            </div>
+            <div style="background:rgba(255,51,204,0.1);border:1px solid rgba(255,51,204,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
+                <p style="margin:0 0 8px;color:var(--pink);font-weight:800;font-size:0.9rem;"><img src="Iconos RickyEdit Web/🛡️.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Cuenta oficial</p>
+                <p style="margin:0;color:var(--muted);line-height:1.6;">Hay gente en los comentarios diciendo que no soy el verdadero y algunos incluso se hacen pasar por mí. Mi cuenta oficial de YouTube es <span style="color:#fff;font-weight:700;background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:6px;">@JANIITO_YT</span> y la de twitch: <span style="color:#fff;font-weight:700;background:rgba(255,255,255,0.1);padding:2px 8px;border-radius:6px;">@jasanzo</span>. Si quieres, me puedes dar VIP en Twitch, ya que le he hecho 2 webs a Ricky, ningún problema <img src="icon_emojless.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;">.</p>
+            </div>
+            <div style="background:rgba(56,212,255,0.1);border:1px solid rgba(56,212,255,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
+                <p style="margin:0 0 8px;color:var(--cyan);font-weight:800;font-size:0.9rem;"><img src="Iconos RickyEdit Web/🤖.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Sobre el uso de IA</p>
+                <p style="margin:0;color:var(--muted);line-height:1.6;">Creo que alrededor del <span style="color:#fff;font-weight:700;">49,2 %</span> de la web la hizo la IA (esa cifra creo que es bastante realista). Sí, he usado IA, pero es una herramienta completamente útil y <span style="color:var(--green);font-weight:700;">no tiene nada de malo</span>. Si puede ayudarme a agilizar el trabajo, es lógico aprovecharla. Aun así, no es perfecta: voy añadiéndole cosas, corrigiendo código, solucionando errores y mejorando muchos aspectos manualmente.</p>
+            </div>
+            <div style="background:rgba(54,226,138,0.1);border:1px solid rgba(54,226,138,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
+                <p style="margin:0 0 8px;color:var(--green);font-weight:800;font-size:0.9rem;"><img src="Iconos RickyEdit Web/🔮.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Sobre las notificaciones</p>
+                <p style="margin:0;color:var(--muted);line-height:1.6;">Por cierto, he añadido un sistema de notificaciones para poder comunicarme contigo a través de la página por si pasa cualquier cosa, o para una cosa que te diré más adelante... jsjsjsjs. (Ahora se supone que mi yo del directo va a mandarte un ejemplo de notificación por aquí, sale en la pantalla, arriba. Por favor Jan...).</p>
+                <p style="margin:10px 0 0;color:var(--muted);line-height:1.6;">Ahora estás obligado a quedarte para descubrir qué es. No sé si te va a encantar o vas a querer matarme después...</p>
+            </div>
+            <div style="background:rgba(241,196,15,0.1);border:1px solid rgba(241,196,15,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
+                <p style="margin:0 0 8px;color:var(--yellow);font-weight:800;font-size:0.9rem;"><img src="Iconos RickyEdit Web/🎨.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Sobre los iconos</p>
+                <p style="margin:0;color:var(--muted);line-height:1.6;">He creado iconos personalizados para darle más vida a la web, como en las dificultades, etc, en vez de usar emojis. (Sí, los he creado con Gemini, si los creara yo, bueno...)</p>
+            </div>
+            <p style="color:var(--muted);line-height:1.6;margin-bottom:16px;">Aparte de eso, mucha suerte, y recuerda que eres una persona válida y valiosa y gracias por alegrarnos el día, casi cada día a las 3pm y cuando abres directo. Un fuerte abrazo Ricky <img src="Iconos RickyEdit Web/💜.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:2px;"></p>
+            <div style="background:rgba(255,51,204,0.1);border:1px solid rgba(255,51,204,0.25);border-radius:12px;padding:16px;margin-bottom:16px;text-align:center;">
+                <img src="Iconos RickyEdit Web/Cumpleaños Rick 29.png" alt="" style="width:120px;margin-bottom:8px;">
+                <p style="margin:0;color:var(--pink);font-weight:800;font-size:1.1rem;">${_bday.msg}</p>
+                <p style="margin:6px 0 0;color:var(--muted);font-size:0.85rem;">${_bday.sub}</p>
+            </div>
+            <hr class="upd-sep">
+            <p>¡Dale a <span class="upd-highlight">¡Entendido!</span> y a explorar!</p>
+        `;
+        var _btn = document.getElementById('openUpdatesBtn');
+        if (_btn) {
+            _btn.addEventListener('click', function() {
+                playSound('click');
+                RickyUpdates.forceShow(_updContent);
+            });
+        }
     </script>
 </body>
 

@@ -110,7 +110,22 @@
       if (!best[pid] || (s.score || 0) > (best[pid].score || 0)) best[pid] = s;
     });
     var merged = Object.values(best);
-    merged.sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
+    merged.sort(function (a, b) {
+      // Lives DESC → % → difficulty rank DESC → time ASC
+      var aLives = a.lives != null ? a.lives : -1;
+      var bLives = b.lives != null ? b.lives : -1;
+      if (bLives !== aLives) return bLives - aLives;
+      var aPct = a.total ? (a.correct / a.total) : (a.percent || 0) / 100;
+      var bPct = b.total ? (b.correct / b.total) : (b.percent || 0) / 100;
+      if (bPct !== aPct) return bPct - aPct;
+      var diffRank = { extreme: 3, hard: 2, normal: 1, easy: 0 };
+      var aDiff = diffRank[a.difficulty] || 0;
+      var bDiff = diffRank[b.difficulty] || 0;
+      if (bDiff !== aDiff) return bDiff - aDiff;
+      var aTime = a.time != null ? a.time : Infinity;
+      var bTime = b.time != null ? b.time : Infinity;
+      return aTime - bTime;
+    });
     if (merged.length > 100) merged.length = 100;
     return merged;
   }
@@ -451,13 +466,8 @@
   function reportName(name, gameId) {
     if (!name || name === 'Anónimo') return;
     const reporter = getSavedName() || getPlayerId();
-    const added = addReportedName(name, reporter, gameId);
-    if (!added) return;
 
-    /* Sync reported names to Firebase */
-    syncReportedToFirebase();
-
-    /* Send webhook to Discord with delete button */
+    /* Send webhook to Discord (fire-and-forget, may fail due to CORS) */
     try {
       const adminUrl = window.location.origin + window.location.pathname + '#admin';
       const embed = {
@@ -485,9 +495,14 @@
       fetch(REPORT_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).catch(() => {});
+        body: JSON.stringify(payload),
+        mode: 'no-cors'
+      }).catch(function() {});
     } catch (e) {}
+
+    /* Save report locally and sync to Firebase */
+    addReportedName(name, reporter, gameId);
+    syncReportedToFirebase();
   }
 
   /* ── Reported Names Firebase sync (with retry) ────────── */
@@ -534,6 +549,13 @@
     const existing = document.getElementById('rlbAdminModal');
     if (existing) existing.remove();
 
+    /* Sync from Firebase first, then render */
+    syncReportedFromFirebase(function () {
+      renderAdminPanel();
+    });
+  }
+
+  function renderAdminPanel() {
     const reported = getReportedNames();
     const modal = document.createElement('div');
     modal.id = 'rlbAdminModal';
@@ -553,7 +575,7 @@
               <span class="rlb-admin-meta">Por: ${escapeHtml(r.reporter)} | ${r.gameId || '?'} | ${new Date(r.date).toLocaleDateString('es-ES')}</span>
             </div>
             <div class="rlb-admin-actions">
-              <button class="rlb-admin-btn rlb-admin-delete" data-name="${escapeHtml(r.name)}">🗑️ Eliminar</button>
+              <button class="rlb-admin-btn rlb-admin-delete" data-name="${escapeHtml(r.name)}"><img src="../Iconos RickyEdit Web/🗑️.png" alt="" style="width:1em;height:1em;vertical-align:middle;margin-right:4px;"> Eliminar</button>
               <button class="rlb-admin-btn rlb-admin-keep" data-name="${escapeHtml(r.name)}"><img src="../Exito.png" alt="" class="rlb-icon-img" style="width:1em;height:1em;vertical-align:middle;margin-right:4px;"> Conservar</button>
             </div>
           </div>`;
@@ -563,7 +585,7 @@
 
     modal.innerHTML = `
       <div class="rlb-name-card" style="max-width:560px;">
-        <h3 class="rlb-name-title">🛡️ Panel de Moderación</h3>
+        <h3 class="rlb-name-title"><img src="../Iconos RickyEdit Web/🛡️.png" alt="" class="rlb-icon-img" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:4px;"> Panel de Moderación</h3>
         <p class="rlb-name-sub">${reported.length} nombre(s) reportado(s)</p>
         ${rowsHtml}
         <div class="rlb-name-actions" style="margin-top:16px;">
@@ -737,7 +759,22 @@
         if (filter.difficulty) scores = scores.filter(s => s.difficulty === filter.difficulty);
         if (filter.channel)    scores = scores.filter(s => s.channel === filter.channel);
       }
-      scores.sort((a, b) => (b.score || 0) - (a.score || 0));
+      scores.sort((a, b) => {
+        // Lives DESC → % → difficulty rank DESC → time ASC
+        var aLives = a.lives != null ? a.lives : -1;
+        var bLives = b.lives != null ? b.lives : -1;
+        if (bLives !== aLives) return bLives - aLives;
+        var aPct = a.total ? (a.correct / a.total) : (a.percent || 0) / 100;
+        var bPct = b.total ? (b.correct / b.total) : (b.percent || 0) / 100;
+        if (bPct !== aPct) return bPct - aPct;
+        var diffRank = { extreme: 3, hard: 2, normal: 1, easy: 0 };
+        var aDiff = diffRank[a.difficulty] || 0;
+        var bDiff = diffRank[b.difficulty] || 0;
+        if (bDiff !== aDiff) return bDiff - aDiff;
+        var aTime = a.time != null ? a.time : Infinity;
+        var bTime = b.time != null ? b.time : Infinity;
+        return aTime - bTime;
+      });
       return scores;
     },
 
@@ -754,7 +791,7 @@
       opts = opts || {};
 
       const maxRows = opts.maxRows || 20;
-      const columns = opts.columns || ['rank', 'name', 'correct', 'total', 'percent', 'time', 'difficulty', 'date'];
+      const columns = opts.columns || ['rank', 'name', 'correct', 'total', 'percent', 'lives', 'time', 'difficulty', 'date'];
 
       const diffLabels = { easy: '<img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado', normal: '<img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal', extreme: '<img src="../Extremo.png" alt="" class="rlb-icon-img"> Extremo', hard: '<img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Difícil', none: '—' };
       const diffKeys = opts.difficulties || ['easy', 'normal', 'extreme', 'hard'];
@@ -811,6 +848,7 @@
         }
 
         html += `</div></div>`;
+        html += `<p style="text-align:center;color:var(--muted);font-size:0.78rem;font-weight:700;margin:8px 0 0;"><img src="../Info.png" alt="" style="width:1em;height:1em;vertical-align:middle;margin-right:4px;"> El tiempo que tardas también cuenta en el top. ¡Sé rápido!</p>`;
 
         /* Table header */
         const allCols = [...columns];
@@ -820,7 +858,7 @@
         const colLabels = {
           rank: '#', name: 'Jugador', score: 'Puntos', difficulty: 'Dificultad',
           channel: 'Canal', round: 'Pista', time: 'Tiempo', date: 'Fecha',
-          streak: 'Racha', correct: '✓', total: 'Total', percent: '%', report: ''
+          streak: 'Racha', correct: '✓', total: 'Total', percent: '%', lives: 'Vidas', report: ''
         };
         allCols.forEach(c => {
           if (colLabels[c] !== undefined) html += `<th class="rlb-col-${c}">${colLabels[c]}</th>`;
@@ -855,6 +893,7 @@
                 case 'correct': val = s.correct != null ? s.correct : '—'; break;
                 case 'total': val = s.total != null ? s.total : '—'; break;
                 case 'percent': val = pct + '%'; break;
+                case 'lives': val = (s.lives != null && s.maxLives != null) ? s.lives + '/' + s.maxLives : '—'; break;
                 case 'report':
                   if (isOwn) {
                     val = '';
@@ -889,7 +928,7 @@
             const name = btn.dataset.name;
             if (!name) return;
             if (btn.classList.contains('rlb-reported')) return;
-            if (confirm('¿Reportar el nombre "' + name + '"? Se eliminará de todos los leaderboards.')) {
+            if (confirm('¿Reportar el nombre "' + name + '"? Se enviará a Jan para revisión.')) {
               reportName(name, gameId);
               btn.classList.add('rlb-reported');
               btn.innerHTML = '<img src="../Exito.png" alt="" class="rlb-icon-img">';
@@ -927,4 +966,20 @@
   var _scoreUpdateCallbacks = [];
   window.RickyLeaderboard.onScoresUpdated = function (fn) { _scoreUpdateCallbacks.push(fn); };
   window.RickyLeaderboard._fireScoreUpdate = function () { _scoreUpdateCallbacks.forEach(function (fn) { fn(); }); };
+
+  /* Set personalized OBS lives link for each player */
+  function setObsLivesLink() {
+    var pid = getPlayerId();
+    var links = document.querySelectorAll('#obsLivesLink');
+    links.forEach(function (link) {
+      var url = '../obs-lives.html?id=' + pid;
+      link.href = url;
+      link.textContent = 'obs-lives.html?id=' + pid;
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setObsLivesLink);
+  } else {
+    setObsLivesLink();
+  }
 })();

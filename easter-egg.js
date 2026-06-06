@@ -6,7 +6,7 @@
   'use strict';
 
   var LS_KEY = 'rlb_easter_eggs';
-  var TOTAL_EGGS = 7;
+  var TOTAL_EGGS = 8;
 
   /* Migration: remove letrless from discovered if it exists */
   try {
@@ -66,6 +66,13 @@
       title: 'Felicidades, nuevo logo del canal',
       subtitle: '',
       colors: ['#e74c3c', '#f39c12', '#f1c40f', '#27c93f', '#38d4ff', '#9b59b6']
+    },
+    fifa: {
+      id: 'fifa',
+      image: 'RickyEdit Fifa.png',
+      title: 'Felicidades, has encontrado al Ricky Futbolero (por cierto, tiene la bandera y eso personalizado para ti)',
+      subtitle: '',
+      colors: ['#f1c40f', '#36e28a', '#38d4ff']
     }
   };
 
@@ -264,14 +271,11 @@
       spawnConfetti(overlay, egg.colors);
     }
 
-    setTimeout(function () {
-      overlay.classList.remove('show');
-      setTimeout(function () { overlay.remove(); }, 500);
-    }, 3500);
-
-    overlay.addEventListener('click', function () {
-      overlay.classList.remove('show');
-      setTimeout(function () { overlay.remove(); }, 500);
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay) {
+        overlay.classList.remove('show');
+        setTimeout(function () { overlay.remove(); }, 500);
+      }
     });
   }
 
@@ -575,9 +579,16 @@
         /* Sort by timestamp ascending */
         newNotifs.sort(function (a, b) { return a.ts - b.ts; });
 
-        /* On first poll, just set the baseline without showing old notifications */
+        /* On first poll, only show notifications from the last 30 seconds */
         if (!_notifInitialized) {
           _notifInitialized = true;
+          var recentCutoff = Date.now() - 30000;
+          var recentNotifs = newNotifs.filter(function(n) { return n.ts >= recentCutoff; });
+          if (recentNotifs.length > 0) {
+            for (var j = 0; j < recentNotifs.length; j++) {
+              showPersistentToast('Notificación de Jan: ' + recentNotifs[j].msg);
+            }
+          }
           var newest = newNotifs[newNotifs.length - 1];
           _lastNotifTs = newest.ts;
           localStorage.setItem(NOTIF_SHOWN_KEY, String(newest.ts));

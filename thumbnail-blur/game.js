@@ -23,6 +23,13 @@ let state = {
     total: 0,
 };
 
+let livesEnabled = false;
+let lives = 3;
+let MAX_LIVES = 3;
+let failCount = 0;
+let usedExtraLife = false;
+let gameOverByLives = false;
+
 const $ = (id) => document.getElementById(id);
 const els = {
     thumbCanvas: $("thumbCanvas"),
@@ -87,6 +94,12 @@ function playSound(type) {
         gain.gain.setValueAtTime(0.03 * vol, now);
         gain.gain.linearRampToValueAtTime(0, now + 0.08);
         osc.start(now); osc.stop(now + 0.08);
+    } else if (type === 'lifeloss') {
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(120, now + 0.4);
+        gain.gain.setValueAtTime(0.06 * vol, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.5);
+        osc.start(now); osc.stop(now + 0.5);
     }
     _currentOsc = osc;
 }
@@ -94,6 +107,92 @@ function playSound(type) {
 function normalize(text) {
     return String(text).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
         .replace(/[^a-z0-9ñ ]+/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function updateLivesDisplay() {
+    const el = document.getElementById('livesDisplay');
+    if (!el) return;
+    if (!livesEnabled) {
+        el.innerHTML = '<img src="../Rickyedit Games.png" alt="Rickyedit Games" class="life-logo">';
+        el.style.display = 'flex';
+        return;
+    }
+    el.style.display = 'flex';
+    let html = '';
+    for (let i = 0; i < MAX_LIVES; i++) {
+        if (i < lives) {
+            html += '<img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="life-heart">';
+        } else {
+            html += '<img src="../Iconos RickyEdit Web/Vida Rota.png" alt="" class="life-heart">';
+        }
+    }
+    el.innerHTML = html;
+    try { var _pid = localStorage.getItem('rlb_player_id') || ''; localStorage.setItem('rlb_obs_lives_' + _pid, JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+}
+
+function loseLife() {
+    if (!livesEnabled) return false;
+    lives--;
+    playSound('lifeloss');
+    updateLivesDisplay();
+    const hearts = document.querySelectorAll('#livesDisplay .life-heart');
+    const lostIndex = lives;
+    if (hearts[lostIndex]) {
+        hearts[lostIndex].classList.add('losing');
+        setTimeout(() => hearts[lostIndex].classList.remove('losing'), 500);
+    }
+    try { var _pid = localStorage.getItem('rlb_player_id') || ''; localStorage.setItem('rlb_obs_lives_' + _pid, JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+    if (lives <= 0) {
+        setTimeout(() => gameOver(), 500);
+        return true;
+    }
+    return false;
+}
+
+function gameOver() {
+    state.revealed = true;
+    gameOverByLives = true;
+    els.guessInput.disabled = true;
+    els.guessBtn.disabled = true;
+    els.newBtn.disabled = true;
+    els.skipBtn.disabled = true;
+
+    const elapsed = thumbblurGameStartTime ? ((Date.now() - thumbblurGameStartTime) / 1000).toFixed(1) : null;
+    const scoreVal = state.score || 0;
+    document.getElementById('gameoverScore').textContent = scoreVal > 0 ? scoreVal + ' puntos' : '';
+
+    document.getElementById('gameoverOverlay').classList.add('show');
+
+    if (!usedExtraLife) {
+        RickyLeaderboard.save('thumbblur', {
+            score: state.score,
+            difficulty: state.isExtreme ? 'extreme' : (state.isEasyMode ? 'easy' : 'normal'),
+            channel: currentChannel,
+            time: elapsed ? parseFloat(elapsed) : null,
+            correct: state.correct || 0,
+            total: state.total || 0,
+            maxStreak: state.maxStreak || 0,
+            lives: livesEnabled ? lives : null,
+            maxLives: livesEnabled ? MAX_LIVES : null
+        }, () => {});
+    }
+}
+
+function hideGameoverOverlay() {
+    document.getElementById('gameoverOverlay').classList.remove('show');
+}
+
+function continueGame() {
+    playSound('click');
+    hideGameoverOverlay();
+    gameOverByLives = false;
+    els.guessInput.disabled = false;
+    els.guessBtn.disabled = false;
+    els.newBtn.disabled = false;
+    els.skipBtn.disabled = false;
+    els.status.textContent = "Sigues jugando sin vidas. ¡No se guardará tu puntuación!";
+    const extraLifeBtn = document.getElementById('extraLifeBtn');
+    if (extraLifeBtn) extraLifeBtn.style.display = 'none';
 }
 
 function tokenScore(guess, answer) {
@@ -251,6 +350,7 @@ function submitGuess() {
         state.score += points;
         state.streak += 1;
         state.correct++;
+        failCount = 0;
         state.total++;
         if (state.streak > state.maxStreak) {
             state.maxStreak = state.streak;
@@ -266,6 +366,11 @@ function submitGuess() {
     els.status.textContent = "No era ese. Siguiente pista.";
     setTimeout(() => playSound('fail'), 100);
     nextRound(false);
+    failCount++;
+    if (failCount >= 2) {
+        failCount = 0;
+        if (loseLife()) return;
+    }
 }
 
 function nextRound(showMessage = true) {
@@ -298,7 +403,7 @@ function reveal(won, message) {
     els.revealMedia.innerHTML = `<iframe title="Vídeo revelado" src="https://www.youtube.com/embed/${state.current.id}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
     els.watchLink.href = `https://www.youtube.com/watch?v=${state.current.id}`;
     els.watchLink.style.display = "";
-    els.revealLinkText.textContent = "Escucha el vídeo aquí";
+    els.revealLinkText.textContent = "";
     els.reveal.classList.add("show");
     updateStats();
 }
@@ -384,7 +489,16 @@ function hideSearchResults() {
 els.guessBtn.addEventListener("click", submitGuess);
 els.newBtn.addEventListener("click", newRound);
 els.againBtn.addEventListener("click", newRound);
-els.skipBtn.addEventListener("click", () => nextRound());
+els.skipBtn.addEventListener("click", () => {
+    playSound('click');
+    state.total++;
+    nextRound(false);
+    failCount++;
+    if (failCount >= 2) {
+        failCount = 0;
+        if (loseLife()) return;
+    }
+});
 
 els.guessInput.addEventListener("keydown", (event) => {
     const buttons = els.searchResults.querySelectorAll(".search-option");
@@ -483,6 +597,29 @@ document.querySelectorAll('.start-extreme-btn').forEach(btn => {
     });
 });
 
+// Lives hearts selector
+document.querySelectorAll('.lives-selector').forEach(selector => {
+    const hearts = selector.querySelectorAll('.lives-heart-btn');
+    const countEl = selector.querySelector('.lives-selector-count');
+    hearts.forEach(btn => {
+        btn.addEventListener('click', () => {
+            playSound('click');
+            const val = parseInt(btn.dataset.lives, 10);
+            if (livesEnabled && MAX_LIVES === val) {
+                livesEnabled = false;
+                hearts.forEach(h => h.classList.remove('active'));
+                if (countEl) countEl.textContent = '';
+            } else {
+                livesEnabled = true;
+                MAX_LIVES = val;
+                hearts.forEach(h => h.classList.remove('active'));
+                for (let i = 0; i < val; i++) hearts[i].classList.add('active');
+                if (countEl) countEl.textContent = val;
+            }
+        });
+    });
+});
+
 // Info buttons
 document.querySelectorAll('.info-toggle-btn').forEach(btn => {
     btn.addEventListener("click", (e) => {
@@ -497,6 +634,13 @@ function startGame() {
     state.isExtreme = currentDifficulty === 'extreme';
     state.maxAttempts = 6;
     state.pool = [];
+    lives = MAX_LIVES;
+    failCount = 0;
+    usedExtraLife = false;
+    gameOverByLives = false;
+    updateLivesDisplay();
+    const extraLifeBtn = document.getElementById('extraLifeBtn');
+    if (extraLifeBtn) extraLifeBtn.style.display = livesEnabled ? '' : 'none';
     allVideos = (window.RICKY_VIDEOS || []).filter(v => v && v.id);
     secondaryVideos = (window.RICKY_SECONDARY || []).filter(v => v && v.id);
     startScreen.classList.add("hide");
@@ -516,6 +660,41 @@ if (document.getElementById("startSecondaryGameBtn")) {
 if (document.getElementById("startBothGameBtn")) {
     document.getElementById("startBothGameBtn").addEventListener("click", () => { currentChannel = 'both'; startGame(); });
 }
+
+// Game over buttons
+document.getElementById('gameoverRestartBtn').addEventListener('click', () => {
+    playSound('click');
+    hideGameoverOverlay();
+    els.reveal.classList.remove('show');
+    els.revealMedia.innerHTML = "";
+    startScreen.classList.remove('hide');
+    document.body.style.overflow = 'hidden';
+});
+document.getElementById('gameoverHomeBtn').addEventListener('click', () => {
+    playSound('click');
+    hideGameoverOverlay();
+    els.reveal.classList.remove('show');
+    els.revealMedia.innerHTML = "";
+    startScreen.classList.remove('hide');
+    document.body.style.overflow = 'hidden';
+    renderThumbblurLeaderboard();
+});
+document.getElementById('gameoverContinueBtn').addEventListener('click', continueGame);
+
+// Extra life button
+document.getElementById('extraLifeBtn').addEventListener('click', () => {
+    playSound('success');
+    usedExtraLife = true;
+    if (lives < MAX_LIVES) {
+        lives++;
+        updateLivesDisplay();
+        els.status.textContent = "¡Vida extra! Recuerda: no se guardará en el leaderboard.";
+        const extraLifeBtn = document.getElementById('extraLifeBtn');
+        if (extraLifeBtn) extraLifeBtn.style.display = livesEnabled && lives < MAX_LIVES ? '' : 'none';
+    } else {
+        els.status.textContent = "Ya tienes todas las vidas.";
+    }
+});
 
 // Elegir otro
 if (els.changeModeBtn) {
@@ -540,10 +719,10 @@ secondaryVideos = (window.RICKY_SECONDARY || []).filter(v => v && v.id);
 
 // Info modal content
 const THUMBBLUR_INFO_HTML =
-    '<h3>🆕 ¡Bienvenido a Miniatura Borrosa!</h3>' +
+    '<h3><img src="../Iconos RickyEdit Web/🆕.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> ¡Bienvenido a Miniatura Borrosa!</h3>' +
     '<p>Un juego nuevo donde tienes que <span class="upd-highlight">adivinar vídeos de Rickyedit</span> con la miniatura borrosa.</p>' +
     '<hr class="upd-sep">' +
-    '<h3>🎮 Cómo se juega</h3>' +
+    '<h3><img src="../Iconos RickyEdit Web/🎮.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Cómo se juega</h3>' +
     '<ul>' +
     '<li>Se te muestra una miniatura borrosa de un vídeo</li>' +
     '<li>Escribe el título en el buscador y selecciónalo</li>' +
@@ -551,12 +730,15 @@ const THUMBBLUR_INFO_HTML =
     '<li>Cuanto antes la adivines, más puntos</li>' +
     '</ul>' +
     '<hr class="upd-sep">' +
-    '<h3>😎 Modos</h3>' +
+    '<h3><img src="../Iconos RickyEdit Web/😎.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Modos</h3>' +
     '<ul>' +
     '<li><span class="upd-highlight">Cagado</span> — Miniatura muy borrosa, menos intentos</li>' +
     '<li><span class="upd-highlight">Normal</span> — Borrosidad equilibrada</li>' +
     '<li><span class="upd-highlight">Extremo</span> — Sin ver la miniatura, solo por el título</li>' +
     '</ul>' +
+    '<hr class="upd-sep">' +
+    '<h3><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Sistema de vidas</h3>' +
+    '<p>Hay un sistema de vidas opcional. Pulsa <span class="upd-highlight">Info Vidas</span> para más detalles.</p>' +
     '<hr class="upd-sep">' +
     '<h3><img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Leaderboard</h3>' +
     '<p>Compite con otros jugadores. ¡Dale a <span class="upd-highlight">¡Entendido!</span>!</p>';
@@ -580,7 +762,9 @@ if (finalizeBtn) {
             time: elapsed ? parseFloat(elapsed) : null,
             correct: state.correct || 0,
             total: state.total || 0,
-            maxStreak: state.maxStreak || 0
+            maxStreak: state.maxStreak || 0,
+            lives: livesEnabled ? lives : null,
+            maxLives: livesEnabled ? MAX_LIVES : null
         }, () => {
             els.reveal.classList.remove('show');
             startScreen.classList.remove('hide');
@@ -603,7 +787,9 @@ if (finalizeBtnMid) {
             time: elapsed ? parseFloat(elapsed) : null,
             correct: state.correct || 0,
             total: state.total || 0,
-            maxStreak: state.maxStreak || 0
+            maxStreak: state.maxStreak || 0,
+            lives: livesEnabled ? lives : null,
+            maxLives: livesEnabled ? MAX_LIVES : null
         }, () => {
             els.reveal.classList.remove('show');
             startScreen.classList.remove('hide');
@@ -624,7 +810,7 @@ RickyLeaderboard.onScoresUpdated(function () { renderThumbblurLeaderboard(); });
 function renderThumbblurLeaderboard() {
     RickyLeaderboard.render('leaderboardContainer', 'thumbblur', {
         title: '<img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Top — Miniatura Borrosa',
-        columns: ['rank', 'name', 'correct', 'total', 'percent', 'time', 'difficulty', 'channel', 'date'],
+        columns: ['rank', 'name', 'correct', 'total', 'percent', 'lives', 'time', 'difficulty', 'channel', 'date'],
         difficulties: ['easy', 'normal', 'extreme'],
         channels: { principal: 'Canal Principal', secondary: 'Canal Secundario', both: 'Los 2 canales' },
         maxRows: 20
@@ -640,10 +826,10 @@ startGame = function() {
 
 // Updates modal
 RickyUpdates.show('thumbblur', 'v2.0', `
-    <h3>🆕 ¡Bienvenido a Miniatura Borrosa!</h3>
+    <h3><img src="../Iconos RickyEdit Web/🆕.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> ¡Bienvenido a Miniatura Borrosa!</h3>
     <p>Un juego nuevo donde tienes que <span class="upd-highlight">adivinar vídeos de Rickyedit</span> con la miniatura borrosa.</p>
     <hr class="upd-sep">
-    <h3>🎮 Cómo se juega</h3>
+    <h3><img src="../Iconos RickyEdit Web/🎮.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Cómo se juega</h3>
     <ul>
         <li>Se te muestra una miniatura borrosa de un vídeo</li>
         <li>Escribe el título en el buscador y selecciónalo</li>
@@ -651,7 +837,7 @@ RickyUpdates.show('thumbblur', 'v2.0', `
         <li>Cuanto antes la adivines, más puntos</li>
     </ul>
     <hr class="upd-sep">
-    <h3>😎 Modos</h3>
+    <h3><img src="../Iconos RickyEdit Web/😎.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Modos</h3>
     <ul>
         <li><span class="upd-highlight">Cagado</span> — Miniatura muy borrosa, menos intentos</li>
         <li><span class="upd-highlight">Normal</span> — Borrosidad equilibrada</li>

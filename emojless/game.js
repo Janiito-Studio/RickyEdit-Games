@@ -95,6 +95,12 @@ function playSound(type) {
         gain.gain.setValueAtTime(0.03 * vol, now);
         gain.gain.linearRampToValueAtTime(0, now + 0.08);
         osc.start(now); osc.stop(now + 0.08);
+    } else if (type === 'lifeloss') {
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(120, now + 0.4);
+        gain.gain.setValueAtTime(0.06 * vol, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.5);
+        osc.start(now); osc.stop(now + 0.5);
     }
     _currentOsc = osc;
 }
@@ -234,7 +240,16 @@ function selectRandomSong() {
         });
         if (!available.length) available = keys;
     }
-    if (noRepeatMode && usedSongs.length >= available.length) usedSongs = [];
+    if (noRepeatMode && usedSongs.length >= available.length) {
+        // Show completion overlay
+        document.getElementById('completionScore').textContent = state.score;
+        document.getElementById('completionOverlay').classList.add('show');
+        state.revealed = true;
+        els.guessInput.disabled = true;
+        els.guessBtn.disabled = true;
+        els.status.textContent = '<img src="../Iconos RickyEdit Web/🎉.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:4px;"> ¡Completaste todas las canciones!';
+        return { title: 'completion', emojis: '<img src="../Iconos RickyEdit Web/🎉.png" alt="" style="width:120px;height:120px;">' };
+    }
     let filtered = noRepeatMode ? available.filter(k => !usedSongs.includes(k)) : available;
     if (!filtered.length) filtered = available;
     const key = filtered[Math.floor(Math.random() * filtered.length)];
@@ -288,6 +303,7 @@ function submitGuess() {
             localStorage.setItem("emojless_max_streak", state.maxStreak);
         }
         reveal(true, `Acertaste. +${points} puntos.`);
+        failCount = 0;
         setTimeout(() => playSound('success'), 100);
         return;
     }
@@ -296,6 +312,11 @@ function submitGuess() {
     els.status.textContent = "No era ese. Te revelo otro emoji.";
     setTimeout(() => playSound('fail'), 100);
     nextRound(false);
+    failCount++;
+    if (failCount >= 2) {
+        failCount = 0;
+        if (loseLife()) return;
+    }
 }
 
 function nextRound(showMessage = true) {
@@ -342,6 +363,7 @@ function reveal(won, message) {
 let searchVisibleCount = 8;
 
 function renderSearchResults() {
+    searchVisibleCount = 8;
     state.activeSearchIndex = -1;
     const query = normalize(els.guessInput.value);
     if (query.length < 1) {
@@ -423,7 +445,16 @@ function hideSearchResults() {
 els.guessBtn.addEventListener("click", () => { playSound('click'); submitGuess(); });
 els.newBtn.addEventListener("click", () => { playSound('click'); newRound(); });
 els.againBtn.addEventListener("click", () => { playSound('click'); newRound(); });
-els.skipBtn.addEventListener("click", () => { playSound('click'); nextRound(); });
+els.skipBtn.addEventListener("click", () => {
+    playSound('click');
+    state.total++;
+    nextRound(false);
+    failCount++;
+    if (failCount >= 2) {
+        failCount = 0;
+        if (loseLife()) return;
+    }
+});
 
 els.guessInput.addEventListener("keydown", (event) => {
     const buttons = els.searchResults.querySelectorAll(".search-option");
@@ -463,6 +494,129 @@ document.addEventListener("click", (event) => {
 let easyMode = false;
 let noRepeatMode = true;
 let usedSongs = [];
+let livesEnabled = false;
+let lives = 3;
+let MAX_LIVES = 3;
+let failCount = 0;
+let usedExtraLife = false;
+let gameOverByLives = false;
+
+function updateLivesDisplay() {
+    const container = document.getElementById('livesDisplay');
+    if (!container) return;
+    if (!livesEnabled) {
+        container.innerHTML = '<img src="../Rickyedit Games.png" alt="Rickyedit Games" class="life-logo">';
+        container.style.display = 'flex';
+        return;
+    }
+    container.style.display = 'flex';
+    let html = '';
+    for (let i = 0; i < MAX_LIVES; i++) {
+        if (i < lives) {
+            html += '<img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="life-heart">';
+        } else {
+            html += '<img src="../Iconos RickyEdit Web/Vida Rota.png" alt="" class="life-heart">';
+        }
+    }
+    container.innerHTML = html;
+    try { var _pid = localStorage.getItem('rlb_player_id') || ''; localStorage.setItem('rlb_obs_lives_' + _pid, JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+}
+
+function loseLife() {
+    if (!livesEnabled) return false;
+    lives--;
+    playSound('lifeloss');
+    updateLivesDisplay();
+    const hearts = document.querySelectorAll('#livesDisplay .life-heart');
+    const lostIndex = lives;
+    if (hearts[lostIndex]) {
+        hearts[lostIndex].classList.add('losing');
+        setTimeout(() => hearts[lostIndex].classList.remove('losing'), 500);
+    }
+    try { var _pid = localStorage.getItem('rlb_player_id') || ''; localStorage.setItem('rlb_obs_lives_' + _pid, JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+    if (lives <= 0) {
+        setTimeout(() => gameOver(), 500);
+        return true;
+    }
+    return false;
+}
+
+function gameOver() {
+    state.revealed = true;
+    gameOverByLives = true;
+    els.guessInput.disabled = true;
+    els.guessBtn.disabled = true;
+
+    const elapsed = emojlessGameStartTime ? ((Date.now() - emojlessGameStartTime) / 1000).toFixed(1) : null;
+    const scoreVal = state.score || 0;
+    document.getElementById('gameoverScore').textContent = scoreVal > 0 ? scoreVal + ' puntos' : '';
+
+    document.getElementById('gameoverOverlay').classList.add('show');
+
+    if (!usedExtraLife) {
+        RickyLeaderboard.save('emojless', {
+            score: state.score,
+            difficulty: easyMode ? 'easy' : 'normal',
+            time: elapsed ? parseFloat(elapsed) : null,
+            correct: state.correct || 0,
+            total: state.total || 0,
+            maxStreak: state.maxStreak || 0,
+            lives: livesEnabled ? lives : null,
+            maxLives: livesEnabled ? MAX_LIVES : null
+        }, () => {});
+    }
+}
+
+function hideGameoverOverlay() {
+    document.getElementById('gameoverOverlay').classList.remove('show');
+}
+
+function continueGame() {
+    playSound('click');
+    hideGameoverOverlay();
+    gameOverByLives = false;
+    els.guessInput.disabled = false;
+    els.guessBtn.disabled = false;
+    els.status.textContent = "Sigues jugando sin vidas. ¡No se guardará tu puntuación!";
+    const extraLifeBtn = document.getElementById('extraLifeBtn');
+    if (extraLifeBtn) extraLifeBtn.style.display = 'none';
+}
+
+document.getElementById('gameoverRestartBtn').addEventListener('click', () => {
+    playSound('click');
+    hideGameoverOverlay();
+    document.getElementById('reveal').classList.remove('show');
+    document.getElementById('startScreen').classList.remove('hide');
+    document.body.style.overflow = 'hidden';
+});
+
+document.getElementById('gameoverHomeBtn').addEventListener('click', () => {
+    playSound('click');
+    hideGameoverOverlay();
+    document.getElementById('reveal').classList.remove('show');
+    document.getElementById('startScreen').classList.remove('hide');
+    document.body.style.overflow = 'hidden';
+    renderEmojlessLeaderboard();
+});
+
+document.getElementById('gameoverContinueBtn').addEventListener('click', continueGame);
+
+// Extra life button
+const extraLifeBtnEl = document.getElementById('extraLifeBtn');
+if (extraLifeBtnEl) {
+    extraLifeBtnEl.addEventListener('click', () => {
+        playSound('success');
+        usedExtraLife = true;
+        if (lives < MAX_LIVES) {
+            lives++;
+            updateLivesDisplay();
+            els.status.textContent = "¡Vida extra! Recuerda: no se guardará en el leaderboard.";
+            if (extraLifeBtnEl) extraLifeBtnEl.style.display = livesEnabled && lives < MAX_LIVES ? '' : 'none';
+        } else {
+            els.status.textContent = "Ya tienes todas las vidas.";
+        }
+    });
+}
 
 const startScreen = document.getElementById("startScreen");
 const normalToggle = document.getElementById("normalModeToggle");
@@ -579,11 +733,41 @@ if (startRandomBtn) {
     });
 }
 
+const livesSelector = document.querySelector('.lives-selector');
+if (livesSelector) {
+    const hearts = livesSelector.querySelectorAll('.lives-heart-btn');
+    const countEl = livesSelector.querySelector('.lives-selector-count');
+    hearts.forEach(btn => {
+        btn.addEventListener('click', () => {
+            playSound('click');
+            const val = parseInt(btn.dataset.lives, 10);
+            if (livesEnabled && MAX_LIVES === val) {
+                livesEnabled = false;
+                hearts.forEach(h => h.classList.remove('active'));
+                if (countEl) countEl.textContent = '';
+            } else {
+                livesEnabled = true;
+                MAX_LIVES = val;
+                hearts.forEach(h => h.classList.remove('active'));
+                for (let i = 0; i < val; i++) hearts[i].classList.add('active');
+                if (countEl) countEl.textContent = val;
+            }
+        });
+    });
+}
+
 if (startGameBtn) {
     startGameBtn.addEventListener("click", () => {
         playSound('success');
         startScreen.classList.add("hide");
         document.body.style.overflow = "auto";
+        lives = MAX_LIVES;
+        failCount = 0;
+        usedExtraLife = false;
+        gameOverByLives = false;
+        updateLivesDisplay();
+        const extraLifeBtn = document.getElementById('extraLifeBtn');
+        if (extraLifeBtn) extraLifeBtn.style.display = livesEnabled ? '' : 'none';
         if (easyMode) {
             MAX_ATTEMPTS = 4;
             document.getElementById("segmentsInfo").textContent = "Empiezas con 3 emojis visibles. Cada fallo revela uno más. Tienes 4 intentos.";
@@ -657,25 +841,29 @@ if (letterModal) {
 
 // Info modal content
 const EMOJLESS_INFO_HTML =
-    '<h3>🆕 ¡Bienvenido a Emojless!</h3>' +
-    '<p>Este es un juego nuevo donde tienes que <span class="upd-highlight">adivinar canciones de Rickyedit</span> solo con emojis.</p>' +
+    '<h3><img src="../Iconos RickyEdit Web/🆕.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> ¡Bienvenido a Emojless!</h3>' +
+    '<p>Tienes que <span class="upd-highlight">adivinar canciones de Rickyedit</span> solo con emojis.</p>' +
     '<hr class="upd-sep">' +
-    '<h3>🎮 Cómo se juega</h3>' +
+    '<h3><img src="../Iconos RickyEdit Web/🎮.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Cómo se juega</h3>' +
     '<ul>' +
-    '<li>Se te muestran los emojis de una canción</li>' +
-    '<li>Escribe el nombre en el buscador y selecciónalo</li>' +
-    '<li>Cada fallo revela un emoji más</li>' +
+    '<li><strong>Paso 1:</strong> Se te muestran los emojis de una canción</li>' +
+    '<li><strong>Paso 2:</strong> Escribe el nombre en el buscador y selecciónalo con el ratón o Enter</li>' +
+    '<li><strong>Paso 3:</strong> Si aciertas, ganas puntos. Si fallas, se revela un emoji más</li>' +
     '</ul>' +
     '<hr class="upd-sep">' +
-    '<h3>😎 Modos</h3>' +
+    '<h3><img src="../Iconos RickyEdit Web/😎.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Modos</h3>' +
     '<ul>' +
-    '<li><span class="upd-highlight">Cagado</span> — Empiezas con 3 emojis y tienes 4 intentos</li>' +
-    '<li><span class="upd-highlight">Normal</span> — Empiezas con 1 emoji y tienes 6 intentos</li>' +
+    '<li><span class="upd-highlight">Cagado</span> — Empiezas con 3 emojis visibles y tienes 4 intentos</li>' +
+    '<li><span class="upd-highlight">Normal</span> — Empiezas con 1 emoji visible y tienes 6 intentos</li>' +
     '<li><span class="upd-highlight">Sin repetir</span> — No se repite ninguna canción</li>' +
+    '<li><span class="upd-highlight">Aleatorio</span> — Las canciones salen en orden aleatorio</li>' +
     '</ul>' +
+    '<hr class="upd-sep">' +
+    '<h3><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Sistema de vidas</h3>' +
+    '<p>Hay un sistema de vidas opcional. Pulsa <span class="upd-highlight">Info Vidas</span> para más detalles.</p>' +
     '<hr class="upd-sep">' +
     '<h3><img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Leaderboard</h3>' +
-    '<p>Compite con otros jugadores. ¡Dale a <span class="upd-highlight">¡Entendido!</span>!</p>';
+    '<p>Compite con otros jugadores en la clasificación. Tu puntuación, tiempo y racha máxima quedan registrados.</p>';
 
 function showEmojlessInfo() {
     if (letterModal) letterModal.classList.remove('show');
@@ -709,7 +897,9 @@ if (finalizeBtn) {
             time: elapsed ? parseFloat(elapsed) : null,
             correct: state.correct || 0,
             total: state.total || 0,
-            maxStreak: state.maxStreak || 0
+            maxStreak: state.maxStreak || 0,
+            lives: livesEnabled ? lives : null,
+            maxLives: livesEnabled ? MAX_LIVES : null
         }, () => {
             document.getElementById('reveal').classList.remove('show');
             document.getElementById('startScreen').classList.remove('hide');
@@ -730,7 +920,9 @@ if (finalizeBtnMid) {
             time: elapsed ? parseFloat(elapsed) : null,
             correct: state.correct || 0,
             total: state.total || 0,
-            maxStreak: state.maxStreak || 0
+            maxStreak: state.maxStreak || 0,
+            lives: livesEnabled ? lives : null,
+            maxLives: livesEnabled ? MAX_LIVES : null
         }, () => {
             document.getElementById('reveal').classList.remove('show');
             document.getElementById('startScreen').classList.remove('hide');
@@ -745,13 +937,74 @@ if (finalizeBtnMid) {
     });
 }
 
+// Completion overlay buttons
+const completionRestartBtn = document.getElementById('completionRestartBtn');
+const completionFinalizeBtn = document.getElementById('completionFinalizeBtn');
+const completionHomeBtn = document.getElementById('completionHomeBtn');
+
+if (completionRestartBtn) {
+    completionRestartBtn.addEventListener('click', () => {
+        playSound('click');
+        usedSongs = [];
+        state.score = 0;
+        state.streak = 0;
+        state.correct = 0;
+        state.total = 0;
+        document.getElementById('completionOverlay').classList.remove('show');
+        newRound();
+    });
+}
+if (completionFinalizeBtn) {
+    completionFinalizeBtn.addEventListener('click', () => {
+        playSound('click');
+        const elapsed = emojlessGameStartTime ? ((Date.now() - emojlessGameStartTime) / 1000).toFixed(1) : null;
+        RickyLeaderboard.save('emojless', {
+            score: state.score,
+            difficulty: easyMode ? 'easy' : 'normal',
+            time: elapsed ? parseFloat(elapsed) : null,
+            correct: state.correct || 0,
+            total: state.total || 0,
+            maxStreak: state.maxStreak || 0,
+            lives: livesEnabled ? lives : null,
+            maxLives: livesEnabled ? MAX_LIVES : null
+        }, () => {
+            document.getElementById('completionOverlay').classList.remove('show');
+            document.getElementById('reveal').classList.remove('show');
+            document.getElementById('startScreen').classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+            usedSongs = [];
+            state.score = 0;
+            state.streak = 0;
+            state.correct = 0;
+            state.total = 0;
+            emojlessGameStartTime = null;
+            renderEmojlessLeaderboard();
+        });
+    });
+}
+if (completionHomeBtn) {
+    completionHomeBtn.addEventListener('click', () => {
+        playSound('click');
+        document.getElementById('completionOverlay').classList.remove('show');
+        document.getElementById('reveal').classList.remove('show');
+        document.getElementById('startScreen').classList.remove('hide');
+        document.body.style.overflow = 'hidden';
+        usedSongs = [];
+        state.score = 0;
+        state.streak = 0;
+        state.correct = 0;
+        state.total = 0;
+        emojlessGameStartTime = null;
+    });
+}
+
 renderEmojlessLeaderboard();
 RickyLeaderboard.onScoresUpdated(function () { renderEmojlessLeaderboard(); });
 
 function renderEmojlessLeaderboard() {
     RickyLeaderboard.render('leaderboardContainer', 'emojless', {
         title: '<img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Top — Emojless',
-        columns: ['rank', 'name', 'correct', 'total', 'percent', 'time', 'difficulty', 'date'],
+        columns: ['rank', 'name', 'correct', 'total', 'percent', 'lives', 'time', 'difficulty', 'date'],
         difficulties: ['easy', 'normal'],
         maxRows: 20
     });
@@ -759,17 +1012,17 @@ function renderEmojlessLeaderboard() {
 
 // Updates modal
 RickyUpdates.show('emojless', 'v2.0', `
-    <h3>🆕 ¡Bienvenido a Emojless!</h3>
+    <h3><img src="../Iconos RickyEdit Web/🆕.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> ¡Bienvenido a Emojless!</h3>
     <p>Este es un juego nuevo donde tienes que <span class="upd-highlight">adivinar canciones de Rickyedit</span> solo con emojis.</p>
     <hr class="upd-sep">
-    <h3>🎮 Cómo se juega</h3>
+    <h3><img src="../Iconos RickyEdit Web/🎮.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Cómo se juega</h3>
     <ul>
         <li>Se te muestran los emojis de una canción</li>
         <li>Escribe el nombre en el buscador y selecciónalo</li>
         <li>Cada fallo revela un emoji más</li>
     </ul>
     <hr class="upd-sep">
-    <h3>😎 Modos</h3>
+    <h3><img src="../Iconos RickyEdit Web/😎.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Modos</h3>
     <ul>
         <li><span class="upd-highlight">Cagado</span> — Empiezas con 3 emojis y tienes 4 intentos</li>
         <li><span class="upd-highlight">Normal</span> — Empiezas con 1 emoji y tienes 6 intentos</li>

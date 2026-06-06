@@ -49,6 +49,12 @@
             gain.gain.setValueAtTime(0.03 * vol, now);
             gain.gain.linearRampToValueAtTime(0, now + 0.08);
             osc.start(now); osc.stop(now + 0.08);
+        } else if (type === 'lifeloss') {
+            osc.frequency.setValueAtTime(400, now);
+            osc.frequency.exponentialRampToValueAtTime(120, now + 0.4);
+            gain.gain.setValueAtTime(0.06 * vol, now);
+            gain.gain.linearRampToValueAtTime(0, now + 0.5);
+            osc.start(now); osc.stop(now + 0.5);
         }
         _currentOsc = osc;
     }
@@ -104,6 +110,112 @@
     var noRepeatMode = true;
     var usedSongs = [];
     var gameStartTime = null;
+    var livesEnabled = false;
+    var lives = 3;
+    var MAX_LIVES = 3;
+    let failCount = 0;
+    let usedExtraLife = false;
+    let gameOverByLives = false;
+
+    function updateLivesDisplay() {
+        var el = document.getElementById('livesDisplay');
+        if (!el) return;
+        if (!livesEnabled) {
+            el.innerHTML = '<img src="../Rickyedit Games.png" alt="Rickyedit Games" class="life-logo">';
+            el.style.display = 'flex';
+            return;
+        }
+        el.style.display = 'flex';
+        var html = '';
+        for (var i = 0; i < MAX_LIVES; i++) {
+            if (i < lives) {
+                html += '<img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="life-heart">';
+            } else {
+                html += '<img src="../Iconos RickyEdit Web/Vida Rota.png" alt="" class="life-heart">';
+            }
+        }
+        el.innerHTML = html;
+        try { var _pid = localStorage.getItem('rlb_player_id') || ''; localStorage.setItem('rlb_obs_lives_' + _pid, JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+    }
+
+    function loseLife() {
+        if (!livesEnabled) return false;
+        lives--;
+        playSound('lifeloss');
+        updateLivesDisplay();
+        var hearts = document.querySelectorAll('#livesDisplay .life-heart');
+        var lostIndex = lives;
+        if (hearts[lostIndex]) {
+            hearts[lostIndex].classList.add('losing');
+            setTimeout(function() { hearts[lostIndex].classList.remove('losing'); }, 500);
+        }
+        try { var _pid = localStorage.getItem('rlb_player_id') || ''; localStorage.setItem('rlb_obs_lives_' + _pid, JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+        if (lives <= 0) {
+            setTimeout(function() { gameOver(); }, 500);
+            return true;
+        }
+        return false;
+    }
+
+    function gameOver() {
+        gameOverByLives = true;
+        state.revealed = true;
+        els.guessInput.disabled = true;
+        els.guessBtn.disabled = true;
+
+        var elapsed = gameStartTime ? ((Date.now() - gameStartTime) / 1000).toFixed(1) : null;
+        var scoreVal = state.score || 0;
+        document.getElementById('gameoverScore').textContent = scoreVal > 0 ? scoreVal + ' puntos' : '';
+
+        document.getElementById('gameoverOverlay').classList.add('show');
+
+        if (!usedExtraLife) {
+            RickyLeaderboard.save('letrless', {
+                score: state.score,
+                difficulty: minWords === 7 ? 'easy' : minWords === 3 ? 'hard' : 'normal',
+                time: elapsed ? parseFloat(elapsed) : null,
+                correct: state.correct || 0,
+                total: state.total || 0,
+                maxStreak: state.maxStreak || 0,
+                lives: livesEnabled ? lives : null,
+                maxLives: livesEnabled ? MAX_LIVES : null
+            }, function () {});
+        }
+    }
+
+    function hideGameoverOverlay() {
+        document.getElementById('gameoverOverlay').classList.remove('show');
+    }
+
+    function continueGame() {
+        playSound('click');
+        hideGameoverOverlay();
+        gameOverByLives = false;
+        els.guessInput.disabled = false;
+        els.guessBtn.disabled = false;
+        els.status.textContent = "Sigues jugando sin vidas. ¡No se guardará tu puntuación!";
+        const extraLifeBtn = document.getElementById('extraLifeBtn');
+        if (extraLifeBtn) extraLifeBtn.style.display = 'none';
+    }
+
+    document.getElementById('gameoverRestartBtn').addEventListener('click', function() {
+        playSound('click');
+        hideGameoverOverlay();
+        document.getElementById('reveal').classList.remove('show');
+        document.getElementById('startScreen').classList.remove('hide');
+        document.body.style.overflow = 'hidden';
+    });
+
+    document.getElementById('gameoverHomeBtn').addEventListener('click', function() {
+        playSound('click');
+        hideGameoverOverlay();
+        document.getElementById('reveal').classList.remove('show');
+        document.getElementById('startScreen').classList.remove('hide');
+        document.body.style.overflow = 'hidden';
+        renderLetrlessLeaderboard();
+    });
+
+    document.getElementById('gameoverContinueBtn').addEventListener('click', continueGame);
 
     var state = {
         current: null,
@@ -196,7 +308,15 @@
             });
             if (!available.length) available = keys;
         }
-        if (noRepeatMode && usedSongs.length >= available.length) usedSongs = [];
+        if (noRepeatMode && usedSongs.length >= available.length) {
+            document.getElementById('completionScore').textContent = state.score;
+            document.getElementById('completionOverlay').classList.add('show');
+            state.revealed = true;
+            els.guessInput.disabled = true;
+            els.guessBtn.disabled = true;
+            els.status.textContent = '<img src="../Iconos RickyEdit Web/🎉.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:4px;"> ¡Completaste todas las canciones!';
+            return { title: 'completion', line: '', words: [''] };
+        }
         var filtered = noRepeatMode ? available.filter(function (k) { return usedSongs.indexOf(k) === -1; }) : available;
         if (!filtered.length) filtered = available;
         var key = filtered[Math.floor(Math.random() * filtered.length)];
@@ -259,6 +379,7 @@
             state.streak += 1;
             state.correct++;
             state.total++;
+            failCount = 0;
             if (state.streak > state.maxStreak) {
                 state.maxStreak = state.streak;
                 localStorage.setItem('letrless_max_streak', state.maxStreak);
@@ -272,6 +393,11 @@
         els.status.textContent = 'No era ese. Te revelo la siguiente palabra.';
         setTimeout(function () { playSound('fail'); }, 100);
         nextRound(false);
+        failCount++;
+        if (failCount >= 2) {
+            failCount = 0;
+            if (loseLife()) return;
+        }
     }
 
     function nextRound(showMessage) {
@@ -318,6 +444,7 @@
     var searchVisibleCount = 8;
 
     function renderSearchResults() {
+        searchVisibleCount = 8;
         state.activeSearchIndex = -1;
         var query = normalize(els.guessInput.value);
         if (query.length < 1) {
@@ -398,7 +525,16 @@
     els.guessBtn.addEventListener('click', function () { playSound('click'); submitGuess(); });
     els.newBtn.addEventListener('click', function () { playSound('click'); newRound(); });
     els.againBtn.addEventListener('click', function () { playSound('click'); newRound(); });
-    els.skipBtn.addEventListener('click', function () { playSound('click'); nextRound(); });
+    els.skipBtn.addEventListener('click', function () {
+        playSound('click');
+        state.total++;
+        nextRound(false);
+        failCount++;
+        if (failCount >= 2) {
+            failCount = 0;
+            if (loseLife()) return;
+        }
+    });
 
     els.guessInput.addEventListener('keydown', function (event) {
         var buttons = els.searchResults.querySelectorAll('.search-option');
@@ -561,18 +697,65 @@
         });
     }
 
+    var livesSelector = document.querySelector('.lives-selector');
+    if (livesSelector) {
+        var hearts = livesSelector.querySelectorAll('.lives-heart-btn');
+        var countEl = livesSelector.querySelector('.lives-selector-count');
+        hearts.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                playSound('click');
+                var val = parseInt(btn.dataset.lives, 10);
+                if (livesEnabled && MAX_LIVES === val) {
+                    livesEnabled = false;
+                    hearts.forEach(function(h) { h.classList.remove('active'); });
+                    if (countEl) countEl.textContent = '';
+                } else {
+                    livesEnabled = true;
+                    MAX_LIVES = val;
+                    hearts.forEach(function(h) { h.classList.remove('active'); });
+                    for (var i = 0; i < val; i++) hearts[i].classList.add('active');
+                    if (countEl) countEl.textContent = val;
+                }
+            });
+        });
+    }
+
     if (startGameBtn) {
         startGameBtn.addEventListener('click', function () {
             playSound('success');
             startScreen.classList.add('hide');
             document.body.style.overflow = 'auto';
             gameStartTime = Date.now();
+            lives = MAX_LIVES;
+            failCount = 0;
+            usedExtraLife = false;
+            gameOverByLives = false;
+            updateLivesDisplay();
+
+            const extraLifeBtn = document.getElementById('extraLifeBtn');
+            if (extraLifeBtn) extraLifeBtn.style.display = livesEnabled ? '' : 'none';
 
             var diffLabel = minWords === 7 ? 'Fácil' : minWords === 3 ? 'Difícil' : 'Normal';
             document.getElementById('segmentsInfo').textContent =
                 'Mínimo ' + minWords + ' palabras por frase (' + diffLabel + '). Cada fallo revela una palabra más.';
             renderRounds();
             newRound();
+        });
+    }
+
+    const extraLifeBtnEl = document.getElementById('extraLifeBtn');
+    if (extraLifeBtnEl) {
+        extraLifeBtnEl.addEventListener('click', () => {
+            playSound('success');
+            usedExtraLife = true;
+            if (lives < MAX_LIVES) {
+                lives++;
+                updateLivesDisplay();
+                els.status.textContent = "¡Vida extra! Recuerda: no se guardará en el leaderboard.";
+                if (extraLifeBtnEl) extraLifeBtnEl.style.display = livesEnabled && lives < MAX_LIVES ? '' : 'none';
+            } else {
+                els.status.textContent = "Ya tienes todas las vidas.";
+            }
         });
     }
 
@@ -620,7 +803,9 @@
                 time: elapsed ? parseFloat(elapsed) : null,
                 correct: state.correct || 0,
                 total: state.total || 0,
-                maxStreak: state.maxStreak || 0
+                maxStreak: state.maxStreak || 0,
+                lives: livesEnabled ? lives : null,
+                maxLives: livesEnabled ? MAX_LIVES : null
             }, function () {
                 document.getElementById('reveal').classList.remove('show');
                 document.getElementById('startScreen').classList.remove('hide');
@@ -641,7 +826,9 @@
                 time: elapsed ? parseFloat(elapsed) : null,
                 correct: state.correct || 0,
                 total: state.total || 0,
-                maxStreak: state.maxStreak || 0
+                maxStreak: state.maxStreak || 0,
+                lives: livesEnabled ? lives : null,
+                maxLives: livesEnabled ? MAX_LIVES : null
             }, function () {
                 document.getElementById('reveal').classList.remove('show');
                 document.getElementById('startScreen').classList.remove('hide');
@@ -656,40 +843,166 @@
         });
     }
 
+    // Completion overlay buttons
+    var completionRestartBtn = document.getElementById('completionRestartBtn');
+    var completionFinalizeBtn = document.getElementById('completionFinalizeBtn');
+    var completionHomeBtn = document.getElementById('completionHomeBtn');
+
+    if (completionRestartBtn) {
+        completionRestartBtn.addEventListener('click', function () {
+            playSound('click');
+            usedSongs = [];
+            state.score = 0;
+            state.streak = 0;
+            state.correct = 0;
+            state.total = 0;
+            document.getElementById('completionOverlay').classList.remove('show');
+            newRound();
+        });
+    }
+    if (completionFinalizeBtn) {
+        completionFinalizeBtn.addEventListener('click', function () {
+            playSound('click');
+            var elapsed = gameStartTime ? ((Date.now() - gameStartTime) / 1000).toFixed(1) : null;
+            RickyLeaderboard.save('letrless', {
+                score: state.score,
+                difficulty: minWords === 7 ? 'easy' : minWords === 3 ? 'hard' : 'normal',
+                time: elapsed ? parseFloat(elapsed) : null,
+                correct: state.correct || 0,
+                total: state.total || 0,
+                maxStreak: state.maxStreak || 0,
+                lives: livesEnabled ? lives : null,
+                maxLives: livesEnabled ? MAX_LIVES : null
+            }, function () {
+                document.getElementById('completionOverlay').classList.remove('show');
+                document.getElementById('reveal').classList.remove('show');
+                document.getElementById('startScreen').classList.remove('hide');
+                document.body.style.overflow = 'hidden';
+                usedSongs = [];
+                state.score = 0;
+                state.streak = 0;
+                state.correct = 0;
+                state.total = 0;
+                gameStartTime = null;
+                renderLetrlessLeaderboard();
+            });
+        });
+    }
+    if (completionHomeBtn) {
+        completionHomeBtn.addEventListener('click', function () {
+            playSound('click');
+            document.getElementById('completionOverlay').classList.remove('show');
+            document.getElementById('reveal').classList.remove('show');
+            document.getElementById('startScreen').classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+            usedSongs = [];
+            state.score = 0;
+            state.streak = 0;
+            state.correct = 0;
+            state.total = 0;
+            gameStartTime = null;
+        });
+    }
+
+    /* ── Full Lyrics Viewer ──────────────────────────────── */
+    var showFullLyricsBtn = document.getElementById('showFullLyricsBtn');
+    var fullLyricsPanel = document.getElementById('fullLyricsPanel');
+    var fullLyricsTitle = document.getElementById('fullLyricsTitle');
+    var fullLyricsContent = document.getElementById('fullLyricsContent');
+    var fullLyricsClose = document.getElementById('fullLyricsClose');
+
+    function renderFullLyrics() {
+        if (!state.current || !state.current.title) {
+            fullLyricsContent.innerHTML = '<p style="text-align:center;color:var(--muted);">No hay letra disponible.</p>';
+            return;
+        }
+        var songKey = state.current.title;
+        var lyrics = LYRICS[songKey];
+        if (!lyrics || !lyrics.length) {
+            fullLyricsContent.innerHTML = '<p style="text-align:center;color:var(--muted);">No hay letra disponible para esta canción.</p>';
+            return;
+        }
+
+        fullLyricsTitle.textContent = songKey;
+
+        var currentPhrase = state.current.line || '';
+        var normalizedPhrase = normalize(currentPhrase);
+
+        var html = '';
+        var foundHighlight = false;
+        lyrics.forEach(function(line) {
+            var normalizedLine = normalize(line);
+            var isHighlight = normalizedLine === normalizedPhrase;
+            if (isHighlight) foundHighlight = true;
+            html += '<div class="lyric-line' + (isHighlight ? ' highlight' : '') + '">' + escapeHtml(line) + '</div>';
+        });
+        fullLyricsContent.innerHTML = html;
+
+        if (foundHighlight) {
+            var highlighted = fullLyricsContent.querySelector('.lyric-line.highlight');
+            if (highlighted) {
+                highlighted.scrollIntoView({ block: 'center', behavior: 'smooth' });
+            }
+        }
+    }
+
+    if (showFullLyricsBtn) {
+        showFullLyricsBtn.addEventListener('click', function() {
+            playSound('click');
+            renderFullLyrics();
+            fullLyricsPanel.classList.add('show');
+        });
+    }
+
+    if (fullLyricsClose) {
+        fullLyricsClose.addEventListener('click', function() {
+            playSound('click');
+            fullLyricsPanel.classList.remove('show');
+        });
+    }
+
     renderLetrlessLeaderboard();
     RickyLeaderboard.onScoresUpdated(function () { renderLetrlessLeaderboard(); });
 
     function renderLetrlessLeaderboard() {
         RickyLeaderboard.render('leaderboardContainer', 'letrless', {
             title: '<img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Top — Letrless',
-            columns: ['rank', 'name', 'correct', 'total', 'percent', 'time', 'difficulty', 'date'],
+            columns: ['rank', 'name', 'correct', 'total', 'percent', 'lives', 'time', 'difficulty', 'date'],
             difficulties: ['easy', 'normal', 'hard'],
             maxRows: 20
         });
     }
 
     var LETRLESS_INFO_HTML =
-        '<h3>🆕 ¡Bienvenido a Letrless!</h3>' +
-        '<p>Este es un juego donde tienes que <span class="upd-highlight">adivinar canciones de Rickyedit</span> a partir de fragmentos de su letra.</p>' +
+        '<h3><img src="../Iconos RickyEdit Web/🆕.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> ¡Bienvenido a Letrless!</h3>' +
+        '<p>Tienes que <span class="upd-highlight">adivinar canciones de Rickyedit</span> a partir de fragmentos de su letra.</p>' +
         '<hr class="upd-sep">' +
-        '<h3>🎮 Cómo se juega</h3>' +
+        '<h3><img src="../Iconos RickyEdit Web/🎮.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Cómo se juega</h3>' +
         '<ul>' +
-        '<li>Se muestra una frase de una canción, palabra por palabra</li>' +
-        '<li>Empiezas con la primera palabra visible</li>' +
-        '<li>Cada fallo revela la siguiente palabra</li>' +
-        '<li>Si se revelan todas las palabras, pierdes la ronda</li>' +
+        '<li><strong>Paso 1:</strong> Se muestra una frase de una canción, palabra por palabra</li>' +
+        '<li><strong>Paso 2:</strong> Empiezas con la primera palabra visible</li>' +
+        '<li><strong>Paso 3:</strong> Escribe el nombre en el buscador y selecciónalo con el ratón o Enter</li>' +
+        '<li><strong>Paso 4:</strong> Si aciertas, ganas puntos. Si fallas, se revela la siguiente palabra</li>' +
+        '<li><strong>Paso 5:</strong> Si se revelan todas las palabras, pierdes la ronda</li>' +
         '</ul>' +
         '<hr class="upd-sep">' +
-        '<h3>😎 Dificultades</h3>' +
+        '<h3><img src="../Iconos RickyEdit Web/😎.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Dificultades</h3>' +
         '<ul>' +
-        '<li><span class="upd-highlight">Fácil</span> — Frases con 7+ palabras (más pistas)</li>' +
+        '<li><span class="upd-highlight">Fácil</span> — Frases con 7+ palabras (más pistas, más intentos)</li>' +
         '<li><span class="upd-highlight">Normal</span> — Frases con 5+ palabras (equilibrado)</li>' +
         '<li><span class="upd-highlight">Difícil</span> — Frases con 3+ palabras (menos pistas)</li>' +
         '<li><span class="upd-highlight">Sin repetir</span> — No se repite ninguna canción</li>' +
+        '<li><span class="upd-highlight">Aleatorio</span> — Las canciones salen en orden aleatorio</li>' +
         '</ul>' +
         '<hr class="upd-sep">' +
+        '<h3><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Sistema de vidas</h3>' +
+        '<p>Hay un sistema de vidas opcional. Pulsa <span class="upd-highlight">Info Vidas</span> para más detalles.</p>' +
+        '<hr class="upd-sep">' +
         '<h3><img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Leaderboard</h3>' +
-        '<p>Compite con otros jugadores. ¡Dale a <span class="upd-highlight">¡Entendido!</span>!</p>';
+        '<p>Compite con otros jugadores en la clasificación. Tu puntuación, tiempo y racha máxima quedan registrados.</p>' +
+        '<hr class="upd-sep">' +
+        '<h3>📺 OBS (Transparente)</h3>' +
+        '<p>Si usas OBS, copia el enlace que aparece en "Cómo mostrar vidas en OBS" dentro de Info Vidas. Cada jugador tiene un enlace personalizado.</p>';
 
     RickyUpdates.show('letrless', 'v1.0', LETRLESS_INFO_HTML);
 

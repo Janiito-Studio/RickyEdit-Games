@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap"
         rel="stylesheet" />
     <link rel="icon" href="../icon_emojless.png" type="image/png" />
+    <link rel="stylesheet" href="../lives.css" />
     <style>
         :root {
             color-scheme: dark;
@@ -789,6 +790,17 @@
             background: rgba(255,51,204,0.12); color: #fff;
             border-color: rgba(255,51,204,0.3); transform: translateY(-1px);
         }
+        .info-lives-toggle-btn {
+            background: rgba(255,255,255,0.06); border: 1px solid var(--line);
+            border-radius: 12px; color: var(--muted); font-weight: 700;
+            padding: 10px 20px; cursor: pointer; font-size: 0.85rem;
+            transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px;
+            position: relative; z-index: 1;
+        }
+        .info-lives-toggle-btn:hover {
+            background: rgba(255,51,204,0.12); color: #fff;
+            border-color: rgba(255,51,204,0.3); transform: translateY(-1px);
+        }
 
         .modal {
             position: fixed; inset: 0; z-index: 1100;
@@ -912,7 +924,7 @@
         <div class="mode-cards">
             <div class="mode-card" id="normalModeCard">
                 <button class="mode-card-toggle" id="normalModeToggle" type="button">
-                    <span><img src="../icon_songless.png" alt="" style="width:20px;height:20px;vertical-align:middle;margin-right:4px;"> Normal</span>
+                    <span><img src="../icon_songless.png" alt="" style="width:40px;height:40px;vertical-align:middle;margin-right:4px;"> Normal</span>
                     <span class="mode-card-chevron">▼</span>
                 </button>
                 <div class="mode-card-panel" id="normalModePanel">
@@ -929,7 +941,19 @@
                             <span class="mode-year-label">Año</span>
                             <div class="mode-year-chips" id="yearChips"></div>
                         </div>
+                        <div class="mode-diff-row">
+                            <div class="lives-selector">
+                                <span class="lives-selector-label">Vidas:</span>
+                                <button class="lives-heart-btn" data-lives="1" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="1 vida"></button>
+                                <button class="lives-heart-btn" data-lives="2" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="2 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="3" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="3 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="4" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="4 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="5" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="5 vidas"></button>
+                                <span class="lives-selector-count"></span>
+                            </div>
+                        </div>
                         <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
+                        <button class="info-lives-toggle-btn" type="button" onclick="document.getElementById('infoLivesModal').classList.add('show')"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="rlb-icon-img"> Info vidas</button>
                         <button class="mode-start-btn" id="startGameBtn" type="button" disabled>Empezar</button>
                     </div>
                 </div>
@@ -1023,6 +1047,7 @@
                     <div>
                         <article class="game-card glass">
                             <div id="mysteryScreen" class="mystery-screen">
+                                <div id="livesDisplay" style="position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:10;display:none;gap:6px;font-size:1.8rem;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));pointer-events:none;"></div>
                                 <div class="curtain">
                                     <div id="emojiDisplay" class="emoji-display">❓ ❓ ❓ ❓ ❓ ❓</div>
                                 </div>
@@ -1060,7 +1085,7 @@
                             <div id="revealMedia" class="reveal-media"></div>
                             <div class="reveal-body">
                                 <h2 id="revealTitle">Título</h2>
-                                <p id="revealLinkText">Escucha la canción aquí</p>
+                                <p id="revealLinkText"></p>
                                 <div class="actions">
                                     <a id="watchLink" class="pill-link" href="#" target="_blank" rel="noreferrer">Abrir
                                         en YouTube</a>
@@ -1070,8 +1095,11 @@
                                     <button id="finalizeBtn" class="btn btn-dark" type="button">
                                         Finalizar
                                     </button>
+                                    <button id="extraLifeBtn" class="btn btn-dark" type="button" style="background:linear-gradient(135deg, var(--green), var(--cyan)); color:#0d0d10; display:none;">
+                                        <img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:1.3em;height:1.3em;vertical-align:middle;margin-right:4px;"> +1 Vida
+                                    </button>
                                 </div>
-                                <p style="color: var(--yellow); font-size: 0.85rem; font-weight: 700; margin-top: 12px; text-align: center;"><img src="../Info.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> Dale a "Finalizar" para guardar tu puntuación en el leaderboard.</p>
+                                <p style="color: var(--yellow); font-size: 0.85rem; font-weight: 700; margin-top: 12px; text-align: center;"><img src="../Info.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Dale a "Finalizar" para guardar tu puntuación en el leaderboard.</p>
                             </div>
                         </article>
                     </div>
@@ -1079,6 +1107,48 @@
             </div>
         </div>
     </main>
+
+    <!-- Completion Overlay (No-Repeat mode) -->
+    <div id="completionOverlay" class="modal" role="dialog" aria-modal="true">
+        <article class="letter" style="text-align: center;">
+            <div class="letter-head" style="justify-content: center;">
+                <strong><img src="../Iconos RickyEdit Web/🎉.png" alt="" style="width:2.8em;height:2.8em;vertical-align:middle;margin-right:6px;"> ¡Enhorabuena!</strong>
+            </div>
+            <div class="letter-body" style="text-align: center;">
+                <p style="font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 12px;">
+                    ¡Has adivinado todas las canciones!
+                </p>
+                <p style="color: var(--muted); margin-bottom: 8px;">
+                    Puntuación final: <strong style="color: var(--yellow);" id="completionScore">0</strong> puntos
+                </p>
+                <p style="color: var(--muted); margin-bottom: 24px;">
+                    Has completado el reto sin repetir ninguna canción. ¡Eres un verdadero experto en la discografía de Ricky!
+                </p>
+                <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+                    <button id="completionRestartBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px;"><img src="../Reiniciar.png" alt="" class="rlb-icon-img" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:6px;"> Volver a empezar</button>
+                    <button id="completionFinalizeBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px; background: linear-gradient(135deg, var(--yellow), var(--pink));"><img src="../Finalizar.png" alt="" class="rlb-icon-img" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:6px;"> Finalizar</button>
+                    <button id="completionHomeBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px; background: rgba(255,255,255,0.1); color: var(--muted); border: 1px solid var(--line); box-shadow: none;"><img src="../Inicio.png" alt="" class="rlb-icon-img" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:6px;"> Volver al inicio</button>
+                </div>
+                <p style="color: var(--yellow); font-size: 0.85rem; font-weight: 700; margin-top: 16px;"><img src="../Info.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Dale a "Finalizar" para guardar tu puntuación en el leaderboard.</p>
+            </div>
+        </article>
+    </div>
+
+    <!-- Game Over overlay -->
+    <div id="gameoverOverlay" class="gameover-overlay">
+        <div class="gameover-card">
+            <img src="../Iconos RickyEdit Web/Vida Rota.png" alt="" class="gameover-icon">
+            <h2>Game Over</h2>
+            <p>Te quedaste sin vidas</p>
+            <div class="gameover-score" id="gameoverScore"></div>
+            <div class="gameover-actions">
+                <button id="gameoverContinueBtn" class="btn-restart" style="background: linear-gradient(135deg, var(--green), var(--cyan));"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Continuar</button>
+                <button id="gameoverRestartBtn" class="btn-restart"><img src="../Reiniciar.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Reintentar</button>
+                <button id="gameoverHomeBtn" class="btn-home"><img src="../Inicio.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Inicio</button>
+            </div>
+            <p style="color: var(--muted); font-size: 0.78rem; margin-top: 12px;">Continuar: se juega sin vidas y no se guarda en el leaderboard.</p>
+        </div>
+    </div>
 
     <!-- Leaderboard -->
     <div style="width:100%;max-width:800px;margin:24px auto;padding:0 16px;">
@@ -1107,6 +1177,40 @@
         </article>
     </div>
 
+    <div id="infoLivesModal" class="modal" role="dialog" aria-modal="true">
+        <article class="letter">
+            <div class="letter-head">
+                <strong>Info Vidas</strong>
+                <button class="close-btn" type="button" onclick="document.getElementById('infoLivesModal').classList.remove('show')" aria-label="Cerrar">×</button>
+            </div>
+            <div class="letter-body">
+                <p><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> <strong style="color:var(--pink);">Sistema de vidas (opcional)</strong></p>
+                <ul>
+                    <li>Elige entre <strong>1 y 5 vidas</strong> haciendo clic en los corazones antes de empezar</li>
+                    <li>Cada <strong>2 pistas fallidas</strong> se pierde una vida</li>
+                    <li>Si pierdes todas las vidas, aparece el Game Over</li>
+                </ul>
+                <hr class="upd-sep">
+                <p><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> <strong style="color:var(--green);">Botón +1 Vida</strong></p>
+                <ul>
+                    <li>Puedes usarlo <strong>las veces que quieras</strong> (ilimitado)</li>
+                    <li>Sirve por si ocurre algún <strong>bug o problema técnico</strong></li>
+                    <li><strong>Importante:</strong> si usas el botón, tu puntuación <strong>no se guardará en el leaderboard</strong></li>
+                </ul>
+                <hr class="upd-sep">
+                <p><strong style="color:var(--cyan);"><img src="../Camara.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Cómo mostrar vidas en OBS</strong></p>
+                <ol>
+                    <li>En OBS, añade una nueva fuente de tipo <strong>"Navegador"</strong></li>
+                    <li>En la URL, pega: <a id="obsLivesLink" href="../obs-lives.html" target="_blank" style="color:var(--cyan);text-decoration:underline;">obs-lives.html</a></li>
+                    <li>Establece el ancho en <strong>400</strong> y el alto en <strong>100</strong></li>
+                    <li>¡Listo! Las vidas se actualizan en tiempo real</li>
+                </ol>
+                <hr class="upd-sep">
+                <p style="color: var(--muted); font-size: 0.9rem;">Si no activas vidas, puedes fallar sin límite.</p>
+            </div>
+        </article>
+    </div>
+
     <!-- Letter Modal -->
     <div id="letterModal" class="modal" role="dialog" aria-modal="true">
         <article class="letter">
@@ -1115,7 +1219,7 @@
                 <button id="closeLetterBtn" class="close-btn" type="button" aria-label="Cerrar">×</button>
             </div>
             <div class="letter-body">
-                <p>Hola Ricky, soy amigo de Jan (Marc). Te quería decir que con los emojis he ayudado a Jan y te lo he puesto más difícil, jajaja. Eres mi creador de contenido favorito. Gracias por todo lo que haces. Eres muy válido y valioso para mí 💜.</p>
+                <p>Hola Ricky, soy amigo de Jan (Marc). Te quería decir que con los emojis he ayudado a Jan y te lo he puesto más difícil, jajaja. Eres mi creador de contenido favorito. Gracias por todo lo que haces. Eres muy válido y valioso para mí <img src="../Iconos RickyEdit Web/💜.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;">.</p>
             </div>
         </article>
     </div>

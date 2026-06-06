@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Rickyedit - Vidas OBS</title>
+    <style>
+        body {
+            margin: 0;
+            background: transparent;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: system-ui;
+        }
+        #obs-lives {
+            display: flex;
+            gap: 10px;
+            filter: drop-shadow(0 2px 10px rgba(0,0,0,0.6));
+        }
+        #obs-lives img {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        #obs-lives img.lost {
+            opacity: 0.4;
+            filter: grayscale(0.5);
+        }
+    </style>
+</head>
+<body>
+    <div id="obs-lives"></div>
+    <script>
+        var GAME_PATH = 'Iconos RickyEdit Web/';
+
+        var params = new URLSearchParams(window.location.search);
+        var playerId = params.get('id') || '';
+        var STORAGE_KEY = 'rlb_obs_lives_' + playerId;
+
+        function updateDisplay(data) {
+            var lives, maxLives;
+            if (typeof data === 'string') {
+                try {
+                    var parsed = JSON.parse(data);
+                    lives = parsed.lives;
+                    maxLives = parsed.max;
+                } catch(e) {
+                    lives = parseInt(data || '3', 10);
+                    maxLives = 3;
+                }
+            } else {
+                lives = 3;
+                maxLives = 3;
+            }
+            if (isNaN(lives)) lives = 3;
+            if (isNaN(maxLives)) maxLives = 3;
+
+            var el = document.getElementById('obs-lives');
+            var html = '';
+            for (var i = 0; i < maxLives; i++) {
+                if (i < lives) {
+                    html += '<img src="' + GAME_PATH + 'Vida Entera.png" alt="Vida">';
+                } else {
+                    html += '<img src="' + GAME_PATH + 'Vida Rota.png" alt="Sin vida" class="lost">';
+                }
+            }
+            el.innerHTML = html;
+        }
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === STORAGE_KEY) {
+                updateDisplay(e.newValue);
+            }
+        });
+
+        updateDisplay(localStorage.getItem(STORAGE_KEY));
+    </script>
+</body>
+</html>

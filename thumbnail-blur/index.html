@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../updates.css" />
     <link rel="stylesheet" href="../easter-egg.css" />
     <link rel="stylesheet" href="../volume.css" />
+    <link rel="stylesheet" href="../lives.css" />
     <style>
         :root {
             color-scheme: dark;
@@ -213,6 +214,17 @@
             background: rgba(255,51,204,0.12); color: #fff;
             border-color: rgba(255,51,204,0.3); transform: translateY(-1px);
         }
+        .info-lives-toggle-btn {
+            background: rgba(255,255,255,0.06); border: 1px solid var(--line);
+            border-radius: 12px; color: var(--muted); font-weight: 700;
+            padding: 10px 20px; cursor: pointer; font-size: 0.85rem;
+            transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px;
+            position: relative; z-index: 1;
+        }
+        .info-lives-toggle-btn:hover {
+            background: rgba(255,51,204,0.12); color: #fff;
+            border-color: rgba(255,51,204,0.3); transform: translateY(-1px);
+        }
 
         .modal {
             position: fixed; inset: 0; z-index: 1100;
@@ -289,7 +301,19 @@
                             <button id="startNormalBtn" class="mode-diff-btn active start-normal-btn" type="button"><img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal</button>
                             <button id="startExtremeBtn" class="mode-diff-btn start-extreme-btn" type="button"><img src="../Extremo.png" alt="" class="rlb-icon-img"> Extremo</button>
                         </div>
+                        <div class="mode-diff-row">
+                            <div class="lives-selector">
+                                <span class="lives-selector-label">Vidas:</span>
+                                <button class="lives-heart-btn" data-lives="1" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="1 vida"></button>
+                                <button class="lives-heart-btn" data-lives="2" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="2 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="3" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="3 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="4" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="4 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="5" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="5 vidas"></button>
+                                <span class="lives-selector-count"></span>
+                            </div>
+                        </div>
                         <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
+                        <button class="info-lives-toggle-btn" type="button" onclick="document.getElementById('infoLivesModal').classList.add('show')"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="rlb-icon-img"> Info vidas</button>
                         <button class="mode-start-btn" id="startGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
@@ -307,7 +331,19 @@
                             <button class="mode-diff-btn active start-normal-btn" type="button"><img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal</button>
                             <button class="mode-diff-btn start-extreme-btn" type="button"><img src="../Extremo.png" alt="" class="rlb-icon-img"> Extremo</button>
                         </div>
+                        <div class="mode-diff-row">
+                            <div class="lives-selector">
+                                <span class="lives-selector-label">Vidas:</span>
+                                <button class="lives-heart-btn" data-lives="1" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="1 vida"></button>
+                                <button class="lives-heart-btn" data-lives="2" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="2 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="3" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="3 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="4" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="4 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="5" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="5 vidas"></button>
+                                <span class="lives-selector-count"></span>
+                            </div>
+                        </div>
                         <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
+                        <button class="info-lives-toggle-btn" type="button" onclick="document.getElementById('infoLivesModal').classList.add('show')"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="rlb-icon-img"> Info vidas</button>
                         <button class="mode-start-btn" id="startSecondaryGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
@@ -325,7 +361,19 @@
                             <button class="mode-diff-btn active start-normal-btn" type="button"><img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal</button>
                             <button class="mode-diff-btn start-extreme-btn" type="button"><img src="../Extremo.png" alt="" class="rlb-icon-img"> Extremo</button>
                         </div>
+                        <div class="mode-diff-row">
+                            <div class="lives-selector">
+                                <span class="lives-selector-label">Vidas:</span>
+                                <button class="lives-heart-btn" data-lives="1" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="1 vida"></button>
+                                <button class="lives-heart-btn" data-lives="2" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="2 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="3" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="3 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="4" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="4 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="5" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="5 vidas"></button>
+                                <span class="lives-selector-count"></span>
+                            </div>
+                        </div>
                         <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
+                        <button class="info-lives-toggle-btn" type="button" onclick="document.getElementById('infoLivesModal').classList.add('show')"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="rlb-icon-img"> Info vidas</button>
                         <button class="mode-start-btn" id="startBothGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
@@ -399,6 +447,7 @@
                                     style="width:100%;height:100%;object-fit:cover;pointer-events:none;user-select:none;-webkit-user-select:none;"></canvas>
                             </div>
 
+                            <div id="livesDisplay" style="position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:10;display:none;gap:6px;font-size:1.8rem;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));pointer-events:none;"></div>
                             <div class="controls">
                                 <div id="rounds" class="rounds" aria-label="Rondas del juego"></div>
                                 <div class="guess-row">
@@ -410,6 +459,9 @@
                                     <button id="newBtn" class="btn btn-blue" type="button">Nuevo vídeo</button>
                                     <button id="skipBtn" class="btn btn-dark" type="button">Siguiente pista</button>
                                     <button id="finalizeBtnMid" class="btn btn-dark" type="button">Finalizar partida</button>
+                                    <button id="extraLifeBtn" class="btn btn-dark" type="button" style="background:linear-gradient(135deg, var(--green), var(--cyan)); color:#0d0d10; display:none;">
+                                        <img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:1.3em;height:1.3em;vertical-align:middle;margin-right:4px;"> +1 Vida
+                                    </button>
                                 </div>
                                 <div id="status" class="status" role="status">Cargando...</div>
                             </div>
@@ -419,13 +471,13 @@
                             <div id="revealMedia" class="reveal-media"></div>
                             <div class="reveal-body">
                                 <h2 id="revealTitle">Título</h2>
-                                <p id="revealLinkText">Escucha la canción aquí</p>
+                                <p id="revealLinkText"></p>
                                 <div class="actions">
                                     <a id="watchLink" class="pill-link" href="#" target="_blank" rel="noreferrer">Abrir en YouTube</a>
                                     <button id="againBtn" class="btn btn-blue" type="button">Jugar otra</button>
                                     <button id="finalizeBtn" class="btn btn-dark" type="button">Finalizar</button>
                                 </div>
-                                <p style="color: var(--yellow); font-size: 0.85rem; font-weight: 700; margin-top: 12px; text-align: center;"><img src="../Info.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> Dale a "Finalizar" para guardar tu puntuación en el leaderboard.</p>
+                                <p style="color: var(--yellow); font-size: 0.85rem; font-weight: 700; margin-top: 12px; text-align: center;"><img src="../Info.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Dale a "Finalizar" para guardar tu puntuación en el leaderboard.</p>
                             </div>
                         </article>
                     </div>
@@ -449,6 +501,56 @@
                 Para valientes. La imagen siempre está muy borrosa y nunca se ve del todo clara. Además, en el buscador NO aparecen las miniaturas de las opciones. Tienes 6 intentos.</p>
             </div>
         </article>
+    </div>
+
+    <div id="infoLivesModal" class="modal" role="dialog" aria-modal="true">
+        <article class="letter">
+            <div class="letter-head">
+                <strong>Info Vidas</strong>
+                <button class="close-btn" type="button" onclick="document.getElementById('infoLivesModal').classList.remove('show')" aria-label="Cerrar">×</button>
+            </div>
+            <div class="letter-body">
+                <p><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> <strong style="color:var(--pink);">Sistema de vidas (opcional)</strong></p>
+                <ul>
+                    <li>Elige entre <strong>1 y 5 vidas</strong> haciendo clic en los corazones antes de empezar</li>
+                    <li>Cada <strong>2 pistas fallidas</strong> se pierde una vida</li>
+                    <li>Si pierdes todas las vidas, aparece el Game Over</li>
+                </ul>
+                <hr class="upd-sep">
+                <p><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> <strong style="color:var(--green);">Botón +1 Vida</strong></p>
+                <ul>
+                    <li>Puedes usarlo <strong>las veces que quieras</strong> (ilimitado)</li>
+                    <li>Sirve por si ocurre algún <strong>bug o problema técnico</strong></li>
+                    <li><strong>Importante:</strong> si usas el botón, tu puntuación <strong>no se guardará en el leaderboard</strong></li>
+                </ul>
+                <hr class="upd-sep">
+                <p><strong style="color:var(--cyan);"><img src="../Camara.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Cómo mostrar vidas en OBS</strong></p>
+                <ol>
+                    <li>En OBS, añade una nueva fuente de tipo <strong>"Navegador"</strong></li>
+                    <li>En la URL, pega: <a id="obsLivesLink" href="../obs-lives.html" target="_blank" style="color:var(--cyan);text-decoration:underline;">obs-lives.html</a></li>
+                    <li>Establece el ancho en <strong>400</strong> y el alto en <strong>100</strong></li>
+                    <li>Activa la casilla <strong>"Cerrar fuente cuando no sea visible"</strong></li>
+                    <li>¡Listo! Las vidas se actualizan en tiempo real</li>
+                </ol>
+                <hr class="upd-sep">
+                <p style="color: var(--muted); font-size: 0.9rem;">Si no activas vidas, puedes fallar sin límite.</p>
+            </div>
+        </article>
+    </div>
+
+    <div id="gameoverOverlay" class="gameover-overlay">
+        <div class="gameover-card">
+            <img src="../Iconos RickyEdit Web/Vida Rota.png" alt="" class="gameover-icon">
+            <h2>Game Over</h2>
+            <p>Te quedaste sin vidas</p>
+            <div class="gameover-score" id="gameoverScore"></div>
+            <div class="gameover-actions">
+                <button id="gameoverContinueBtn" class="btn-restart" style="background: linear-gradient(135deg, var(--green), var(--cyan));"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Continuar</button>
+                <button id="gameoverRestartBtn" class="btn-restart"><img src="../Reiniciar.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Reintentar</button>
+                <button id="gameoverHomeBtn" class="btn-home"><img src="../Inicio.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Inicio</button>
+            </div>
+            <p style="color: var(--muted); font-size: 0.78rem; margin-top: 12px;">Continuar: se juega sin vidas y no se guarda en el leaderboard.</p>
+        </div>
     </div>
 
     <!-- Leaderboard -->

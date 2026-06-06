@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="../updates.css" />
     <link rel="stylesheet" href="../easter-egg.css" />
     <link rel="stylesheet" href="../volume.css" />
+    <link rel="stylesheet" href="../lives.css" />
     <style>
         :root {
             color-scheme: dark;
@@ -1216,6 +1217,17 @@
             background: rgba(255,51,204,0.12); color: #fff;
             border-color: rgba(255,51,204,0.3); transform: translateY(-1px);
         }
+        .info-lives-toggle-btn {
+            background: rgba(255,255,255,0.06); border: 1px solid var(--line);
+            border-radius: 12px; color: var(--muted); font-weight: 700;
+            padding: 10px 20px; cursor: pointer; font-size: 0.85rem;
+            transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px;
+            position: relative; z-index: 1;
+        }
+        .info-lives-toggle-btn:hover {
+            background: rgba(255,51,204,0.12); color: #fff;
+            border-color: rgba(255,51,204,0.3); transform: translateY(-1px);
+        }
 
         .modal {
             position: fixed; inset: 0; z-index: 1100;
@@ -1440,7 +1452,19 @@
                                  <img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal
                             </button>
                         </div>
+                        <div class="mode-diff-row">
+                            <div class="lives-selector" data-mode="main">
+                                <span class="lives-selector-label">Vidas:</span>
+                                <button class="lives-heart-btn" data-lives="1" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="1 vida"></button>
+                                <button class="lives-heart-btn" data-lives="2" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="2 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="3" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="3 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="4" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="4 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="5" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="5 vidas"></button>
+                                <span class="lives-selector-count"></span>
+                            </div>
+                        </div>
                         <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
+                        <button class="info-lives-toggle-btn" type="button" onclick="document.getElementById('infoLivesModal').classList.add('show')"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="rlb-icon-img"> Info vidas</button>
                         <button class="mode-start-btn" id="startMainGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
@@ -1462,7 +1486,19 @@
                                  <img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal
                             </button>
                         </div>
+                        <div class="mode-diff-row">
+                            <div class="lives-selector" data-mode="secondary">
+                                <span class="lives-selector-label">Vidas:</span>
+                                <button class="lives-heart-btn" data-lives="1" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="1 vida"></button>
+                                <button class="lives-heart-btn" data-lives="2" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="2 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="3" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="3 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="4" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="4 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="5" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="5 vidas"></button>
+                                <span class="lives-selector-count"></span>
+                            </div>
+                        </div>
                         <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
+                        <button class="info-lives-toggle-btn" type="button" onclick="document.getElementById('infoLivesModal').classList.add('show')"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="rlb-icon-img"> Info vidas</button>
                         <button class="mode-start-btn" id="startSecondaryGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
@@ -1496,7 +1532,19 @@
                             <span class="mode-year-label">Año</span>
                             <div class="mode-year-chips" id="songsYearChips"></div>
                         </div>
+                        <div class="mode-diff-row">
+                            <div class="lives-selector" data-mode="songs">
+                                <span class="lives-selector-label">Vidas:</span>
+                                <button class="lives-heart-btn" data-lives="1" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="1 vida"></button>
+                                <button class="lives-heart-btn" data-lives="2" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="2 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="3" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="3 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="4" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="4 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="5" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="5 vidas"></button>
+                                <span class="lives-selector-count"></span>
+                            </div>
+                        </div>
                         <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
+                        <button class="info-lives-toggle-btn" type="button" onclick="document.getElementById('infoLivesModal').classList.add('show')"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="rlb-icon-img"> Info vidas</button>
                         <button class="mode-start-btn" id="startSongsGameBtn" type="button" disabled>Empezar</button>
                     </div>
                 </div>
@@ -1518,7 +1566,19 @@
                                  <img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal
                             </button>
                         </div>
+                        <div class="mode-diff-row">
+                            <div class="lives-selector" data-mode="both">
+                                <span class="lives-selector-label">Vidas:</span>
+                                <button class="lives-heart-btn" data-lives="1" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="1 vida"></button>
+                                <button class="lives-heart-btn" data-lives="2" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="2 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="3" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="3 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="4" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="4 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="5" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="5 vidas"></button>
+                                <span class="lives-selector-count"></span>
+                            </div>
+                        </div>
                         <button class="info-toggle-btn" type="button"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
+                        <button class="info-lives-toggle-btn" type="button" onclick="document.getElementById('infoLivesModal').classList.add('show')"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="rlb-icon-img"> Info vidas</button>
                         <button class="mode-start-btn" id="startBothGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
@@ -1631,6 +1691,7 @@
                     <div>
                         <article class="game-card glass">
                             <div id="mysteryScreen" class="mystery-screen">
+                                <div id="livesDisplay" style="position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:10;display:none;gap:6px;font-size:1.8rem;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));pointer-events:none;"></div>
                                 <div id="youtube-player"></div>
                                 <div class="curtain">
                                     <div class="screen-badge">
@@ -1672,12 +1733,15 @@
                                     <button id="finalizeBtn" class="btn btn-dark" type="button">
                                         Finalizar partida
                                     </button>
+                                    <button id="extraLifeBtn" class="btn btn-dark" type="button" style="background:linear-gradient(135deg, var(--green), var(--cyan)); color:#0d0d10; display:none;">
+                                        <img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:1.3em;height:1.3em;vertical-align:middle;margin-right:4px;"> +1 Vida
+                                    </button>
                                 </div>
 
                                 <!-- Pistas para cagados -->
                                 <div class="hints-section">
                                     <div class="hints-header">
-                                        <span>💡 Pistas para cagados</span>
+                                        <span><img src="../Iconos RickyEdit Web/💡.png" alt="" class="rlb-icon-img" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Pistas para cagados</span>
                                         <button id="hintBtn" class="btn-hint-toggle" type="button">
                                             Pedir pista
                                         </button>
@@ -1700,6 +1764,9 @@
                                         en YouTube</a>
                                     <button id="againBtn" class="btn btn-blue" type="button">
                                         Jugar otra
+                                    </button>
+                                    <button id="revealFinalizeBtn" class="btn btn-dark" type="button">
+                                        Finalizar partida
                                     </button>
                                 </div>
                             </div>
@@ -1767,7 +1834,7 @@
                 <p>
                     Ya no escribo más. Que sepas que para mí y para todos
                     los del chat eres una persona válida y valiosa y te
-                    queremos mucho 💜.
+                    queremos mucho <img src="../Iconos RickyEdit Web/💜.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;">.
                 </p>
                 <p>Muchas gracias,<br />Jan</p>
             </div>
@@ -1789,11 +1856,48 @@
         </article>
     </div>
 
+    <div id="infoLivesModal" class="modal" role="dialog" aria-modal="true">
+        <article class="letter">
+            <div class="letter-head">
+                <strong>Info Vidas</strong>
+                <button class="close-btn" type="button" onclick="document.getElementById('infoLivesModal').classList.remove('show')" aria-label="Cerrar">×</button>
+            </div>
+            <div class="letter-body">
+                <p><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> <strong style="color:var(--pink);">Sistema de vidas (opcional)</strong></p>
+                <ul>
+                    <li>Elige entre <strong>1 y 5 vidas</strong> haciendo clic en los corazones antes de empezar</li>
+                    <li>Cada <strong>2 pistas fallidas</strong> se pierde una vida</li>
+                    <li>Si pierdes todas las vidas, aparece el Game Over</li>
+                </ul>
+                <hr class="upd-sep">
+                <p><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> <strong style="color:var(--green);">Botón +1 Vida</strong></p>
+                <ul>
+                    <li>Durante la partida verás un botón de <strong>+1 Vida</strong></li>
+                    <li>Puedes usarlo <strong>las veces que quieras</strong> (ilimitado)</li>
+                    <li>Sirve por si ocurre algún <strong>bug o problema técnico</strong></li>
+                    <li><strong>Importante:</strong> si usas el botón, tu puntuación <strong>no se guardará en el leaderboard</strong></li>
+                </ul>
+                <hr class="upd-sep">
+                <p><strong style="color:var(--cyan);"><img src="../Camara.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Cómo mostrar vidas en OBS</strong></p>
+                <ol>
+                    <li>En OBS, añade una nueva fuente de tipo <strong>"Navegador"</strong></li>
+                    <li>En la URL, pega: <a id="obsLivesLink" href="../obs-lives.html" target="_blank" style="color:var(--cyan);text-decoration:underline;">obs-lives.html</a></li>
+                    <li>Establece el ancho en <strong>400</strong> y el alto en <strong>100</strong></li>
+                    <li>Activa la casilla <strong>"Cerrar fuente cuando no sea visible"</strong></li>
+                    <li>En la pestaña <strong>Filtros</strong>, añade un filtro de <strong"Recortar/Pad</strong> y ajusta para que solo se vean los corazones</li>
+                    <li>¡Listo! Las vidas se actualizan en tiempo real</li>
+                </ol>
+                <hr class="upd-sep">
+                <p style="color: var(--muted); font-size: 0.9rem;">Si no activas vidas, puedes fallar sin límite. El sistema de vidas es completamente opcional.</p>
+            </div>
+        </article>
+    </div>
+
     <!-- Completion Overlay (No-Repeat mode) -->
     <div id="completionOverlay" class="modal" role="dialog" aria-modal="true">
         <article class="letter" style="text-align: center;">
             <div class="letter-head" style="justify-content: center;">
-                <strong>🎉 ¡Enhorabuena!</strong>
+                <strong><img src="../Iconos RickyEdit Web/🎉.png" alt="" style="width:2.8em;height:2.8em;vertical-align:middle;margin-right:6px;"> ¡Enhorabuena!</strong>
             </div>
             <div class="letter-body" style="text-align: center;">
                 <p style="font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 12px;">
@@ -1806,13 +1910,29 @@
                     Has completado el reto sin repetir ningún vídeo. ¡Eres un verdadero experto en el contenido de Ricky!
                 </p>
                 <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
-                    <button id="completionRestartBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px;"><img src="../Reiniciar.png" alt="" class="rlb-icon-img" style="width:1.2em;height:1.2em;vertical-align:middle;margin-right:6px;"> Volver a empezar</button>
-                    <button id="completionFinalizeBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px; background: linear-gradient(135deg, var(--yellow), var(--pink));"><img src="../Finalizar.png" alt="" class="rlb-icon-img" style="width:1.2em;height:1.2em;vertical-align:middle;margin-right:6px;"> Finalizar</button>
-                    <button id="completionHomeBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px; background: rgba(255,255,255,0.1); color: var(--muted); border: 1px solid var(--line); box-shadow: none;"><img src="../Inicio.png" alt="" class="rlb-icon-img" style="width:1.2em;height:1.2em;vertical-align:middle;margin-right:6px;"> Volver al inicio</button>
+                    <button id="completionRestartBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px;"><img src="../Reiniciar.png" alt="" class="rlb-icon-img" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:6px;"> Volver a empezar</button>
+                    <button id="completionFinalizeBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px; background: linear-gradient(135deg, var(--yellow), var(--pink));"><img src="../Finalizar.png" alt="" class="rlb-icon-img" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:6px;"> Finalizar</button>
+                    <button id="completionHomeBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px; background: rgba(255,255,255,0.1); color: var(--muted); border: 1px solid var(--line); box-shadow: none;"><img src="../Inicio.png" alt="" class="rlb-icon-img" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:6px;"> Volver al inicio</button>
                 </div>
-                <p style="color: var(--yellow); font-size: 0.85rem; font-weight: 700; margin-top: 16px;"><img src="../Info.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> Dale a "Finalizar" para guardar tu puntuación en el leaderboard.</p>
+                <p style="color: var(--yellow); font-size: 0.85rem; font-weight: 700; margin-top: 16px;"><img src="../Info.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Dale a "Finalizar" para guardar tu puntuación en el leaderboard.</p>
             </div>
         </article>
+    </div>
+
+    <!-- Game Over overlay -->
+    <div id="gameoverOverlay" class="gameover-overlay">
+        <div class="gameover-card">
+            <img src="../Iconos RickyEdit Web/Vida Rota.png" alt="" class="gameover-icon">
+            <h2>Game Over</h2>
+            <p>Te quedaste sin vidas</p>
+            <div class="gameover-score" id="gameoverScore"></div>
+            <div class="gameover-actions">
+                <button id="gameoverContinueBtn" class="btn-restart" style="background: linear-gradient(135deg, var(--green), var(--cyan));"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Continuar</button>
+                <button id="gameoverRestartBtn" class="btn-restart"><img src="../Reiniciar.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Reintentar</button>
+                <button id="gameoverHomeBtn" class="btn-home"><img src="../Inicio.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Inicio</button>
+            </div>
+            <p style="color: var(--muted); font-size: 0.78rem; margin-top: 12px;">Continuar: se juega sin vidas y no se guarda en el leaderboard.</p>
+        </div>
     </div>
 
     <!-- Leaderboard -->
@@ -1894,6 +2014,12 @@
                 gain.gain.setValueAtTime(0.03 * vol, now);
                 gain.gain.linearRampToValueAtTime(0, now + 0.08);
                 osc.start(now); osc.stop(now + 0.08);
+            } else if (type === 'lifeloss') {
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(120, now + 0.4);
+                gain.gain.setValueAtTime(0.06 * vol, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.5);
+                osc.start(now); osc.stop(now + 0.5);
             }
             _currentOsc = osc;
         }
@@ -1934,6 +2060,123 @@
             correct: 0,
             incorrect: 0,
         };
+
+        let livesEnabled = false;
+        let lives = 3;
+        let MAX_LIVES = 3;
+        let failCount = 0;
+        let usedExtraLife = false;
+        let gameOverByLives = false;
+
+        function updateLivesDisplay() {
+            const el = document.getElementById('livesDisplay');
+            if (!el) return;
+            if (!livesEnabled) {
+                el.innerHTML = '<img src="../Rickyedit Games.png" alt="Rickyedit Games" class="life-logo">';
+                el.style.display = 'flex';
+                return;
+            }
+            el.style.display = 'flex';
+            let html = '';
+            for (let i = 0; i < MAX_LIVES; i++) {
+                if (i < lives) {
+                    html += '<img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="life-heart">';
+                } else {
+                    html += '<img src="../Iconos RickyEdit Web/Vida Rota.png" alt="" class="life-heart">';
+                }
+            }
+            el.innerHTML = html;
+            try { var _pid = localStorage.getItem('rlb_player_id') || ''; localStorage.setItem('rlb_obs_lives_' + _pid, JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+        }
+
+        function loseLife() {
+            if (!livesEnabled) return false;
+            lives--;
+            playSound('lifeloss');
+            updateLivesDisplay();
+            const hearts = document.querySelectorAll('#livesDisplay .life-heart');
+            const lostIndex = lives;
+            if (hearts[lostIndex]) {
+                hearts[lostIndex].classList.add('losing');
+                setTimeout(() => hearts[lostIndex].classList.remove('losing'), 500);
+            }
+            try { var _pid = localStorage.getItem('rlb_player_id') || ''; localStorage.setItem('rlb_obs_lives_' + _pid, JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+            if (lives <= 0) {
+                setTimeout(() => gameOver(), 500);
+                return true;
+            }
+            return false;
+        }
+
+        function gameOver() {
+            state.revealed = true;
+            gameOverByLives = true;
+            els.guessInput.disabled = true;
+            els.guessBtn.disabled = true;
+            els.playBtn.disabled = true;
+            els.skipBtn.disabled = true;
+            stopPlayback();
+
+            const elapsed = state.gameStartTime ? ((Date.now() - state.gameStartTime) / 1000).toFixed(1) : null;
+            const channel = state.isSecondaryMode ? 'secondary' : (state.isSongsMode ? 'songs' : (state.pool && state.pool.length > (window.RICKY_VIDEOS || []).length ? 'both' : 'principal'));
+            const scoreVal = state.score || 0;
+            document.getElementById('gameoverScore').textContent = scoreVal > 0 ? scoreVal + ' puntos' : '';
+
+            const overlay = document.getElementById('gameoverOverlay');
+            overlay.classList.add('show');
+
+            if (!usedExtraLife) {
+                RickyLeaderboard.save('songless', {
+                    score: state.score,
+                    difficulty: state.isEasyMode ? 'easy' : 'normal',
+                    channel,
+                    time: elapsed ? parseFloat(elapsed) : null,
+                    correct: state.correct || 0,
+                    total: (state.correct || 0) + (state.incorrect || 0),
+                    maxStreak: state.maxStreak || 0,
+                    lives: livesEnabled ? lives : null,
+                    maxLives: livesEnabled ? MAX_LIVES : null
+                }, () => {});
+            }
+        }
+
+        function hideGameoverOverlay() {
+            document.getElementById('gameoverOverlay').classList.remove('show');
+        }
+
+        function continueGame() {
+            playSound('click');
+            hideGameoverOverlay();
+            gameOverByLives = false;
+            els.guessInput.disabled = false;
+            els.guessBtn.disabled = false;
+            els.playBtn.disabled = false;
+            els.skipBtn.disabled = false;
+            els.status.textContent = "Sigues jugando sin vidas. ¡No se guardará tu puntuación!";
+            const extraLifeBtn = document.getElementById('extraLifeBtn');
+            if (extraLifeBtn) extraLifeBtn.style.display = 'none';
+        }
+
+        document.getElementById('gameoverRestartBtn').addEventListener('click', () => {
+            playSound('click');
+            hideGameoverOverlay();
+            document.getElementById('reveal').classList.remove('show');
+            document.querySelector('.reveal-media') && (document.querySelector('.reveal-media').innerHTML = "");
+            document.getElementById('startScreen').classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+        });
+
+        document.getElementById('gameoverHomeBtn').addEventListener('click', () => {
+            playSound('click');
+            hideGameoverOverlay();
+            document.getElementById('reveal').classList.remove('show');
+            document.querySelector('.reveal-media') && (document.querySelector('.reveal-media').innerHTML = "");
+            document.getElementById('startScreen').classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+            renderSonglessLeaderboard();
+        });
+
+        document.getElementById('gameoverContinueBtn').addEventListener('click', continueGame);
 
         const $ = (id) => document.getElementById(id);
         const els = {
@@ -2080,7 +2323,7 @@
             // YouTube blocks ALL embeds from file:// — show a clear warning immediately
             if (location.protocol === "file:") {
                 els.status.innerHTML =
-                    '<img src="../Aviso.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> Abre el juego desde un servidor HTTP, no desde file://. Arrastra la carpeta a VS Code y usa Live Server, o ejecuta: npx serve .';
+                    '<img src="../Aviso.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Abre el juego desde un servidor HTTP, no desde file://. Arrastra la carpeta a VS Code y usa Live Server, o ejecuta: npx serve .';
                 els.playBtn.disabled = true;
                 // Disable start buttons too
                 [
@@ -2103,7 +2346,7 @@
                 warn.style.cssText =
                     "color:#ff5555;font-weight:bold;margin-top:16px;padding:12px;background:rgba(255,85,85,0.15);border-radius:8px;max-width:400px;text-align:center";
                 warn.innerHTML =
-                    '<img src="../Aviso.png" alt="" style="width:1.1em;height:1.1em;vertical-align:middle;margin-right:4px;"> YouTube no permite embeds desde file://. Sirve la carpeta con un servidor local (VS Code Live Server, npx serve ., etc.)';
+                    '<img src="../Aviso.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> YouTube no permite embeds desde file://. Sirve la carpeta con un servidor local (VS Code Live Server, npx serve ., etc.)';
                 els.startScreen.appendChild(warn);
                 return;
             }
@@ -2141,6 +2384,35 @@
             els.skipBtn.addEventListener("click", () => { playSound('click'); nextSegment(); });
             els.newBtn.addEventListener("click", () => { playSound('click'); newRound(); });
             els.againBtn.addEventListener("click", () => { playSound('click'); newRound(); });
+            document.getElementById('revealFinalizeBtn').addEventListener('click', () => {
+                playSound('click');
+                stopPlayback();
+                const elapsed = state.gameStartTime ? ((Date.now() - state.gameStartTime) / 1000).toFixed(1) : null;
+                const channel = state.isSecondaryMode ? 'secondary' : (state.isSongsMode ? 'songs' : (state.pool && state.pool.length > (window.RICKY_VIDEOS || []).length ? 'both' : 'principal'));
+                RickyLeaderboard.save('songless', {
+                    score: state.score,
+                    difficulty: state.isEasyMode ? 'easy' : 'normal',
+                    channel,
+                    time: elapsed ? parseFloat(elapsed) : null,
+                    correct: state.correct || 0,
+                    total: (state.correct || 0) + (state.incorrect || 0),
+                    maxStreak: state.maxStreak || 0,
+                    lives: livesEnabled ? lives : null,
+                    maxLives: livesEnabled ? MAX_LIVES : null
+                }, () => {
+                    els.reveal.classList.remove('show');
+                    els.revealMedia.innerHTML = "";
+                    document.getElementById('startScreen').classList.remove('hide');
+                    document.body.style.overflow = 'hidden';
+                    state.playedSongs.clear();
+                    state.score = 0;
+                    state.streak = 0;
+                    state.correct = 0;
+                    state.incorrect = 0;
+                    updateStats();
+                    renderSonglessLeaderboard();
+                });
+            });
             els.guessBtn.addEventListener("click", () => { playSound('click'); submitGuess(); });
             els.hintBtn.addEventListener("click", () => { playSound('click'); requestHint(); });
             els.guessInput.addEventListener("keydown", (event) => {
@@ -2353,6 +2625,13 @@
                 state.gameStartTime = Date.now();
                 state.correct = 0;
                 state.incorrect = 0;
+                lives = MAX_LIVES;
+                failCount = 0;
+                usedExtraLife = false;
+                gameOverByLives = false;
+                updateLivesDisplay();
+                const extraLifeBtn = document.getElementById('extraLifeBtn');
+                if (extraLifeBtn) extraLifeBtn.style.display = livesEnabled ? '' : 'none';
                 window.scrollTo(0, 0);
                 document
                     .querySelectorAll(".mode-card.open")
@@ -2416,19 +2695,31 @@
 
             // ---- Info buttons (start screen + game) ----
             const SONGLESS_INFO_HTML =
-                '<h3>🆕 Novedades</h3>' +
-                '<p>¡Hola! Han pasado cosas desde la última vez. Aquí te van los cambios:</p>' +
+                '<h3><img src="../Iconos RickyEdit Web/🆕.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> ¡Bienvenido a Songless!</h3>' +
+                '<p>Escucha fragmentos de canciones de Rickyedit y <span class="upd-highlight">adivina cuál es</span>. Cuanto más tarde en adivinar, más pistas obtienes.</p>' +
                 '<hr class="upd-sep">' +
-                '<h3>🎵 Canciones nuevas</h3>' +
-                '<p>He añadido <span class="upd-highlight">nuevas canciones</span> al songless. Hay más variedad que nunca.</p>' +
+                '<h3><img src="../Iconos RickyEdit Web/🎮.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Cómo se juega</h3>' +
+                '<ul>' +
+                '<li><strong>Paso 1:</strong> Se reproduce un fragmento de 1 segundo</li>' +
+                '<li><strong>Paso 2:</strong> Escribe el nombre en el buscador y selecciónalo con el ratón o Enter</li>' +
+                '<li><strong>Paso 3:</strong> Si aciertas, ganas puntos. Si fallas, el fragmento se hace más largo (2s, 4s, 8s...)</li>' +
+                '<li><strong>Paso 4:</strong> Si no adivinas en 6 intentos, se revela el vídeo</li>' +
+                '</ul>' +
                 '<hr class="upd-sep">' +
-                '<h3>🎨 Rediseño de interfaz</h3>' +
-                '<p>La interfaz se ha <span class="upd-highlight">rediseñado</span> para que todo se vea más limpio y bonito. Los botones, los modos, todo. Buscador mejorado con miniaturas, modos Sin repetir / Aleatorio, canal Los 2 canales.</p>' +
+                '<h3><img src="../Iconos RickyEdit Web/😎.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Canales y modos</h3>' +
+                '<ul>' +
+                '<li><span class="upd-highlight">Canal Principal</span> — Canciones del canal principal de Ricky</li>' +
+                '<li><span class="upd-highlight">Canal Secundario</span> — Canciones del canal secundario</li>' +
+                '<li><span class="upd-highlight">Canciones</span> — Solo música (con filtro de año)</li>' +
+                '<li><span class="upd-highlight">Los 2 canales</span> — Mezcla de ambos canales</li>' +
+                '<li>Cada canal tiene modo <strong>Cagado</strong> (difícil) y <strong>Normal</strong></li>' +
+                '</ul>' +
+                '<hr class="upd-sep">' +
+                '<h3><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Sistema de vidas</h3>' +
+                '<p>Hay un sistema de vidas opcional. Pulsa <span class="upd-highlight">Info Vidas</span> para más detalles.</p>' +
                 '<hr class="upd-sep">' +
                 '<h3><img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Leaderboard</h3>' +
-                '<p>Ahora hay un leaderboard en cada juego. Compite con tus amigos por el primer puesto.</p>' +
-                '<hr class="upd-sep">' +
-                '<p>¡Dale a <span class="upd-highlight">¡Entendido!</span> y a jugar!</p>';
+                '<p>Compite con otros jugadores en la clasificación. Tu puntuación, tiempo y racha máxima quedan registrados. Dale a <span class="upd-highlight">Finalizar partida</span> para guardar tu resultado.</p>';
 
             document.querySelectorAll('#openUpdatesBtn, #startOpenUpdatesBtn').forEach(btn => {
                 btn.addEventListener('click', () => { playSound('click'); RickyUpdates.forceShow(SONGLESS_INFO_HTML); });
@@ -2527,6 +2818,29 @@
                 playSound('click');
                 const combinedPool = [...(window.RICKY_VIDEOS || []), ...(window.RICKY_SECONDARY || [])];
                 startGame(bothEasyMode, combinedPool, null, bothNoRepeat);
+            });
+
+            // ---- Lives hearts selector ----
+            document.querySelectorAll('.lives-selector').forEach(selector => {
+                const hearts = selector.querySelectorAll('.lives-heart-btn');
+                const countEl = selector.querySelector('.lives-selector-count');
+                hearts.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        playSound('click');
+                        const val = parseInt(btn.dataset.lives, 10);
+                        if (livesEnabled && MAX_LIVES === val) {
+                            livesEnabled = false;
+                            hearts.forEach(h => h.classList.remove('active'));
+                            if (countEl) countEl.textContent = '';
+                        } else {
+                            livesEnabled = true;
+                            MAX_LIVES = val;
+                            hearts.forEach(h => h.classList.remove('active'));
+                            for (let i = 0; i < val; i++) hearts[i].classList.add('active');
+                            if (countEl) countEl.textContent = val;
+                        }
+                    });
+                });
             });
 
             // ---- Cambiar modo ----
@@ -3016,12 +3330,18 @@
                 }
                 reveal(true, `Acertaste. +${points} puntos.`);
                 state.correct++;
+                failCount = 0;
                 setTimeout(() => playSound('success'), 100);
                 return;
             }
             els.status.textContent =
                 "No era ese. Te subo al siguiente fragmento.";
             nextSegment(false);
+            failCount++;
+            if (failCount >= 2) {
+                failCount = 0;
+                if (loseLife()) return;
+            }
         }
 
         function nextSegment(showMessage = true) {
@@ -3088,6 +3408,7 @@
         let searchVisibleCount = 8;
 
         function renderSearchResults() {
+            searchVisibleCount = 8;
             const query = normalize(els.guessInput.value).trim();
             if (!query) { hideSearchResults(); return; }
 
@@ -3250,21 +3571,23 @@
             document.body.style.overflow = 'hidden';
         });
 
-        // Finalize button — save to leaderboard
-        document.getElementById('completionFinalizeBtn').addEventListener('click', () => {
-            playSound('click');
-            const elapsed = state.gameStartTime ? ((Date.now() - state.gameStartTime) / 1000).toFixed(1) : null;
-            const channel = state.isSecondaryMode ? 'secondary' : (state.isSongsMode ? 'songs' : (state.pool.length > (window.RICKY_VIDEOS || []).length ? 'both' : 'principal'));
-            RickyLeaderboard.save('songless', {
-                score: state.score,
-                difficulty: state.isEasyMode ? 'easy' : 'normal',
-                channel,
-                time: elapsed ? parseFloat(elapsed) : null,
-                correct: state.correct,
-                total: state.correct + state.incorrect,
-                maxStreak: state.maxStreak || 0
-            }, () => {
-                stopPlayback();
+            // Finalize button — save to leaderboard
+            document.getElementById('completionFinalizeBtn').addEventListener('click', () => {
+                playSound('click');
+                const elapsed = state.gameStartTime ? ((Date.now() - state.gameStartTime) / 1000).toFixed(1) : null;
+                const channel = state.isSecondaryMode ? 'secondary' : (state.isSongsMode ? 'songs' : (state.pool.length > (window.RICKY_VIDEOS || []).length ? 'both' : 'principal'));
+                RickyLeaderboard.save('songless', {
+                    score: state.score,
+                    difficulty: state.isEasyMode ? 'easy' : 'normal',
+                    channel,
+                    time: elapsed ? parseFloat(elapsed) : null,
+                    correct: state.correct,
+                    total: state.correct + state.incorrect,
+                    maxStreak: state.maxStreak || 0,
+                    lives: livesEnabled ? lives : null,
+                    maxLives: livesEnabled ? MAX_LIVES : null
+                }, () => {
+                    stopPlayback();
                 document.getElementById('completionOverlay').classList.remove('show');
                 document.getElementById('startScreen').classList.remove('hide');
                 document.body.style.overflow = 'hidden';
@@ -3278,25 +3601,43 @@
             stopPlayback();
             const elapsed = state.gameStartTime ? ((Date.now() - state.gameStartTime) / 1000).toFixed(1) : null;
             const channel = state.isSecondaryMode ? 'secondary' : (state.isSongsMode ? 'songs' : (state.pool && state.pool.length > (window.RICKY_VIDEOS || []).length ? 'both' : 'principal'));
-            RickyLeaderboard.save('songless', {
-                score: state.score,
-                difficulty: state.isEasyMode ? 'easy' : 'normal',
-                channel,
-                time: elapsed ? parseFloat(elapsed) : null,
-                correct: state.correct || 0,
-                total: (state.correct || 0) + (state.incorrect || 0),
-                maxStreak: state.maxStreak || 0
-            }, () => {
-                document.getElementById('startScreen').classList.remove('hide');
-                document.body.style.overflow = 'hidden';
-                state.playedSongs.clear();
-                state.score = 0;
-                state.streak = 0;
-                state.correct = 0;
-                state.incorrect = 0;
-                updateStats();
-                renderSonglessLeaderboard();
-            });
+            if (!usedExtraLife) {
+                RickyLeaderboard.save('songless', {
+                    score: state.score,
+                    difficulty: state.isEasyMode ? 'easy' : 'normal',
+                    channel,
+                    time: elapsed ? parseFloat(elapsed) : null,
+                    correct: state.correct || 0,
+                    total: (state.correct || 0) + (state.incorrect || 0),
+                    maxStreak: state.maxStreak || 0,
+                    lives: livesEnabled ? lives : null,
+                    maxLives: livesEnabled ? MAX_LIVES : null
+                }, () => {});
+            }
+            document.getElementById('startScreen').classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+            state.playedSongs.clear();
+            state.score = 0;
+            state.streak = 0;
+            state.correct = 0;
+            state.incorrect = 0;
+            updateStats();
+            renderSonglessLeaderboard();
+        });
+
+        // Extra life button
+        document.getElementById('extraLifeBtn').addEventListener('click', () => {
+            playSound('success');
+            usedExtraLife = true;
+            if (lives < MAX_LIVES) {
+                lives++;
+                updateLivesDisplay();
+                els.status.textContent = "¡Vida extra! Recuerda: no se guardará en el leaderboard.";
+                const extraLifeBtn = document.getElementById('extraLifeBtn');
+                if (extraLifeBtn) extraLifeBtn.style.display = livesEnabled && lives < MAX_LIVES ? '' : 'none';
+            } else {
+                els.status.textContent = "Ya tienes todas las vidas.";
+            }
         });
 
         renderSonglessLeaderboard();
@@ -3305,7 +3646,7 @@
         function renderSonglessLeaderboard() {
             RickyLeaderboard.render('leaderboardContainer', 'songless', {
                 title: '<img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Top — Songless',
-                columns: ['rank', 'name', 'correct', 'total', 'percent', 'time', 'difficulty', 'channel', 'date'],
+                columns: ['rank', 'name', 'correct', 'total', 'percent', 'lives', 'time', 'difficulty', 'channel', 'date'],
                 difficulties: ['easy', 'normal'],
                 channels: { principal: 'Canal Principal', secondary: 'Canal Secundario', songs: 'Canciones', both: 'Los 2 canales' },
                 maxRows: 20
@@ -3319,24 +3660,38 @@
 
         // Updates modal — show on first visit
         RickyUpdates.show('songless', 'v3.0', `
-            <h3>🆕 Novedades</h3>
-            <p>¡Hola! Han pasado cosas desde la última vez. Aquí te van los cambios:</p>
+            <h3><img src="../Iconos RickyEdit Web/🆕.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> ¡Bienvenido a Songless!</h3>
+            <p>Escucha fragmentos de canciones de Rickyedit y <span class="upd-highlight">adivina cuál es</span>.</p>
             <hr class="upd-sep">
-            <h3>🎵 Canciones nuevas</h3>
-            <p>He añadido <span class="upd-highlight">nuevas canciones</span> al songless. Hay más variedad que nunca.</p>
-            <hr class="upd-sep">
-            <h3>🎨 Rediseño de interfaz</h3>
-            <p>La interfaz se ha <span class="upd-highlight">rediseñado</span> para que todo se vea más limpio y bonito. Los botones, los modos, todo. Buscador mejorado con miniaturas, modos Sin repetir / Aleatorio, canal Los 2 canales.</p>
-            <hr class="upd-sep">
-            <h3>🎮 Nuevos juegos</h3>
+            <h3><img src="../Iconos RickyEdit Web/🎮.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Cómo se juega</h3>
             <ul>
-                <li><span class="upd-highlight">Emojless</span> — Adivina la canción por emojis. ¿Conoces la discografía de Ricky?</li>
-                <li><span class="upd-highlight">Miniatura Borrosa</span> — Adivina el vídeo con la miniatura borrosa. Cada intento la enfoca un poco más.</li>
-                <li><span class="upd-highlight">¿Qué es más caro?</span> — Compara precios de skins de Counter Strike vs objetos reales. ¿Puedes adivinar cuál cuesta más?</li>
+                <li><strong>Paso 1:</strong> Se reproduce un fragmento de 1 segundo</li>
+                <li><strong>Paso 2:</strong> Escribe el nombre en el buscador y selecciónalo</li>
+                <li><strong>Paso 3:</strong> Si aciertas, ganas puntos. Si fallas, el fragmento se hace más largo</li>
+                <li><strong>Paso 4:</strong> Si no adivinas en 6 intentos, se revela el vídeo</li>
+            </ul>
+            <hr class="upd-sep">
+            <h3><img src="../Iconos RickyEdit Web/😎.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Canales</h3>
+            <ul>
+                <li><span class="upd-highlight">Canal Principal</span> — Canciones del canal principal</li>
+                <li><span class="upd-highlight">Canal Secundario</span> — Canciones del canal secundario</li>
+                <li><span class="upd-highlight">Canciones</span> — Solo música (con filtro de año)</li>
+                <li><span class="upd-highlight">Los 2 canales</span> — Mezcla de ambos</li>
+            </ul>
+            <hr class="upd-sep">
+            <h3><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Vidas</h3>
+            <p>Sistema de vidas opcional. Pulsa <span class="upd-highlight">Info Vidas</span> para más detalles.</p>
+            <hr class="upd-sep">
+            <h3><img src="../Iconos RickyEdit Web/🎨.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Nuevos juegos</h3>
+            <ul>
+                <li><span class="upd-highlight">Emojless</span> — Adivina la canción por emojis</li>
+                <li><span class="upd-highlight">Miniatura Borrosa</span> — Adivina el vídeo con la miniatura borrosa</li>
+                <li><span class="upd-highlight">¿Qué es más caro?</span> — Compara precios de skins vs objetos reales</li>
+                <li><span class="upd-highlight">Letrless</span> — Adivina por fragmentos de letra</li>
             </ul>
             <hr class="upd-sep">
             <h3><img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Leaderboard</h3>
-            <p>Ahora hay un leaderboard en cada juego. Compite con tus amigos por el primer puesto.</p>
+            <p>Compite con otros jugadores en la clasificación.</p>
             <hr class="upd-sep">
             <p>¡Dale a <span class="upd-highlight">¡Entendido!</span> y a jugar!</p>
         `);

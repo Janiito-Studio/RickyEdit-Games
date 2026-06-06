@@ -760,6 +760,18 @@ footer p {
     transform: translateY(-1px);
 }
 
+.info-lives-toggle-btn {
+    background: rgba(255,255,255,0.06); border: 1px solid var(--line);
+    border-radius: 12px; color: var(--muted); font-weight: 700;
+    padding: 10px 20px; cursor: pointer; font-size: 0.85rem;
+    transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px;
+    position: relative; z-index: 1;
+}
+.info-lives-toggle-btn:hover {
+    background: rgba(255,51,204,0.12); color: #fff;
+    border-color: rgba(255,51,204,0.3); transform: translateY(-1px);
+}
+
 .mode-start-btn {
     font-size: 1.3rem;
     font-weight: 900;

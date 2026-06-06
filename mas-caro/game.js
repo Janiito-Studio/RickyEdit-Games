@@ -366,6 +366,10 @@ let incorrectCount = 0;
 let TOTAL_ROUNDS = 50;
 let easyMode = false;
 let gameStartTime = null;
+let livesEnabled = false;
+let lives = 3;
+let MAX_LIVES = 3;
+let usedExtraLife = false;
 
 // Colas de mezcla para garantizar que no se repitan los ítems hasta mostrar todos
 let skinQueue = [];
@@ -426,8 +430,91 @@ function playSound(type) {
         gain.gain.linearRampToValueAtTime(0, now + 0.08);
         osc.start(now);
         osc.stop(now + 0.08);
+    } else if (type === 'lifeloss') {
+        osc.frequency.setValueAtTime(400, now);
+        osc.frequency.exponentialRampToValueAtTime(120, now + 0.4);
+        gain.gain.setValueAtTime(0.06 * vol, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.5);
+        osc.start(now); osc.stop(now + 0.5);
     }
     _currentOsc = osc;
+}
+
+function updateLivesDisplay() {
+    const el = document.getElementById('livesDisplay');
+    if (!el) return;
+    if (!livesEnabled) {
+        el.innerHTML = '<img src="../Rickyedit Games.png" alt="Rickyedit Games" class="life-logo">';
+        el.style.display = 'flex';
+        return;
+    }
+    el.style.display = 'flex';
+    let html = '';
+    for (let i = 0; i < MAX_LIVES; i++) {
+        if (i < lives) {
+            html += '<img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="life-heart">';
+        } else {
+            html += '<img src="../Iconos RickyEdit Web/Vida Rota.png" alt="" class="life-heart">';
+        }
+    }
+    el.innerHTML = html;
+    try { var _pid = localStorage.getItem('rlb_player_id') || ''; localStorage.setItem('rlb_obs_lives_' + _pid, JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+}
+
+function loseLife() {
+    if (!livesEnabled) return false;
+    lives--;
+    playSound('lifeloss');
+    updateLivesDisplay();
+    const extraLifeBtn = document.getElementById('extraLifeBtn');
+    if (extraLifeBtn) extraLifeBtn.style.display = livesEnabled && lives < MAX_LIVES ? '' : 'none';
+    const hearts = document.querySelectorAll('#livesDisplay .life-heart');
+    const lostIndex = lives;
+    if (hearts[lostIndex]) {
+        hearts[lostIndex].classList.add('losing');
+        setTimeout(() => hearts[lostIndex].classList.remove('losing'), 500);
+    }
+    try { var _pid = localStorage.getItem('rlb_player_id') || ''; localStorage.setItem('rlb_obs_lives_' + _pid, JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+    if (lives <= 0) {
+        setTimeout(() => gameOverLives(), 500);
+        return true;
+    }
+    return false;
+}
+
+function gameOverLives() {
+    gameActive = false;
+    document.getElementById('btn-left').disabled = true;
+    document.getElementById('btn-right').disabled = true;
+
+    const scoreVal = score || 0;
+    document.getElementById('gameoverScore').textContent = scoreVal > 0 ? scoreVal + ' puntos' : '';
+    document.getElementById('gameoverOverlay').classList.add('show');
+
+    if (!usedExtraLife) {
+        RickyLeaderboard.save('mascaro', {
+            score,
+            difficulty: easyMode ? 'easy' : 'normal',
+            time: gameStartTime ? ((Date.now() - gameStartTime) / 1000).toFixed(1) : null,
+            correct: correctCount,
+            total: correctCount + incorrectCount,
+            percent: (correctCount + incorrectCount) > 0 ? Math.round((correctCount / (correctCount + incorrectCount)) * 100) : 0,
+            maxStreak: highestStreak,
+            lives: livesEnabled ? lives : null,
+            maxLives: livesEnabled ? MAX_LIVES : null
+        }, () => {});
+    }
+}
+
+function continueGame() {
+    playSound('click');
+    document.getElementById('gameoverOverlay').classList.remove('show');
+    gameActive = true;
+    document.getElementById('btn-left').disabled = false;
+    document.getElementById('btn-right').disabled = false;
+    usedExtraLife = true;
+    const extraLifeBtn = document.getElementById('extraLifeBtn');
+    if (extraLifeBtn) extraLifeBtn.style.display = 'none';
 }
 
 // Formatear precio
@@ -568,7 +655,7 @@ function nextRound() {
             const maxPrice = Math.max(currentPair[0].price, currentPair[1].price);
             const minPrice = Math.min(currentPair[0].price, currentPair[1].price);
             const hintRange = maxPrice > 1000 ? 'más de 1000€' : maxPrice > 100 ? 'entre 100€ y 1000€' : 'menos de 100€';
-            hintEl.textContent = `💡 Pista: El más caro cuesta ${hintRange}`;
+            hintEl.textContent = `<img src="../Iconos RickyEdit Web/💡.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:4px;"> Pista: El más caro cuesta ${hintRange}`;
             hintEl.classList.add('show');
         } else {
             hintEl.classList.remove('show');
@@ -630,6 +717,7 @@ function selectOption(selectedIdx) {
         otherBtn.classList.add('correct');
         vsIcon.classList.add('fail');
         setTimeout(() => playSound('fail'), 200);
+        if (loseLife()) return;
     }
 
     // Actualizar marcadores
@@ -691,6 +779,29 @@ document.addEventListener('DOMContentLoaded', () => {
     if (startEasyBtn) startEasyBtn.addEventListener('click', () => { playSound('click'); easyMode = true; startEasyBtn.classList.add('active'); startNormalBtn.classList.remove('active'); });
     if (startNormalBtn) startNormalBtn.addEventListener('click', () => { playSound('click'); easyMode = false; startNormalBtn.classList.add('active'); startEasyBtn.classList.remove('active'); });
 
+    // Lives hearts selector
+    document.querySelectorAll('.lives-selector').forEach(selector => {
+        const hearts = selector.querySelectorAll('.lives-heart-btn');
+        const countEl = selector.querySelector('.lives-selector-count');
+        hearts.forEach(btn => {
+            btn.addEventListener('click', () => {
+                playSound('click');
+                const val = parseInt(btn.dataset.lives, 10);
+                if (livesEnabled && MAX_LIVES === val) {
+                    livesEnabled = false;
+                    hearts.forEach(h => h.classList.remove('active'));
+                    if (countEl) countEl.textContent = '';
+                } else {
+                    livesEnabled = true;
+                    MAX_LIVES = val;
+                    hearts.forEach(h => h.classList.remove('active'));
+                    for (let i = 0; i < val; i++) hearts[i].classList.add('active');
+                    if (countEl) countEl.textContent = val;
+                }
+            });
+        });
+    });
+
     // Info button
     document.querySelectorAll('.info-toggle-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -708,6 +819,11 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('startScreen').classList.add('hide');
             document.body.style.overflow = 'auto';
             TOTAL_ROUNDS = easyMode ? 20 : 50;
+            lives = MAX_LIVES;
+            usedExtraLife = false;
+            updateLivesDisplay();
+            const extraLifeBtn = document.getElementById('extraLifeBtn');
+            if (extraLifeBtn) extraLifeBtn.style.display = livesEnabled ? '' : 'none';
             nextRound();
         });
     }
@@ -728,6 +844,20 @@ document.addEventListener('DOMContentLoaded', () => {
         nextRound();
     });
 
+    // Extra life button
+    const extraLifeBtn = document.getElementById('extraLifeBtn');
+    if (extraLifeBtn) {
+        extraLifeBtn.addEventListener('click', () => {
+            playSound('success');
+            usedExtraLife = true;
+            if (lives < MAX_LIVES) {
+                lives++;
+                updateLivesDisplay();
+                extraLifeBtn.style.display = lives < MAX_LIVES ? '' : 'none';
+            }
+        });
+    }
+
     document.getElementById('btn-restart').addEventListener('click', () => {
         playSound('click');
         score = 0;
@@ -738,11 +868,54 @@ document.addEventListener('DOMContentLoaded', () => {
         skinQueue = [];
         realQueue = [];
         gameStartTime = null;
+        usedExtraLife = false;
         document.getElementById('score').textContent = '0';
         document.getElementById('streak').textContent = '0';
         document.getElementById('victory-overlay').classList.remove('show');
         document.getElementById('startScreen').classList.remove('hide');
         document.body.style.overflow = 'hidden';
+    });
+
+    // Game over buttons
+    document.getElementById('gameoverContinueBtn').addEventListener('click', continueGame);
+    document.getElementById('gameoverRestartBtn').addEventListener('click', () => {
+        playSound('click');
+        document.getElementById('gameoverOverlay').classList.remove('show');
+        score = 0;
+        streak = 0;
+        roundCount = 0;
+        correctCount = 0;
+        incorrectCount = 0;
+        skinQueue = [];
+        realQueue = [];
+        gameStartTime = null;
+        usedExtraLife = false;
+        lives = MAX_LIVES;
+        updateLivesDisplay();
+        document.getElementById('score').textContent = '0';
+        document.getElementById('streak').textContent = '0';
+        document.getElementById('startScreen').classList.remove('hide');
+        document.body.style.overflow = 'hidden';
+    });
+    document.getElementById('gameoverHomeBtn').addEventListener('click', () => {
+        playSound('click');
+        document.getElementById('gameoverOverlay').classList.remove('show');
+        score = 0;
+        streak = 0;
+        roundCount = 0;
+        correctCount = 0;
+        incorrectCount = 0;
+        skinQueue = [];
+        realQueue = [];
+        gameStartTime = null;
+        usedExtraLife = false;
+        lives = MAX_LIVES;
+        updateLivesDisplay();
+        document.getElementById('score').textContent = '0';
+        document.getElementById('streak').textContent = '0';
+        document.getElementById('startScreen').classList.remove('hide');
+        document.body.style.overflow = 'hidden';
+        renderLeaderboard();
     });
 
     // Finalize button — save score to leaderboard
@@ -751,24 +924,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const elapsed = gameStartTime ? ((Date.now() - gameStartTime) / 1000).toFixed(1) : null;
         const total = correctCount + incorrectCount;
         const pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
-        RickyLeaderboard.save('mascaro', {
-            score,
-            difficulty: easyMode ? 'easy' : 'normal',
-            time: elapsed ? parseFloat(elapsed) : null,
-            correct: correctCount,
-            total,
-            percent: pct,
-            maxStreak: highestStreak
-        }, () => {
-            document.getElementById('victory-overlay').classList.remove('show');
-            document.getElementById('startScreen').classList.remove('hide');
-            document.body.style.overflow = 'hidden';
-            score = 0; streak = 0; roundCount = 0; correctCount = 0; incorrectCount = 0;
-            skinQueue = []; realQueue = []; gameStartTime = null;
-            document.getElementById('score').textContent = '0';
-            document.getElementById('streak').textContent = '0';
-            renderLeaderboard();
-        });
+        if (!usedExtraLife) {
+            RickyLeaderboard.save('mascaro', {
+                score,
+                difficulty: easyMode ? 'easy' : 'normal',
+                time: elapsed ? parseFloat(elapsed) : null,
+                correct: correctCount,
+                total,
+                percent: pct,
+                maxStreak: highestStreak,
+                lives: livesEnabled ? lives : null,
+                maxLives: livesEnabled ? MAX_LIVES : null
+            }, () => {});
+        }
+        document.getElementById('victory-overlay').classList.remove('show');
+        document.getElementById('startScreen').classList.remove('hide');
+        document.body.style.overflow = 'hidden';
+        score = 0; streak = 0; roundCount = 0; correctCount = 0; incorrectCount = 0;
+        skinQueue = []; realQueue = []; gameStartTime = null; usedExtraLife = false;
+        document.getElementById('score').textContent = '0';
+        document.getElementById('streak').textContent = '0';
+        renderLeaderboard();
     });
 
     renderLeaderboard();
@@ -777,7 +953,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function renderLeaderboard() {
     RickyLeaderboard.render('leaderboardContainer', 'mascaro', {
         title: '<img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Top — ¿Qué es más caro?',
-        columns: ['rank', 'name', 'correct', 'total', 'percent', 'time', 'difficulty', 'date'],
+        columns: ['rank', 'name', 'correct', 'total', 'percent', 'lives', 'time', 'difficulty', 'date'],
         difficulties: ['easy', 'normal'],
         maxRows: 20
     });
@@ -800,10 +976,10 @@ document.addEventListener('click', (e) => {
 
 // Info modal content
 const MASCARO_INFO_HTML =
-    '<h3>🆕 ¡Bienvenido a ¿Qué es más caro?</h3>' +
+    '<h3><img src="../Iconos RickyEdit Web/🆕.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> ¡Bienvenido a ¿Qué es más caro?</h3>' +
     '<p>Un juego donde tienes que <span class="upd-highlight">adivinar qué skin de Counter Strike cuesta más</span> de entre dos opciones.</p>' +
     '<hr class="upd-sep">' +
-    '<h3>🎮 Cómo se juega</h3>' +
+    '<h3><img src="../Iconos RickyEdit Web/🎮.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Cómo se juega</h3>' +
     '<ul>' +
     '<li>Se te muestran 2 skins de Counter Strike lado a lado</li>' +
     '<li>Escribe cuál crees que cuesta más</li>' +
@@ -811,11 +987,14 @@ const MASCARO_INFO_HTML =
     '<li>¡La racha de aciertos seguidos da bonus!</li>' +
     '</ul>' +
     '<hr class="upd-sep">' +
-    '<h3>😎 Modos</h3>' +
+    '<h3><img src="../Iconos RickyEdit Web/😎.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Modos</h3>' +
     '<ul>' +
     '<li><span class="upd-highlight">Cagado</span> — 3 rondas, más tiempo para decidir</li>' +
     '<li><span class="upd-highlight">Normal</span> — 5 rondas, ritmo estándar</li>' +
     '</ul>' +
+    '<hr class="upd-sep">' +
+    '<h3><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Sistema de vidas</h3>' +
+    '<p>Hay un sistema de vidas opcional. Pulsa <span class="upd-highlight">Info Vidas</span> para más detalles.</p>' +
     '<hr class="upd-sep">' +
     '<h3><img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Leaderboard</h3>' +
     '<p>Compite con otros jugadores. ¡Dale a <span class="upd-highlight">¡Entendido!</span>!</p>';
@@ -826,10 +1005,10 @@ document.querySelectorAll('#openUpdatesBtn, #startOpenUpdatesBtn').forEach(btn =
 
 // Updates modal
 RickyUpdates.show('mascaro', 'v2.0', `
-    <h3>🆕 ¡Bienvenido a ¿Qué es más caro?</h3>
+    <h3><img src="../Iconos RickyEdit Web/🆕.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> ¡Bienvenido a ¿Qué es más caro?</h3>
     <p>Un juego donde tienes que <span class="upd-highlight">adivinar qué skin de Counter Strike cuesta más</span> de entre dos opciones.</p>
     <hr class="upd-sep">
-    <h3>🎮 Cómo se juega</h3>
+    <h3><img src="../Iconos RickyEdit Web/🎮.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Cómo se juega</h3>
     <ul>
         <li>Se te muestran 2 skins de Counter Strike lado a lado</li>
         <li>Escribe cuál crees que cuesta más</li>
@@ -837,7 +1016,7 @@ RickyUpdates.show('mascaro', 'v2.0', `
         <li>¡La racha de aciertos seguidos da bonus!</li>
     </ul>
     <hr class="upd-sep">
-    <h3>😎 Modos</h3>
+    <h3><img src="../Iconos RickyEdit Web/😎.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Modos</h3>
     <ul>
         <li><span class="upd-highlight">Cagado</span> — 3 rondas, más tiempo para decidir</li>
         <li><span class="upd-highlight">Normal</span> — 5 rondas, ritmo estándar</li>
