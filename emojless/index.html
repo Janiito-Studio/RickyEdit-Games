@@ -911,7 +911,7 @@
             <div class="nav-actions">
                 <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
                 <button id="startOpenUpdatesBtn" class="icon-btn" type="button">Info</button>
-                <button class="icon-btn" type="button" onclick="location.href='../index.html'">Volver</button>
+                <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">Volver</button>
             </div>
         </nav>
 
@@ -970,7 +970,7 @@
                 Principal</a>
             <button id="openLetterBtn" class="icon-btn" type="button">Mensaje</button>
             <button id="openUpdatesBtn" class="icon-btn" type="button">Info</button>
-            <button class="icon-btn" type="button" onclick="location.href='../index.html'">
+            <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">
                 Volver
             </button>
         </div>
@@ -1094,9 +1094,6 @@
                                     </button>
                                     <button id="finalizeBtn" class="btn btn-dark" type="button">
                                         Finalizar
-                                    </button>
-                                    <button id="extraLifeBtn" class="btn btn-dark" type="button" style="background:linear-gradient(135deg, var(--green), var(--cyan)); color:#0d0d10; display:none;">
-                                        <img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:1.3em;height:1.3em;vertical-align:middle;margin-right:4px;"> +1 Vida
                                     </button>
                                 </div>
                                 <p style="color: var(--yellow); font-size: 0.85rem; font-weight: 700; margin-top: 12px; text-align: center;"><img src="../Info.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Dale a "Finalizar" para guardar tu puntuación en el leaderboard.</p>
@@ -1243,6 +1240,7 @@
     <script src="../updates.js"></script>
     <script src="../easter-egg.js?v=2.0"></script>
     <script src="../volume.js"></script>
+    <script src="../rlb-player.js"></script>
     <script src="game.js?v=2.0"></script>
 </body>
 

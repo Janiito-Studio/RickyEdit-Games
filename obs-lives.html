@@ -22,24 +22,58 @@
             width: 60px;
             height: 60px;
             object-fit: contain;
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            display: block;
+            transition: opacity 0.3s ease;
+            animation: heart-wave 1.8s ease-in-out infinite;
+            will-change: transform;
+            backface-visibility: hidden;
         }
         #obs-lives img.lost {
             opacity: 0.4;
             filter: grayscale(0.5);
         }
+        #obs-logo {
+            text-align: center;
+        }
+        #obs-logo img {
+            height: 200px;
+            object-fit: contain;
+            opacity: 0.8;
+            filter: drop-shadow(0 0 8px rgba(255, 51, 204, 0.5));
+            animation: logo-float 4s linear infinite;
+            will-change: transform;
+        }
+        @keyframes heart-wave {
+            0%, 100% { transform: translate3d(0, 0, 0); }
+            50% { transform: translate3d(0, -12px, 0); }
+        }
+        @keyframes logo-float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
     </style>
 </head>
 <body>
     <div id="obs-lives"></div>
+    <div id="obs-logo" style="display:none;"></div>
     <script>
         var GAME_PATH = 'Iconos RickyEdit Web/';
-
-        var params = new URLSearchParams(window.location.search);
-        var playerId = params.get('id') || '';
-        var STORAGE_KEY = 'rlb_obs_lives_' + playerId;
+        var STORAGE_KEY = 'rlb_obs_lives';
 
         function updateDisplay(data) {
+            var el = document.getElementById('obs-lives');
+            var logo = document.getElementById('obs-logo');
+            if (!data) {
+                el.style.display = 'none';
+                if (!logo.querySelector('img')) {
+                    logo.style.display = 'block';
+                    logo.innerHTML = '<img src="Rickyedit%20Games.png" alt="Rickyedit Games">';
+                }
+                return;
+            }
+            el.style.display = 'flex';
+            logo.style.display = 'none';
+            logo.innerHTML = '';
             var lives, maxLives;
             if (typeof data === 'string') {
                 try {
@@ -57,16 +91,28 @@
             if (isNaN(lives)) lives = 3;
             if (isNaN(maxLives)) maxLives = 3;
 
-            var el = document.getElementById('obs-lives');
-            var html = '';
-            for (var i = 0; i < maxLives; i++) {
-                if (i < lives) {
-                    html += '<img src="' + GAME_PATH + 'Vida Entera.png" alt="Vida">';
-                } else {
-                    html += '<img src="' + GAME_PATH + 'Vida Rota.png" alt="Sin vida" class="lost">';
+            var hearts = el.querySelectorAll('img');
+            if (hearts.length !== maxLives) {
+                el.innerHTML = '';
+                for (var i = 0; i < maxLives; i++) {
+                    var img = document.createElement('img');
+                    img.src = i < lives ? GAME_PATH + 'Vida Entera.png' : GAME_PATH + 'Vida Rota.png';
+                    img.alt = i < lives ? 'Vida' : 'Sin vida';
+                    if (i >= lives) img.className = 'lost';
+                    img.style.animationDelay = (i * 0.15) + 's';
+                    el.appendChild(img);
                 }
+            } else {
+                hearts.forEach(function(img, i) {
+                    img.src = i < lives ? GAME_PATH + 'Vida Entera.png' : GAME_PATH + 'Vida Rota.png';
+                    img.alt = i < lives ? 'Vida' : 'Sin vida';
+                    if (i < lives) {
+                        img.classList.remove('lost');
+                    } else {
+                        img.classList.add('lost');
+                    }
+                });
             }
-            el.innerHTML = html;
         }
 
         window.addEventListener('storage', function(e) {
@@ -74,6 +120,10 @@
                 updateDisplay(e.newValue);
             }
         });
+
+        setInterval(function() {
+            updateDisplay(localStorage.getItem(STORAGE_KEY));
+        }, 1000);
 
         updateDisplay(localStorage.getItem(STORAGE_KEY));
     </script>

@@ -441,40 +441,51 @@ function playSound(type) {
 }
 
 function updateLivesDisplay() {
-    const el = document.getElementById('livesDisplay');
+    var el = document.getElementById('livesDisplay');
     if (!el) return;
     if (!livesEnabled) {
-        el.innerHTML = '<img src="../Rickyedit Games.png" alt="Rickyedit Games" class="life-logo">';
-        el.style.display = 'flex';
+        el.style.display = 'none';
+        try { localStorage.removeItem('rlb_obs_lives'); } catch(e) {}
         return;
     }
     el.style.display = 'flex';
-    let html = '';
-    for (let i = 0; i < MAX_LIVES; i++) {
-        if (i < lives) {
-            html += '<img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="life-heart">';
-        } else {
-            html += '<img src="../Iconos RickyEdit Web/Vida Rota.png" alt="" class="life-heart">';
+    var hearts = el.querySelectorAll('.life-heart');
+    if (hearts.length !== MAX_LIVES) {
+        el.innerHTML = '';
+        for (var i = 0; i < MAX_LIVES; i++) {
+            var img = document.createElement('img');
+            img.src = i < lives ? '../Iconos RickyEdit Web/Vida Entera.png' : '../Iconos RickyEdit Web/Vida Rota.png';
+            img.alt = i < lives ? 'Vida' : 'Sin vida';
+            img.className = 'life-heart';
+            img.style.animationDelay = (i * 0.1) + 's';
+            el.appendChild(img);
         }
+    } else {
+        hearts.forEach(function(img, i) {
+            img.src = i < lives ? '../Iconos RickyEdit Web/Vida Entera.png' : '../Iconos RickyEdit Web/Vida Rota.png';
+        });
     }
-    el.innerHTML = html;
-    try { var _pid = localStorage.getItem('rlb_player_id') || ''; localStorage.setItem('rlb_obs_lives_' + _pid, JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+    try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+}
+
+function resetLivesToLobby() {
+    livesEnabled = false;
+    updateLivesDisplay();
+    if (window.RlbPlayer) RlbPlayer.signalLobby();
 }
 
 function loseLife() {
     if (!livesEnabled) return false;
     lives--;
     playSound('lifeloss');
-    updateLivesDisplay();
-    const extraLifeBtn = document.getElementById('extraLifeBtn');
-    if (extraLifeBtn) extraLifeBtn.style.display = livesEnabled && lives < MAX_LIVES ? '' : 'none';
-    const hearts = document.querySelectorAll('#livesDisplay .life-heart');
-    const lostIndex = lives;
-    if (hearts[lostIndex]) {
-        hearts[lostIndex].classList.add('losing');
-        setTimeout(() => hearts[lostIndex].classList.remove('losing'), 500);
+    var _el = document.getElementById('livesDisplay');
+    if (_el) {
+        var _h = _el.querySelectorAll('.life-heart');
+        if (_h[lives]) {
+            _h[lives].src = '../Iconos RickyEdit Web/Vida Rota.png';
+        }
     }
-    try { var _pid = localStorage.getItem('rlb_player_id') || ''; localStorage.setItem('rlb_obs_lives_' + _pid, JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+    try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
     if (lives <= 0) {
         setTimeout(() => gameOverLives(), 500);
         return true;
@@ -513,8 +524,6 @@ function continueGame() {
     document.getElementById('btn-left').disabled = false;
     document.getElementById('btn-right').disabled = false;
     usedExtraLife = true;
-    const extraLifeBtn = document.getElementById('extraLifeBtn');
-    if (extraLifeBtn) extraLifeBtn.style.display = 'none';
 }
 
 // Formatear precio
@@ -783,20 +792,24 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.lives-selector').forEach(selector => {
         const hearts = selector.querySelectorAll('.lives-heart-btn');
         const countEl = selector.querySelector('.lives-selector-count');
+        if (countEl) countEl.textContent = livesEnabled ? String(MAX_LIVES) : '--';
         hearts.forEach(btn => {
             btn.addEventListener('click', () => {
                 playSound('click');
                 const val = parseInt(btn.dataset.lives, 10);
                 if (livesEnabled && MAX_LIVES === val) {
                     livesEnabled = false;
+                    try { localStorage.removeItem('rlb_obs_lives'); } catch(e) {}
                     hearts.forEach(h => h.classList.remove('active'));
-                    if (countEl) countEl.textContent = '';
+                    if (countEl) countEl.textContent = '--';
                 } else {
                     livesEnabled = true;
+                    if (window.RlbPlayer) RlbPlayer.signalGame();
                     MAX_LIVES = val;
+                    try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: val, max: val })); } catch(e) {}
                     hearts.forEach(h => h.classList.remove('active'));
                     for (let i = 0; i < val; i++) hearts[i].classList.add('active');
-                    if (countEl) countEl.textContent = val;
+                    if (countEl) countEl.textContent = String(val);
                 }
             });
         });
@@ -822,8 +835,6 @@ document.addEventListener('DOMContentLoaded', () => {
             lives = MAX_LIVES;
             usedExtraLife = false;
             updateLivesDisplay();
-            const extraLifeBtn = document.getElementById('extraLifeBtn');
-            if (extraLifeBtn) extraLifeBtn.style.display = livesEnabled ? '' : 'none';
             nextRound();
         });
     }
@@ -844,22 +855,9 @@ document.addEventListener('DOMContentLoaded', () => {
         nextRound();
     });
 
-    // Extra life button
-    const extraLifeBtn = document.getElementById('extraLifeBtn');
-    if (extraLifeBtn) {
-        extraLifeBtn.addEventListener('click', () => {
-            playSound('success');
-            usedExtraLife = true;
-            if (lives < MAX_LIVES) {
-                lives++;
-                updateLivesDisplay();
-                extraLifeBtn.style.display = lives < MAX_LIVES ? '' : 'none';
-            }
-        });
-    }
-
     document.getElementById('btn-restart').addEventListener('click', () => {
         playSound('click');
+        resetLivesToLobby();
         score = 0;
         streak = 0;
         roundCount = 0;
@@ -880,6 +878,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('gameoverContinueBtn').addEventListener('click', continueGame);
     document.getElementById('gameoverRestartBtn').addEventListener('click', () => {
         playSound('click');
+        resetLivesToLobby();
         document.getElementById('gameoverOverlay').classList.remove('show');
         score = 0;
         streak = 0;
@@ -899,6 +898,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('gameoverHomeBtn').addEventListener('click', () => {
         playSound('click');
+        resetLivesToLobby();
         document.getElementById('gameoverOverlay').classList.remove('show');
         score = 0;
         streak = 0;
@@ -937,6 +937,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 maxLives: livesEnabled ? MAX_LIVES : null
             }, () => {});
         }
+        resetLivesToLobby();
         document.getElementById('victory-overlay').classList.remove('show');
         document.getElementById('startScreen').classList.remove('hide');
         document.body.style.overflow = 'hidden';
@@ -947,6 +948,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderLeaderboard();
     });
 
+    updateLivesDisplay();
     renderLeaderboard();
 });
 
@@ -981,7 +983,7 @@ const MASCARO_INFO_HTML =
     '<hr class="upd-sep">' +
     '<h3><img src="../Iconos RickyEdit Web/🎮.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Cómo se juega</h3>' +
     '<ul>' +
-    '<li>Se te muestran 2 skins de Counter Strike lado a lado</li>' +
+    '<li>Se te muestran 1 skis de Counter Strike y un objeto de la vida real/li>' +
     '<li>Escribe cuál crees que cuesta más</li>' +
     '<li>Cada acierto suma puntos</li>' +
     '<li>¡La racha de aciertos seguidos da bonus!</li>' +
@@ -1010,7 +1012,7 @@ RickyUpdates.show('mascaro', 'v2.0', `
     <hr class="upd-sep">
     <h3><img src="../Iconos RickyEdit Web/🎮.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Cómo se juega</h3>
     <ul>
-        <li>Se te muestran 2 skins de Counter Strike lado a lado</li>
+        <li>Se te muestran 1 skis de Counter Strike y un objeto de la vida real</li>
         <li>Escribe cuál crees que cuesta más</li>
         <li>Cada acierto suma puntos</li>
         <li>¡La racha de aciertos seguidos da bonus!</li>

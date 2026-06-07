@@ -110,38 +110,51 @@ function normalize(text) {
 }
 
 function updateLivesDisplay() {
-    const el = document.getElementById('livesDisplay');
+    var el = document.getElementById('livesDisplay');
     if (!el) return;
     if (!livesEnabled) {
-        el.innerHTML = '<img src="../Rickyedit Games.png" alt="Rickyedit Games" class="life-logo">';
-        el.style.display = 'flex';
+        el.style.display = 'none';
+        try { localStorage.removeItem('rlb_obs_lives'); } catch(e) {}
         return;
     }
     el.style.display = 'flex';
-    let html = '';
-    for (let i = 0; i < MAX_LIVES; i++) {
-        if (i < lives) {
-            html += '<img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="life-heart">';
-        } else {
-            html += '<img src="../Iconos RickyEdit Web/Vida Rota.png" alt="" class="life-heart">';
+    var hearts = el.querySelectorAll('.life-heart');
+    if (hearts.length !== MAX_LIVES) {
+        el.innerHTML = '';
+        for (var i = 0; i < MAX_LIVES; i++) {
+            var img = document.createElement('img');
+            img.src = i < lives ? '../Iconos RickyEdit Web/Vida Entera.png' : '../Iconos RickyEdit Web/Vida Rota.png';
+            img.alt = i < lives ? 'Vida' : 'Sin vida';
+            img.className = 'life-heart';
+            img.style.animationDelay = (i * 0.1) + 's';
+            el.appendChild(img);
         }
+    } else {
+        hearts.forEach(function(img, i) {
+            img.src = i < lives ? '../Iconos RickyEdit Web/Vida Entera.png' : '../Iconos RickyEdit Web/Vida Rota.png';
+        });
     }
-    el.innerHTML = html;
-    try { var _pid = localStorage.getItem('rlb_player_id') || ''; localStorage.setItem('rlb_obs_lives_' + _pid, JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+    try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+}
+
+function resetLivesToLobby() {
+    livesEnabled = false;
+    updateLivesDisplay();
+    if (window.RlbPlayer) RlbPlayer.signalLobby();
 }
 
 function loseLife() {
     if (!livesEnabled) return false;
     lives--;
     playSound('lifeloss');
-    updateLivesDisplay();
-    const hearts = document.querySelectorAll('#livesDisplay .life-heart');
-    const lostIndex = lives;
-    if (hearts[lostIndex]) {
-        hearts[lostIndex].classList.add('losing');
-        setTimeout(() => hearts[lostIndex].classList.remove('losing'), 500);
+    var _el = document.getElementById('livesDisplay');
+    if (_el) {
+        var _h = _el.querySelectorAll('.life-heart');
+        if (_h[lives]) {
+            _h[lives].src = '../Iconos RickyEdit Web/Vida Rota.png';
+        }
     }
-    try { var _pid = localStorage.getItem('rlb_player_id') || ''; localStorage.setItem('rlb_obs_lives_' + _pid, JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+    try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
     if (lives <= 0) {
         setTimeout(() => gameOver(), 500);
         return true;
@@ -191,8 +204,6 @@ function continueGame() {
     els.newBtn.disabled = false;
     els.skipBtn.disabled = false;
     els.status.textContent = "Sigues jugando sin vidas. ¡No se guardará tu puntuación!";
-    const extraLifeBtn = document.getElementById('extraLifeBtn');
-    if (extraLifeBtn) extraLifeBtn.style.display = 'none';
 }
 
 function tokenScore(guess, answer) {
@@ -607,11 +618,14 @@ document.querySelectorAll('.lives-selector').forEach(selector => {
             const val = parseInt(btn.dataset.lives, 10);
             if (livesEnabled && MAX_LIVES === val) {
                 livesEnabled = false;
+                try { localStorage.removeItem('rlb_obs_lives'); } catch(e) {}
                 hearts.forEach(h => h.classList.remove('active'));
                 if (countEl) countEl.textContent = '';
             } else {
                 livesEnabled = true;
+                if (window.RlbPlayer) RlbPlayer.signalGame();
                 MAX_LIVES = val;
+                try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: val, max: val })); } catch(e) {}
                 hearts.forEach(h => h.classList.remove('active'));
                 for (let i = 0; i < val; i++) hearts[i].classList.add('active');
                 if (countEl) countEl.textContent = val;
@@ -639,8 +653,6 @@ function startGame() {
     usedExtraLife = false;
     gameOverByLives = false;
     updateLivesDisplay();
-    const extraLifeBtn = document.getElementById('extraLifeBtn');
-    if (extraLifeBtn) extraLifeBtn.style.display = livesEnabled ? '' : 'none';
     allVideos = (window.RICKY_VIDEOS || []).filter(v => v && v.id);
     secondaryVideos = (window.RICKY_SECONDARY || []).filter(v => v && v.id);
     startScreen.classList.add("hide");
@@ -665,6 +677,7 @@ if (document.getElementById("startBothGameBtn")) {
 document.getElementById('gameoverRestartBtn').addEventListener('click', () => {
     playSound('click');
     hideGameoverOverlay();
+    resetLivesToLobby();
     els.reveal.classList.remove('show');
     els.revealMedia.innerHTML = "";
     startScreen.classList.remove('hide');
@@ -673,6 +686,7 @@ document.getElementById('gameoverRestartBtn').addEventListener('click', () => {
 document.getElementById('gameoverHomeBtn').addEventListener('click', () => {
     playSound('click');
     hideGameoverOverlay();
+    resetLivesToLobby();
     els.reveal.classList.remove('show');
     els.revealMedia.innerHTML = "";
     startScreen.classList.remove('hide');
@@ -681,20 +695,6 @@ document.getElementById('gameoverHomeBtn').addEventListener('click', () => {
 });
 document.getElementById('gameoverContinueBtn').addEventListener('click', continueGame);
 
-// Extra life button
-document.getElementById('extraLifeBtn').addEventListener('click', () => {
-    playSound('success');
-    usedExtraLife = true;
-    if (lives < MAX_LIVES) {
-        lives++;
-        updateLivesDisplay();
-        els.status.textContent = "¡Vida extra! Recuerda: no se guardará en el leaderboard.";
-        const extraLifeBtn = document.getElementById('extraLifeBtn');
-        if (extraLifeBtn) extraLifeBtn.style.display = livesEnabled && lives < MAX_LIVES ? '' : 'none';
-    } else {
-        els.status.textContent = "Ya tienes todas las vidas.";
-    }
-});
 
 // Elegir otro
 if (els.changeModeBtn) {
@@ -766,6 +766,7 @@ if (finalizeBtn) {
             lives: livesEnabled ? lives : null,
             maxLives: livesEnabled ? MAX_LIVES : null
         }, () => {
+            resetLivesToLobby();
             els.reveal.classList.remove('show');
             startScreen.classList.remove('hide');
             document.body.style.overflow = 'hidden';
@@ -791,6 +792,7 @@ if (finalizeBtnMid) {
             lives: livesEnabled ? lives : null,
             maxLives: livesEnabled ? MAX_LIVES : null
         }, () => {
+            resetLivesToLobby();
             els.reveal.classList.remove('show');
             startScreen.classList.remove('hide');
             document.body.style.overflow = 'hidden';
@@ -804,6 +806,7 @@ if (finalizeBtnMid) {
     });
 }
 
+updateLivesDisplay();
 renderThumbblurLeaderboard();
 RickyLeaderboard.onScoresUpdated(function () { renderThumbblurLeaderboard(); });
 

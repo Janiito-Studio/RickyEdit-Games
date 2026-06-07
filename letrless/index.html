@@ -1004,7 +1004,7 @@
             <div class="nav-actions">
                 <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
                 <button id="startOpenUpdatesBtn" class="icon-btn" type="button">Info</button>
-                <button class="icon-btn" type="button" onclick="location.href='../index.html'">Volver</button>
+                <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">Volver</button>
             </div>
         </nav>
 
@@ -1062,7 +1062,7 @@
         <div class="nav-actions">
             <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
             <button id="openUpdatesBtn" class="icon-btn" type="button">Info</button>
-            <button class="icon-btn" type="button" onclick="location.href='../index.html'">Volver</button>
+            <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">Volver</button>
         </div>
     </nav>
 
@@ -1164,9 +1164,6 @@
                                     <button id="finalizeBtnMid" class="btn btn-dark" type="button">
                                         Finalizar partida
                                     </button>
-                                    <button id="extraLifeBtn" class="btn btn-dark" type="button" style="background:linear-gradient(135deg, var(--green), var(--cyan)); color:#0d0d10; display:none;">
-                                        <img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:1.3em;height:1.3em;vertical-align:middle;margin-right:4px;"> +1 Vida
-                                    </button>
                                 </div>
                                 <div id="status" class="status" role="status">
                                     Listo para jugar
@@ -1187,6 +1184,7 @@
                                         <span id="fullLyricsTitle" class="full-lyrics-title"></span>
                                         <button id="fullLyricsClose" class="full-lyrics-close" type="button">✕</button>
                                     </div>
+                                    <div style="padding:4px 16px;font-size:0.75rem;color:var(--pink);font-weight:600;text-align:center;">La parte que te ha tocado está marcada en rosa</div>
                                     <div id="fullLyricsContent" class="full-lyrics-content"></div>
                                 </div>
                                 <div class="actions">
@@ -1270,7 +1268,7 @@
                 Las frases elegidas tienen al menos 5 palabras. El equilibrio perfecto.</p>
                 <p><strong style="color:var(--pink-2);"><img src="../Iconos/Dificultad%20dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Difícil</strong><br>
                 Las frases elegidas tienen al menos 3 palabras. Menos pistas, más reto.</p>
-                <hr style="border:none;border-top:1px solid rgba(255,255,255,0.1);margin:8px 0;">
+                <hr class="upd-sep">
                 <p><strong style="color:var(--green);"><img src="../Iconos/Modo%20sin%20repetir.png" alt="" class="rlb-icon-img"> Sin repetir</strong><br>
                 No se repite ninguna canción hasta que se hayan mostrado todas. Más desafío.</p>
                 <p><strong style="color:var(--yellow);"><img src="../Iconos/Modo%20aleatorio.png" alt="" class="rlb-icon-img"> Aleatorio</strong><br>
@@ -1286,29 +1284,16 @@
                 <button class="close-btn" type="button" onclick="document.getElementById('infoLivesModal').classList.remove('show')" aria-label="Cerrar">×</button>
             </div>
             <div class="letter-body">
-                <p><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> <strong style="color:var(--pink);">Sistema de vidas (opcional)</strong></p>
-                <ul>
-                    <li>Elige entre <strong>1 y 5 vidas</strong> haciendo clic en los corazones antes de empezar</li>
-                    <li>Cada <strong>2 pistas fallidas</strong> se pierde una vida</li>
-                    <li>Si pierdes todas las vidas, aparece el Game Over</li>
-                </ul>
+                <p><strong style="color:var(--pink);"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="rlb-icon-img"> Sistema de vidas (opcional)</strong><br>
+                Elige entre 1 y 5 vidas haciendo clic en los corazones antes de empezar. Cada 2 pistas fallidas se pierde una vida. Si pierdes todas, aparece el Game Over.</p>
                 <hr class="upd-sep">
-                <p><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> <strong style="color:var(--green);">Botón +1 Vida</strong></p>
-                <ul>
-                    <li>Puedes usarlo <strong>las veces que quieras</strong> (ilimitado)</li>
-                    <li>Sirve por si ocurre algún <strong>bug o problema técnico</strong></li>
-                    <li><strong>Importante:</strong> si usas el botón, tu puntuación <strong>no se guardará en el leaderboard</strong></li>
-                </ul>
+                <p><strong style="color:var(--green);"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="rlb-icon-img"> Botón +1 Vida</strong><br>
+                Puedes usarlo las veces que quieras (ilimitado). Sirve por si ocurre algún bug o problema técnico. Importante: si usas el botón, tu puntuación no se guardará en el leaderboard.</p>
                 <hr class="upd-sep">
-                <p><strong style="color:var(--cyan);"><img src="../Camara.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Cómo mostrar vidas en OBS</strong></p>
-                <ol>
-                    <li>En OBS, añade una nueva fuente de tipo <strong>"Navegador"</strong></li>
-                    <li>En la URL, pega: <a id="obsLivesLink" href="../obs-lives.html" target="_blank" style="color:var(--cyan);text-decoration:underline;">obs-lives.html</a></li>
-                    <li>Establece el ancho en <strong>400</strong> y el alto en <strong>100</strong></li>
-                    <li>¡Listo! Las vidas se actualizan en tiempo real</li>
-                </ol>
+                <p><strong style="color:var(--cyan);"><img src="../Camara.png" alt="" class="rlb-icon-img"> Cómo mostrar vidas en OBS</strong><br>
+                En OBS, añade una fuente de tipo "Navegador" con la URL de obs-lives.html. Establece el ancho en 400 y el alto en 100. Las vidas se actualizan en tiempo real.</p>
                 <hr class="upd-sep">
-                <p style="color: var(--muted); font-size: 0.9rem;">Si no activas vidas, puedes fallar sin límite.</p>
+                <p style="color: var(--muted);">Si no activas vidas, puedes fallar sin límite.</p>
             </div>
         </article>
     </div>
@@ -1333,6 +1318,7 @@
     <script src="../updates.js"></script>
     <script src="../easter-egg.js?v=2.0"></script>
     <script src="../volume.js"></script>
+    <script src="../rlb-player.js"></script>
     <script src="game.js?v=2.0"></script>
 </body>
 

@@ -1423,7 +1423,7 @@
                 <button id="startOpenUpdatesBtn" class="icon-btn" type="button">
                     Info
                 </button>
-                <button class="icon-btn" type="button" onclick="location.href='../index.html'">
+                <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">
                     Volver
                 </button>
             </div>
@@ -1604,7 +1604,7 @@
             <button id="openUpdatesBtn" class="icon-btn" type="button" style="display: none">
                 Info
             </button>
-            <button class="icon-btn" type="button" onclick="location.href='../index.html'">
+            <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">
                 Volver
             </button>
         </div>
@@ -1732,9 +1732,6 @@
                                     </button>
                                     <button id="finalizeBtn" class="btn btn-dark" type="button">
                                         Finalizar partida
-                                    </button>
-                                    <button id="extraLifeBtn" class="btn btn-dark" type="button" style="background:linear-gradient(135deg, var(--green), var(--cyan)); color:#0d0d10; display:none;">
-                                        <img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:1.3em;height:1.3em;vertical-align:middle;margin-right:4px;"> +1 Vida
                                     </button>
                                 </div>
 
@@ -1959,6 +1956,7 @@
     <script src="../updates.js"></script>
     <script src="../easter-egg.js?v=2.0"></script>
     <script src="../volume.js"></script>
+    <script src="../rlb-player.js"></script>
     <script>
         const SEGMENTS = [1, 2, 4, 8, 16, 32];
         const SECONDARY_SEGMENTS = [1, 2, 4, 8, 16, 32];
@@ -2069,38 +2067,51 @@
         let gameOverByLives = false;
 
         function updateLivesDisplay() {
-            const el = document.getElementById('livesDisplay');
+            var el = document.getElementById('livesDisplay');
             if (!el) return;
             if (!livesEnabled) {
-                el.innerHTML = '<img src="../Rickyedit Games.png" alt="Rickyedit Games" class="life-logo">';
-                el.style.display = 'flex';
+                el.style.display = 'none';
+                try { localStorage.removeItem('rlb_obs_lives'); } catch(e) {}
                 return;
             }
             el.style.display = 'flex';
-            let html = '';
-            for (let i = 0; i < MAX_LIVES; i++) {
-                if (i < lives) {
-                    html += '<img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="life-heart">';
-                } else {
-                    html += '<img src="../Iconos RickyEdit Web/Vida Rota.png" alt="" class="life-heart">';
+            var hearts = el.querySelectorAll('.life-heart');
+            if (hearts.length !== MAX_LIVES) {
+                el.innerHTML = '';
+                for (var i = 0; i < MAX_LIVES; i++) {
+                    var img = document.createElement('img');
+                    img.src = i < lives ? '../Iconos RickyEdit Web/Vida Entera.png' : '../Iconos RickyEdit Web/Vida Rota.png';
+                    img.alt = i < lives ? 'Vida' : 'Sin vida';
+                    img.className = 'life-heart';
+                    img.style.animationDelay = (i * 0.1) + 's';
+                    el.appendChild(img);
                 }
+            } else {
+                hearts.forEach(function(img, i) {
+                    img.src = i < lives ? '../Iconos RickyEdit Web/Vida Entera.png' : '../Iconos RickyEdit Web/Vida Rota.png';
+                });
             }
-            el.innerHTML = html;
-            try { var _pid = localStorage.getItem('rlb_player_id') || ''; localStorage.setItem('rlb_obs_lives_' + _pid, JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+            try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+        }
+
+        function resetLivesToLobby() {
+            livesEnabled = false;
+            updateLivesDisplay();
+            if (window.RlbPlayer) RlbPlayer.signalLobby();
         }
 
         function loseLife() {
             if (!livesEnabled) return false;
             lives--;
             playSound('lifeloss');
-            updateLivesDisplay();
-            const hearts = document.querySelectorAll('#livesDisplay .life-heart');
-            const lostIndex = lives;
-            if (hearts[lostIndex]) {
-                hearts[lostIndex].classList.add('losing');
-                setTimeout(() => hearts[lostIndex].classList.remove('losing'), 500);
+            var _el = document.getElementById('livesDisplay');
+            if (_el) {
+                var _h = _el.querySelectorAll('.life-heart');
+                if (_h[lives]) {
+                    _h[lives].src = '../Iconos RickyEdit Web/Vida Rota.png';
+                }
             }
-            try { var _pid = localStorage.getItem('rlb_player_id') || ''; localStorage.setItem('rlb_obs_lives_' + _pid, JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+            try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
             if (lives <= 0) {
                 setTimeout(() => gameOver(), 500);
                 return true;
@@ -2153,12 +2164,11 @@
             els.playBtn.disabled = false;
             els.skipBtn.disabled = false;
             els.status.textContent = "Sigues jugando sin vidas. ¡No se guardará tu puntuación!";
-            const extraLifeBtn = document.getElementById('extraLifeBtn');
-            if (extraLifeBtn) extraLifeBtn.style.display = 'none';
         }
 
         document.getElementById('gameoverRestartBtn').addEventListener('click', () => {
             playSound('click');
+            resetLivesToLobby();
             hideGameoverOverlay();
             document.getElementById('reveal').classList.remove('show');
             document.querySelector('.reveal-media') && (document.querySelector('.reveal-media').innerHTML = "");
@@ -2168,6 +2178,7 @@
 
         document.getElementById('gameoverHomeBtn').addEventListener('click', () => {
             playSound('click');
+            resetLivesToLobby();
             hideGameoverOverlay();
             document.getElementById('reveal').classList.remove('show');
             document.querySelector('.reveal-media') && (document.querySelector('.reveal-media').innerHTML = "");
@@ -2316,6 +2327,7 @@
             buildYearChips();
             bindEvents();
             updateStats();
+            updateLivesDisplay();
             els.playBtn.disabled = true;
         }
 
@@ -2381,7 +2393,15 @@
                 els.playBtn.disabled = false;
                 els.status.textContent = "Música parada. Dale a reproducir para continuar.";
             });
-            els.skipBtn.addEventListener("click", () => { playSound('click'); nextSegment(); });
+            els.skipBtn.addEventListener("click", () => {
+                playSound('click');
+                nextSegment(false);
+                failCount++;
+                if (failCount >= 2) {
+                    failCount = 0;
+                    if (loseLife()) return;
+                }
+            });
             els.newBtn.addEventListener("click", () => { playSound('click'); newRound(); });
             els.againBtn.addEventListener("click", () => { playSound('click'); newRound(); });
             document.getElementById('revealFinalizeBtn').addEventListener('click', () => {
@@ -2630,8 +2650,6 @@
                 usedExtraLife = false;
                 gameOverByLives = false;
                 updateLivesDisplay();
-                const extraLifeBtn = document.getElementById('extraLifeBtn');
-                if (extraLifeBtn) extraLifeBtn.style.display = livesEnabled ? '' : 'none';
                 window.scrollTo(0, 0);
                 document
                     .querySelectorAll(".mode-card.open")
@@ -2830,11 +2848,14 @@
                         const val = parseInt(btn.dataset.lives, 10);
                         if (livesEnabled && MAX_LIVES === val) {
                             livesEnabled = false;
+                            try { localStorage.removeItem('rlb_obs_lives'); } catch(e) {}
                             hearts.forEach(h => h.classList.remove('active'));
                             if (countEl) countEl.textContent = '';
                         } else {
                             livesEnabled = true;
+                            if (window.RlbPlayer) RlbPlayer.signalGame();
                             MAX_LIVES = val;
+                            try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: val, max: val })); } catch(e) {}
                             hearts.forEach(h => h.classList.remove('active'));
                             for (let i = 0; i < val; i++) hearts[i].classList.add('active');
                             if (countEl) countEl.textContent = val;
@@ -2847,6 +2868,7 @@
             if (els.changeModeBtn) {
                 els.changeModeBtn.addEventListener("click", () => {
                     playSound('click');
+                    resetLivesToLobby();
                     stopPlayback();
                     // Clear reveal media to stop any playing video
                     els.revealMedia.innerHTML = "";
@@ -3565,6 +3587,7 @@
         });
         document.getElementById('completionHomeBtn').addEventListener('click', () => {
             playSound('click');
+            resetLivesToLobby();
             stopPlayback();
             document.getElementById('completionOverlay').classList.remove('show');
             document.getElementById('startScreen').classList.remove('hide');
@@ -3587,6 +3610,7 @@
                     lives: livesEnabled ? lives : null,
                     maxLives: livesEnabled ? MAX_LIVES : null
                 }, () => {
+                    resetLivesToLobby();
                     stopPlayback();
                 document.getElementById('completionOverlay').classList.remove('show');
                 document.getElementById('startScreen').classList.remove('hide');
@@ -3614,6 +3638,7 @@
                     maxLives: livesEnabled ? MAX_LIVES : null
                 }, () => {});
             }
+            resetLivesToLobby();
             document.getElementById('startScreen').classList.remove('hide');
             document.body.style.overflow = 'hidden';
             state.playedSongs.clear();
@@ -3623,21 +3648,6 @@
             state.incorrect = 0;
             updateStats();
             renderSonglessLeaderboard();
-        });
-
-        // Extra life button
-        document.getElementById('extraLifeBtn').addEventListener('click', () => {
-            playSound('success');
-            usedExtraLife = true;
-            if (lives < MAX_LIVES) {
-                lives++;
-                updateLivesDisplay();
-                els.status.textContent = "¡Vida extra! Recuerda: no se guardará en el leaderboard.";
-                const extraLifeBtn = document.getElementById('extraLifeBtn');
-                if (extraLifeBtn) extraLifeBtn.style.display = livesEnabled && lives < MAX_LIVES ? '' : 'none';
-            } else {
-                els.status.textContent = "Ya tienes todas las vidas.";
-            }
         });
 
         renderSonglessLeaderboard();

@@ -277,8 +277,8 @@
             </div>
             <div class="nav-actions">
                 <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
-                <button id="startOpenUpdatesBtn" class="icon-btn" type="button">Info</button>
-                <button class="icon-btn" type="button" onclick="location.href='../index.html'">Volver</button>
+                <button id="openUpdatesBtn" class="icon-btn" type="button">Info</button>
+                <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">Volver</button>
             </div>
         </nav>
 
@@ -389,7 +389,7 @@
             <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
             <button id="changeModeBtn" class="icon-btn" type="button" style="display: none">Elegir Otro</button>
             <button id="openUpdatesBtn" class="icon-btn" type="button">Info</button>
-            <button class="icon-btn" type="button" onclick="location.href='../index.html'">Volver</button>
+            <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">Volver</button>
         </div>
     </nav>
 
@@ -442,12 +442,12 @@
                     <div>
                         <article class="game-card glass">
                             <div id="mysteryScreen" class="thumbnail-screen">
+                                <div id="livesDisplay" style="position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:10;display:none;gap:6px;font-size:1.8rem;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));pointer-events:none;"></div>
                                 <div class="screen-badge">Miniatura Borrosa</div>
                                 <canvas id="thumbCanvas" width="640" height="360"
                                     style="width:100%;height:100%;object-fit:cover;pointer-events:none;user-select:none;-webkit-user-select:none;"></canvas>
                             </div>
 
-                            <div id="livesDisplay" style="position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:10;display:none;gap:6px;font-size:1.8rem;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));pointer-events:none;"></div>
                             <div class="controls">
                                 <div id="rounds" class="rounds" aria-label="Rondas del juego"></div>
                                 <div class="guess-row">
@@ -459,9 +459,6 @@
                                     <button id="newBtn" class="btn btn-blue" type="button">Nuevo vídeo</button>
                                     <button id="skipBtn" class="btn btn-dark" type="button">Siguiente pista</button>
                                     <button id="finalizeBtnMid" class="btn btn-dark" type="button">Finalizar partida</button>
-                                    <button id="extraLifeBtn" class="btn btn-dark" type="button" style="background:linear-gradient(135deg, var(--green), var(--cyan)); color:#0d0d10; display:none;">
-                                        <img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:1.3em;height:1.3em;vertical-align:middle;margin-right:4px;"> +1 Vida
-                                    </button>
                                 </div>
                                 <div id="status" class="status" role="status">Cargando...</div>
                             </div>
@@ -575,6 +572,7 @@
     <script src="../updates.js"></script>
     <script src="../easter-egg.js?v=2.0"></script>
     <script src="../volume.js"></script>
+    <script src="../rlb-player.js"></script>
     <script src="game.js"></script>
 </body>
 
