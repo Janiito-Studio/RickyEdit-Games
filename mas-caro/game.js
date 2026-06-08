@@ -526,6 +526,78 @@ function continueGame() {
     usedExtraLife = true;
 }
 
+/* ── +1 Vida extra button logic ── */
+function showExtraLifeToast(msg) {
+    var t = document.createElement('div');
+    t.className = 'extralife-toast';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    requestAnimationFrame(function () { t.classList.add('show'); });
+    setTimeout(function () {
+        t.classList.remove('show');
+        setTimeout(function () { t.remove(); }, 300);
+    }, 2200);
+}
+
+function showExtraLifeConfirm(onConfirm) {
+    var modal = document.createElement('div');
+    modal.className = 'extralife-modal';
+    modal.innerHTML =
+        '<div class="extralife-modal-card">' +
+            '<div class="extralife-modal-header"><h2>+1 Vida</h2></div>' +
+            '<div class="extralife-modal-body">' +
+                '<p>¿Seguro que quieres añadir una vida extra?</p>' +
+                '<p class="warning-text">Si usas esta opción, tu puntuación NO se guardará en el leaderboard.</p>' +
+            '</div>' +
+            '<div class="extralife-modal-actions">' +
+                '<button class="btn-cancel" type="button">Cancelar</button>' +
+                '<button class="btn-confirm" type="button">Confirmar</button>' +
+            '</div>' +
+        '</div>';
+    document.body.appendChild(modal);
+    requestAnimationFrame(function () { modal.classList.add('show'); });
+
+    function close() {
+        modal.classList.remove('show');
+        setTimeout(function () { modal.remove(); }, 300);
+    }
+    modal.querySelector('.btn-cancel').addEventListener('click', function () { playSound('click'); close(); });
+    modal.querySelector('.btn-confirm').addEventListener('click', function () {
+        playSound('click');
+        close();
+        try { localStorage.setItem('rlb_extralife_confirmed', '1'); } catch (e) {}
+        onConfirm();
+    });
+    modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+}
+
+function addExtraLife() {
+    if (!livesEnabled) {
+        showExtraLifeToast('Primero activa las vidas para usar este botón.');
+        return;
+    }
+    if (lives >= MAX_LIVES) {
+        showExtraLifeToast('Ya tienes las vidas al máximo.');
+        return;
+    }
+    function doAdd() {
+        lives++;
+        usedExtraLife = true;
+        updateLivesDisplay();
+        showExtraLifeToast('+1 Vida añadida. Tu puntuación no se guardará en el leaderboard.');
+    }
+    var confirmed = false;
+    try { confirmed = localStorage.getItem('rlb_extralife_confirmed') === '1'; } catch (e) {}
+    if (confirmed) {
+        doAdd();
+    } else {
+        showExtraLifeConfirm(doAdd);
+    }
+}
+
+document.getElementById('extraLifeBtn').addEventListener('click', function () { playSound('click'); addExtraLife(); });
+document.getElementById('startExtraLifeBtn').addEventListener('click', function () { playSound('click'); addExtraLife(); });
+
 // Formatear precio
 function formatPrice(value) {
     return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(value);
@@ -875,7 +947,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Game over buttons
-    document.getElementById('gameoverContinueBtn').addEventListener('click', continueGame);
     document.getElementById('gameoverRestartBtn').addEventListener('click', () => {
         playSound('click');
         resetLivesToLobby();

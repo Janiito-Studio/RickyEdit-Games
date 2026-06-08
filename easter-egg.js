@@ -260,6 +260,7 @@
     var src = imgPath(egg.image);
     overlay.innerHTML =
       '<div class="rlb-ee-reveal-card">' +
+        '<button class="rlb-ee-reveal-close" type="button">&times;</button>' +
         '<img class="rlb-ee-reveal-img" src="' + src + '" alt="' + egg.title + '" />' +
         '<h2 class="rlb-ee-reveal-title" style="background:linear-gradient(135deg,' + egg.colors.join(',') + ');-webkit-background-clip:text;-webkit-text-fill-color:transparent;">' + egg.title + '</h2>' +
         (isNew && egg.subtitle ? '<p class="rlb-ee-reveal-subtitle" style="color:' + (egg.colors[1] || egg.colors[0]) + ';">' + egg.subtitle + '</p>' : '') +
@@ -272,10 +273,13 @@
     }
 
     overlay.addEventListener('click', function (e) {
-      if (e.target === overlay) {
+      if (e.target.classList && e.target.classList.contains('rlb-ee-reveal-close')) {
         overlay.classList.remove('show');
         setTimeout(function () { overlay.remove(); }, 500);
+        return;
       }
+      overlay.classList.remove('show');
+      setTimeout(function () { overlay.remove(); }, 500);
     });
   }
 

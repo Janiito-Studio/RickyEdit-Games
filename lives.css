@@ -184,3 +184,152 @@
     color: var(--muted, #b9bbbe);
     border: 1px solid rgba(255, 255, 255, 0.15);
 }
+
+/* ── +1 Vida button (topbar) ────────────────────────────── */
+.extra-life-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-height: 40px;
+    border-radius: 999px;
+    padding: 0 14px;
+    border: 1px solid rgba(54, 226, 138, 0.4);
+    background: rgba(54, 226, 138, 0.15);
+    color: #fff;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 800;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+.extra-life-btn:hover {
+    transform: translateY(-2px);
+    background: rgba(54, 226, 138, 0.28);
+    box-shadow: 0 4px 16px rgba(54, 226, 138, 0.25);
+}
+.extra-life-btn img {
+    width: 1.3em;
+    height: 1.3em;
+    object-fit: contain;
+    pointer-events: none;
+}
+.extra-life-btn.disabled {
+    opacity: 0.45;
+    cursor: default;
+    pointer-events: none;
+}
+
+/* ── Extra life confirmation modal ──────────────────────── */
+.extralife-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.78);
+    backdrop-filter: blur(14px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+.extralife-modal.show {
+    opacity: 1;
+    visibility: visible;
+}
+.extralife-modal-card {
+    width: min(400px, 100%);
+    background: linear-gradient(135deg, rgba(54,226,138,0.10), rgba(241,196,15,0.06)), #18191c;
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 24px;
+    box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+    transform: translateY(20px) scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
+    overflow: hidden;
+    text-align: center;
+}
+.extralife-modal.show .extralife-modal-card {
+    transform: translateY(0) scale(1);
+}
+.extralife-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 24px;
+    background: linear-gradient(90deg, var(--green, #36e28a), var(--cyan, #38d4ff));
+}
+.extralife-modal-header h2 {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: #0d0d10;
+    margin: 0;
+}
+.extralife-modal-body {
+    padding: 28px 24px;
+}
+.extralife-modal-body p {
+    color: var(--muted, #b9bbbe);
+    font-size: 0.95rem;
+    margin: 0 0 10px;
+    line-height: 1.5;
+}
+.extralife-modal-body .warning-text {
+    color: var(--pink, #ff33cc);
+    font-weight: 800;
+    font-size: 0.88rem;
+}
+.extralife-modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+.extralife-modal-actions button {
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    padding: 12px 28px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.extralife-modal-actions button:hover {
+    transform: translateY(-2px);
+}
+.extralife-modal-actions .btn-confirm {
+    background: linear-gradient(135deg, var(--green, #36e28a), var(--cyan, #38d4ff));
+    color: #0d0d10;
+    box-shadow: 0 8px 30px rgba(54, 226, 138, 0.35);
+}
+.extralife-modal-actions .btn-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--muted, #b9bbbe);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ── Extra life toast ───────────────────────────────────── */
+.extralife-toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    background: linear-gradient(135deg, #18191c, #23242a);
+    color: #fff;
+    padding: 14px 28px;
+    border-radius: 14px;
+    border: 1px solid rgba(54, 226, 138, 0.4);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+.extralife-toast.show {
+    opacity: 1;
+}

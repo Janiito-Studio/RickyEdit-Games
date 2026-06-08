@@ -180,6 +180,7 @@
   text-align: center;
   transform: scale(0.7); transition: transform 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
   padding: 40px;
+  position: relative;
 }
 .rlb-ee-reveal-overlay.show .rlb-ee-reveal-card {
   transform: scale(1);
@@ -207,6 +208,31 @@
 .rlb-ee-reveal-subtitle {
   font-size: 1.1rem; font-weight: 800;
   margin: 0; letter-spacing: 1px;
+}
+
+/* Close button on reveal overlay */
+.rlb-ee-reveal-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.4);
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 900;
+  border: 2px solid rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+.rlb-ee-reveal-close:hover {
+  background: rgba(255,51,204,0.5);
+  transform: scale(1.1);
 }
 
 /* Confetti */

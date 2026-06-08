@@ -1423,6 +1423,9 @@
                 <button id="startOpenUpdatesBtn" class="icon-btn" type="button">
                     Info
                 </button>
+                <button id="startExtraLifeBtn" class="extra-life-btn" type="button">
+                    <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
+                </button>
                 <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">
                     Volver
                 </button>
@@ -1603,6 +1606,9 @@
             </button>
             <button id="openUpdatesBtn" class="icon-btn" type="button" style="display: none">
                 Info
+            </button>
+            <button id="extraLifeBtn" class="extra-life-btn" type="button">
+                <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
             </button>
             <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">
                 Volver
@@ -1924,11 +1930,10 @@
             <p>Te quedaste sin vidas</p>
             <div class="gameover-score" id="gameoverScore"></div>
             <div class="gameover-actions">
-                <button id="gameoverContinueBtn" class="btn-restart" style="background: linear-gradient(135deg, var(--green), var(--cyan));"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Continuar</button>
                 <button id="gameoverRestartBtn" class="btn-restart"><img src="../Reiniciar.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Reintentar</button>
                 <button id="gameoverHomeBtn" class="btn-home"><img src="../Inicio.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Inicio</button>
             </div>
-            <p style="color: var(--muted); font-size: 0.78rem; margin-top: 12px;">Continuar: se juega sin vidas y no se guarda en el leaderboard.</p>
+            <p style="color: var(--muted); font-size: 0.78rem; margin-top: 12px;">Usa el botón +1 Vida en la barra superior para evitar el Game Over.</p>
         </div>
     </div>
 
@@ -2155,17 +2160,6 @@
             document.getElementById('gameoverOverlay').classList.remove('show');
         }
 
-        function continueGame() {
-            playSound('click');
-            hideGameoverOverlay();
-            gameOverByLives = false;
-            els.guessInput.disabled = false;
-            els.guessBtn.disabled = false;
-            els.playBtn.disabled = false;
-            els.skipBtn.disabled = false;
-            els.status.textContent = "Sigues jugando sin vidas. ¡No se guardará tu puntuación!";
-        }
-
         document.getElementById('gameoverRestartBtn').addEventListener('click', () => {
             playSound('click');
             resetLivesToLobby();
@@ -2187,7 +2181,77 @@
             renderSonglessLeaderboard();
         });
 
-        document.getElementById('gameoverContinueBtn').addEventListener('click', continueGame);
+        /* ── +1 Vida extra button logic ── */
+        function showExtraLifeToast(msg) {
+            var t = document.createElement('div');
+            t.className = 'extralife-toast';
+            t.textContent = msg;
+            document.body.appendChild(t);
+            requestAnimationFrame(function () { t.classList.add('show'); });
+            setTimeout(function () {
+                t.classList.remove('show');
+                setTimeout(function () { t.remove(); }, 300);
+            }, 2200);
+        }
+
+        function showExtraLifeConfirm(onConfirm) {
+            var modal = document.createElement('div');
+            modal.className = 'extralife-modal';
+            modal.innerHTML =
+                '<div class="extralife-modal-card">' +
+                    '<div class="extralife-modal-header"><h2>+1 Vida</h2></div>' +
+                    '<div class="extralife-modal-body">' +
+                        '<p>¿Seguro que quieres añadir una vida extra?</p>' +
+                        '<p class="warning-text">Si usas esta opción, tu puntuación NO se guardará en el leaderboard.</p>' +
+                    '</div>' +
+                    '<div class="extralife-modal-actions">' +
+                        '<button class="btn-cancel" type="button">Cancelar</button>' +
+                        '<button class="btn-confirm" type="button">Confirmar</button>' +
+                    '</div>' +
+                '</div>';
+            document.body.appendChild(modal);
+            requestAnimationFrame(function () { modal.classList.add('show'); });
+
+            function close() {
+                modal.classList.remove('show');
+                setTimeout(function () { modal.remove(); }, 300);
+            }
+            modal.querySelector('.btn-cancel').addEventListener('click', function () { playSound('click'); close(); });
+            modal.querySelector('.btn-confirm').addEventListener('click', function () {
+                playSound('click');
+                close();
+                try { localStorage.setItem('rlb_extralife_confirmed', '1'); } catch (e) {}
+                onConfirm();
+            });
+            modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+        }
+
+        function addExtraLife() {
+            if (!livesEnabled) {
+                showExtraLifeToast('Primero activa las vidas para usar este botón.');
+                return;
+            }
+            if (lives >= MAX_LIVES) {
+                showExtraLifeToast('Ya tienes las vidas al máximo.');
+                return;
+            }
+            function doAdd() {
+                lives++;
+                usedExtraLife = true;
+                updateLivesDisplay();
+                showExtraLifeToast('+1 Vida añadida. Tu puntuación no se guardará en el leaderboard.');
+            }
+            var confirmed = false;
+            try { confirmed = localStorage.getItem('rlb_extralife_confirmed') === '1'; } catch (e) {}
+            if (confirmed) {
+                doAdd();
+            } else {
+                showExtraLifeConfirm(doAdd);
+            }
+        }
+
+        document.getElementById('extraLifeBtn').addEventListener('click', function () { playSound('click'); addExtraLife(); });
+        document.getElementById('startExtraLifeBtn').addEventListener('click', function () { playSound('click'); addExtraLife(); });
 
         const $ = (id) => document.getElementById(id);
         const els = {
@@ -2472,7 +2536,7 @@
                 if (event.key === "Enter") submitGuess();
                 if (event.key === "Escape") hideSearchResults();
             });
-            els.guessInput.addEventListener("input", renderSearchResults);
+            els.guessInput.addEventListener("input", () => { searchVisibleCount = 8; renderSearchResults(); });
             document.addEventListener("click", (event) => {
                 if (!event.target.closest(".guess-row"))
                     hideSearchResults();
@@ -3430,7 +3494,6 @@
         let searchVisibleCount = 8;
 
         function renderSearchResults() {
-            searchVisibleCount = 8;
             const query = normalize(els.guessInput.value).trim();
             if (!query) { hideSearchResults(); return; }
 

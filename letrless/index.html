@@ -1004,6 +1004,9 @@
             <div class="nav-actions">
                 <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
                 <button id="startOpenUpdatesBtn" class="icon-btn" type="button">Info</button>
+                <button id="startExtraLifeBtn" class="extra-life-btn" type="button">
+                    <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
+                </button>
                 <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">Volver</button>
             </div>
         </nav>
@@ -1062,6 +1065,9 @@
         <div class="nav-actions">
             <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
             <button id="openUpdatesBtn" class="icon-btn" type="button">Info</button>
+            <button id="extraLifeBtn" class="extra-life-btn" type="button">
+                <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
+            </button>
             <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">Volver</button>
         </div>
     </nav>
@@ -1240,11 +1246,10 @@
             <p>Te quedaste sin vidas</p>
             <div class="gameover-score" id="gameoverScore"></div>
             <div class="gameover-actions">
-                <button id="gameoverContinueBtn" class="btn-restart" style="background: linear-gradient(135deg, var(--green), var(--cyan));"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Continuar</button>
                 <button id="gameoverRestartBtn" class="btn-restart"><img src="../Reiniciar.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Reintentar</button>
                 <button id="gameoverHomeBtn" class="btn-home"><img src="../Inicio.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Inicio</button>
             </div>
-            <p style="color: var(--muted); font-size: 0.78rem; margin-top: 12px;">Continuar: se juega sin vidas y no se guarda en el leaderboard.</p>
+            <p style="color: var(--muted); font-size: 0.78rem; margin-top: 12px;">Usa el botón +1 Vida en la barra superior para evitar el Game Over.</p>
         </div>
     </div>
 
