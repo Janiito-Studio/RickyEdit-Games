@@ -6,7 +6,7 @@
   'use strict';
 
   var LS_KEY = 'rlb_easter_eggs';
-  var TOTAL_EGGS = 8;
+  var TOTAL_EGGS = 9;
 
   /* Migration: remove letrless from discovered if it exists */
   try {
@@ -73,6 +73,13 @@
       title: 'Felicidades, has encontrado al Ricky Futbolero (por cierto, tiene la bandera y eso personalizado para ti)',
       subtitle: '',
       colors: ['#f1c40f', '#36e28a', '#38d4ff']
+    },
+    jan1119: {
+      id: 'jan1119',
+      image: 'Jan.png',
+      title: 'Código secreto de Jan',
+      subtitle: 'Botón de eliminar desbloqueado',
+      colors: ['#f1c40f', '#e74c3c', '#ff33cc']
     }
   };
 
@@ -217,7 +224,15 @@
       /* Check secret notification code first (jan1119 in base64) */
       if (typeof checkSecretCode === 'function' && checkSecretCode(val)) {
         input.value = '';
-        feedback.textContent = 'Acceso concedido. Botón de notificaciones activado.';
+        var isNewEgg = discover('jan1119');
+        if (isNewEgg) {
+          showEggReveal(EASTER_EGGS['jan1119']);
+          var newCount = getDiscovered().length;
+          var counter = modal.querySelector('.rlb-ee-count-num');
+          if (counter) counter.textContent = newCount;
+          refreshList();
+        }
+        feedback.textContent = 'Acceso concedido. Botón de notificaciones y eliminar activados.';
         feedback.className = 'rlb-ee-input-feedback success';
         try { localStorage.setItem('rlb_notif_authorized', '1'); } catch (e) {}
         showFloatingNotifButton();

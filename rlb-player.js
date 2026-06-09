@@ -14,21 +14,18 @@
 
     var playerId = getPlayerId();
 
-    /* Build OBS URL relative to repo root */
+    /* Build OBS URL with full GitHub Pages base */
     function getObsBase() {
-        var path = window.location.pathname;
-        var dir = path.substring(0, path.lastIndexOf('/'));
-        if (dir.split('/').length > 2) {
-            dir = dir.substring(0, dir.lastIndexOf('/'));
-        }
-        return window.location.origin + dir + '/obs-lives.html';
+        return 'https://janiito-studio.github.io/RickyEdit-Games/obs-lives.html';
     }
 
     /* Update OBS link in Info Vidas modal if present */
     function updateObsLink() {
         var link = document.getElementById('obsLivesLink');
         if (link) {
-            link.href = getObsBase();
+            var url = getObsBase() + '?id=' + playerId;
+            link.href = url;
+            link.textContent = url;
         }
     }
     if (document.readyState === 'loading') {

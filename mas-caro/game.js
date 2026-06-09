@@ -446,6 +446,7 @@ function updateLivesDisplay() {
     if (!livesEnabled) {
         el.style.display = 'none';
         try { localStorage.removeItem('rlb_obs_lives'); } catch(e) {}
+        try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE' }); } catch(e) {}
         return;
     }
     el.style.display = 'flex';
@@ -466,6 +467,7 @@ function updateLivesDisplay() {
         });
     }
     try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+    try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lives: lives, max: MAX_LIVES }) }); } catch(e) {}
 }
 
 function resetLivesToLobby() {
@@ -486,6 +488,7 @@ function loseLife() {
         }
     }
     try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+    try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lives: lives, max: MAX_LIVES }) }); } catch(e) {}
     if (lives <= 0) {
         setTimeout(() => gameOverLives(), 500);
         return true;
@@ -623,8 +626,8 @@ function updateCounters() {
 // 3. No se repitan consecutivamente, utilizando colas mezcladas sin repetición.
 function applyImageGlow(imgEl, wrapperEl, type) {
     const bgColor = type === 'skin' ? '241, 196, 15' : '56, 212, 255';
-    imgEl.style.filter = 'drop-shadow(0 0 12px rgba(255, 255, 255, 0.6)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.3)) drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4))';
-    wrapperEl.style.background = `radial-gradient(ellipse at 50% 50%, rgba(${bgColor}, 0.3), rgba(${bgColor}, 0.08) 50%, transparent 75%)`;
+    imgEl.style.filter = 'drop-shadow(0 0 12px rgba(241, 196, 15, 0.7)) drop-shadow(0 0 30px rgba(241, 196, 15, 0.4)) drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4))';
+    wrapperEl.style.background = `radial-gradient(ellipse at 50% 50%, rgba(241, 196, 15, 0.35), rgba(${bgColor}, 0.1) 50%, transparent 75%)`;
 }
 
 function getRandomPair() {
@@ -872,6 +875,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (livesEnabled && MAX_LIVES === val) {
                     livesEnabled = false;
                     try { localStorage.removeItem('rlb_obs_lives'); } catch(e) {}
+        try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE' }); } catch(e) {}
                     hearts.forEach(h => h.classList.remove('active'));
                     if (countEl) countEl.textContent = '--';
                 } else {
@@ -879,6 +883,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (window.RlbPlayer) RlbPlayer.signalGame();
                     MAX_LIVES = val;
                     try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: val, max: val })); } catch(e) {}
+                    try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lives: val, max: val }) }); } catch(e) {}
                     hearts.forEach(h => h.classList.remove('active'));
                     for (let i = 0; i < val; i++) hearts[i].classList.add('active');
                     if (countEl) countEl.textContent = String(val);
@@ -1006,7 +1011,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 maxStreak: highestStreak,
                 lives: livesEnabled ? lives : null,
                 maxLives: livesEnabled ? MAX_LIVES : null
-            }, () => {});
+            }, (savedData) => {
+                setTimeout(() => {
+                    const allScores = RickyLeaderboard.getAll('mascaro');
+                    const rank = allScores.findIndex(s => s.playerId === savedData.playerId) + 1;
+                    const toast = document.createElement('div');
+                    toast.className = 'save-toast';
+                    toast.innerHTML = '<span style="color:#2ecc71;">&#10003;</span> Guardado correctamente. Has quedado en la <strong>#' + rank + '</strong> posición del top.';
+                    document.body.appendChild(toast);
+                    requestAnimationFrame(() => toast.classList.add('show'));
+                    setTimeout(() => {
+                        toast.classList.remove('show');
+                        setTimeout(() => toast.remove(), 400);
+                    }, 3500);
+                }, 600);
+            });
         }
         resetLivesToLobby();
         document.getElementById('victory-overlay').classList.remove('show');
@@ -1026,7 +1045,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function renderLeaderboard() {
     RickyLeaderboard.render('leaderboardContainer', 'mascaro', {
         title: '<img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Top — ¿Qué es más caro?',
-        columns: ['rank', 'name', 'correct', 'total', 'percent', 'lives', 'time', 'difficulty', 'date'],
+        columns: ['rank', 'name', 'score', 'correct', 'total', 'percent', 'lives', 'time', 'difficulty', 'date'],
         difficulties: ['easy', 'normal'],
         maxRows: 20
     });

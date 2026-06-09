@@ -31,7 +31,7 @@
                 <button id="startExtraLifeBtn" class="extra-life-btn" type="button">
                     <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
                 </button>
-                <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">Volver</button>
+                <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');var _pid=localStorage.getItem('rlb_player_id');if(_pid)fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_'+encodeURIComponent(_pid)+'.json',{method:'DELETE'});location.href='../index.html'">Volver</button>
             </div>
         </nav>
 
@@ -130,7 +130,7 @@
             <button id="extraLifeBtn" class="extra-life-btn" type="button">
                 <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
             </button>
-            <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">
+            <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');var _pid=localStorage.getItem('rlb_player_id');if(_pid)fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_'+encodeURIComponent(_pid)+'.json',{method:'DELETE'});location.href='../index.html'">
                 Volver
             </button>
         </div>

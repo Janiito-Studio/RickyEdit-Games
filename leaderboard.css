@@ -5,7 +5,7 @@
 /* ── Icon images ──────────────────────────────────────────── */
 .rlb-icon-img { width: 2em; height: 2em; object-fit: contain; vertical-align: middle; }
 .rlb-medal { width: 2em; height: 2em; object-fit: contain; vertical-align: middle; }
-.rlb-title .rlb-icon-img { filter: drop-shadow(0 0 6px #ff33cc) brightness(1.4) saturate(2); width: 2.2em; height: 2.2em; }
+.rlb-title .rlb-icon-img { width: 2.2em; height: 2.2em; }
 .rlb-name-icon .rlb-icon-img { width: 3rem; height: 3rem; border-radius: 12px; }
 
 /* ── Button icons ─────────────────────────────────────────── */
@@ -21,6 +21,15 @@
 }
 .leaderboard-panel.visible { display: block; }
 
+.rlb-header {
+  width: 100%;
+  box-sizing: border-box;
+}
+.rlb-table-wrap {
+  width: 100%;
+  box-sizing: border-box;
+}
+
 @keyframes rlbSlideIn {
   from { opacity: 0; transform: translateY(-12px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -34,6 +43,13 @@
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 16px 18px;
+  background: linear-gradient(180deg, rgba(255, 51, 204, 0.04), transparent), var(--card);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 10;
 }
 .rlb-title {
   font-size: 1.4rem;
@@ -47,7 +63,19 @@
   align-items: center;
   flex-wrap: wrap;
 }
-.rlb-filter {
+
+/* ── Custom Dropdown ──────────────────────────────────────────── */
+.rlb-dropdown {
+  position: relative;
+  min-width: 100px;
+  z-index: 100;
+}
+.rlb-dropdown-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--line);
   border-radius: 10px;
@@ -58,9 +86,65 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
-.rlb-filter:hover { border-color: var(--pink); color: #fff; }
-.rlb-filter.active { background: rgba(255, 51, 204, 0.15); border-color: var(--pink); color: #fff; }
-.rlb-filter:focus { outline: none; border-color: var(--pink); }
+.rlb-dropdown-btn:hover { border-color: var(--pink); color: #fff; }
+.rlb-dropdown-btn.open { border-color: var(--pink); color: #fff; }
+.rlb-dropdown-btn .rlb-dropdown-arrow {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--muted);
+  transition: transform 0.2s ease;
+}
+.rlb-dropdown-btn.open .rlb-dropdown-arrow {
+  transform: rotate(180deg);
+  border-top-color: var(--pink);
+}
+.rlb-dropdown-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: #1e1f23;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 6px 0;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.2s ease;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+  max-height: 200px;
+  overflow-y: auto;
+}
+.rlb-dropdown-list.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.rlb-dropdown-item {
+  padding: 8px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.rlb-dropdown-item:hover {
+  background: rgba(255, 51, 204, 0.1);
+  color: #fff;
+}
+.rlb-dropdown-item.selected {
+  color: var(--pink);
+  background: rgba(255, 51, 204, 0.15);
+}
+
+/* Legacy filter styles (hidden but accessible) */
+.rlb-filter {
+  display: none;
+}
 
 /* ── Empty state ───────────────────────────────────────────── */
 .rlb-empty {
@@ -82,6 +166,7 @@
   background: linear-gradient(180deg, rgba(255, 51, 204, 0.04), transparent), var(--card);
   backdrop-filter: blur(20px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  position: relative;
 }
 .rlb-table {
   width: 100%;
@@ -282,6 +367,106 @@
 .rlb-report-btn.rlb-reported {
   opacity: 1;
   cursor: default;
+}
+
+/* ── Report Confirm Modal ──────────────────────────────────── */
+.rlb-report-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(12px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+.rlb-report-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.rlb-report-card {
+  width: min(400px, 100%);
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.12), rgba(255, 51, 204, 0.08)), #18191c;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 24px;
+  padding: 36px 32px;
+  text-align: center;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+  transform: translateY(20px) scale(0.95);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.rlb-report-modal.show .rlb-report-card {
+  transform: translateY(0) scale(1);
+}
+
+.rlb-report-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+  animation: rlbBounce 0.6s ease;
+}
+
+.rlb-report-title {
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 8px;
+}
+.rlb-report-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #e74c3c;
+  margin: 0 0 8px;
+}
+.rlb-report-sub {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin: 0 0 24px;
+}
+.rlb-report-actions {
+  display: flex;
+  gap: 12px;
+}
+.rlb-report-btn-modal {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+}
+.rlb-report-btn-cancel {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+.rlb-report-btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+.rlb-report-btn-confirm {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(231, 76, 60, 0.35);
+}
+.rlb-report-btn-confirm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(231, 76, 60, 0.5);
+}
+.rlb-report-btn-delete {
+  background: linear-gradient(135deg, #8e44ad, #9b59b6);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(142, 68, 173, 0.35);
+}
+.rlb-report-btn-delete:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(142, 68, 173, 0.5);
 }
 
 /* ── Admin panel ──────────────────────────────────────────── */

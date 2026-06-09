@@ -281,7 +281,7 @@
                 <button id="startExtraLifeBtn" class="extra-life-btn" type="button">
                     <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
                 </button>
-                <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">Volver</button>
+                <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');var _pid=localStorage.getItem('rlb_player_id');if(_pid)fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_'+encodeURIComponent(_pid)+'.json',{method:'DELETE'});location.href='../index.html'">Volver</button>
             </div>
         </nav>
 
@@ -395,7 +395,7 @@
             <button id="extraLifeBtn" class="extra-life-btn" type="button">
                 <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
             </button>
-            <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">Volver</button>
+            <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');var _pid=localStorage.getItem('rlb_player_id');if(_pid)fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_'+encodeURIComponent(_pid)+'.json',{method:'DELETE'});location.href='../index.html'">Volver</button>
         </div>
     </nav>
 
@@ -531,7 +531,7 @@
                 <ol>
                     <li>En OBS, añade una nueva fuente de tipo <strong>"Navegador"</strong></li>
                     <li>En la URL, pega: <a id="obsLivesLink" href="../obs-lives.html" target="_blank" style="color:var(--cyan);text-decoration:underline;">obs-lives.html</a></li>
-                    <li>Establece el ancho en <strong>400</strong> y el alto en <strong>100</strong></li>
+                    <li>Establece el ancho en <strong>800</strong> y el alto en <strong>200</strong> y ponlo donde quieras.</li>
                     <li>Activa la casilla <strong>"Cerrar fuente cuando no sea visible"</strong></li>
                     <li>¡Listo! Las vidas se actualizan en tiempo real</li>
                 </ol>

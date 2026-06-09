@@ -1426,7 +1426,7 @@
                 <button id="startExtraLifeBtn" class="extra-life-btn" type="button">
                     <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
                 </button>
-                <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">
+                <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');var _pid=localStorage.getItem('rlb_player_id');if(_pid)fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_'+encodeURIComponent(_pid)+'.json',{method:'DELETE'});location.href='../index.html'">
                     Volver
                 </button>
             </div>
@@ -1610,7 +1610,7 @@
             <button id="extraLifeBtn" class="extra-life-btn" type="button">
                 <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
             </button>
-            <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');location.href='../index.html'">
+            <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');var _pid=localStorage.getItem('rlb_player_id');if(_pid)fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_'+encodeURIComponent(_pid)+'.json',{method:'DELETE'});location.href='../index.html'">
                 Volver
             </button>
         </div>
@@ -1885,7 +1885,7 @@
                 <ol>
                     <li>En OBS, añade una nueva fuente de tipo <strong>"Navegador"</strong></li>
                     <li>En la URL, pega: <a id="obsLivesLink" href="../obs-lives.html" target="_blank" style="color:var(--cyan);text-decoration:underline;">obs-lives.html</a></li>
-                    <li>Establece el ancho en <strong>400</strong> y el alto en <strong>100</strong></li>
+                    <li>Establece el ancho en <strong>800</strong> y el alto en <strong>200</strong> y ponlo donde quieras.</li>
                     <li>Activa la casilla <strong>"Cerrar fuente cuando no sea visible"</strong></li>
                     <li>En la pestaña <strong>Filtros</strong>, añade un filtro de <strong"Recortar/Pad</strong> y ajusta para que solo se vean los corazones</li>
                     <li>¡Listo! Las vidas se actualizan en tiempo real</li>
@@ -2077,6 +2077,7 @@
             if (!livesEnabled) {
                 el.style.display = 'none';
                 try { localStorage.removeItem('rlb_obs_lives'); } catch(e) {}
+                try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE' }); } catch(e) {}
                 return;
             }
             el.style.display = 'flex';
@@ -2097,6 +2098,7 @@
                 });
             }
             try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+            try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lives: lives, max: MAX_LIVES }) }); } catch(e) {}
         }
 
         function resetLivesToLobby() {
@@ -2117,6 +2119,7 @@
                 }
             }
             try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: lives, max: MAX_LIVES })); } catch(e) {}
+            try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lives: lives, max: MAX_LIVES }) }); } catch(e) {}
             if (lives <= 0) {
                 setTimeout(() => gameOver(), 500);
                 return true;
@@ -2536,7 +2539,7 @@
                 if (event.key === "Enter") submitGuess();
                 if (event.key === "Escape") hideSearchResults();
             });
-            els.guessInput.addEventListener("input", () => { searchVisibleCount = 8; renderSearchResults(); });
+            els.guessInput.addEventListener("input", () => { searchVisibleCount = 5; renderSearchResults(); });
             document.addEventListener("click", (event) => {
                 if (!event.target.closest(".guess-row"))
                     hideSearchResults();
@@ -2913,6 +2916,7 @@
                         if (livesEnabled && MAX_LIVES === val) {
                             livesEnabled = false;
                             try { localStorage.removeItem('rlb_obs_lives'); } catch(e) {}
+                            try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE' }); } catch(e) {}
                             hearts.forEach(h => h.classList.remove('active'));
                             if (countEl) countEl.textContent = '';
                         } else {
@@ -2920,6 +2924,7 @@
                             if (window.RlbPlayer) RlbPlayer.signalGame();
                             MAX_LIVES = val;
                             try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: val, max: val })); } catch(e) {}
+                            try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lives: val, max: val }) }); } catch(e) {}
                             hearts.forEach(h => h.classList.remove('active'));
                             for (let i = 0; i < val; i++) hearts[i].classList.add('active');
                             if (countEl) countEl.textContent = val;
@@ -3491,7 +3496,7 @@
             return "Novato";
         }
 
-        let searchVisibleCount = 8;
+        let searchVisibleCount = 5;
 
         function renderSearchResults() {
             const query = normalize(els.guessInput.value).trim();
@@ -3534,13 +3539,15 @@
             </button>`;
             });
             if (remaining > 0) {
-                html += `<button class="search-option search-more" type="button" style="justify-content:center;color:var(--pink);font-weight:900;">Ver más (${remaining} restantes)</button>`;
+                const showCount = Math.min(remaining, 8);
+                html += `<button class="search-option search-more" type="button" style="justify-content:center;color:var(--pink);font-weight:900;">Ver ${showCount} más</button>`;
             }
 
             els.searchResults.innerHTML = html;
             els.searchResults.classList.add("show");
             els.searchResults.querySelectorAll(".search-option").forEach((button) => {
-                button.addEventListener("click", () => {
+                button.addEventListener("click", (e) => {
+                    e.stopPropagation();
                     if (button.classList.contains("search-more")) {
                         searchVisibleCount += 8;
                         renderSearchResults();
@@ -3719,7 +3726,7 @@
         function renderSonglessLeaderboard() {
             RickyLeaderboard.render('leaderboardContainer', 'songless', {
                 title: '<img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Top — Songless',
-                columns: ['rank', 'name', 'correct', 'total', 'percent', 'lives', 'time', 'difficulty', 'channel', 'date'],
+                columns: ['rank', 'name', 'score', 'correct', 'total', 'percent', 'lives', 'time', 'difficulty', 'channel', 'date'],
                 difficulties: ['easy', 'normal'],
                 channels: { principal: 'Canal Principal', secondary: 'Canal Secundario', songs: 'Canciones', both: 'Los 2 canales' },
                 maxRows: 20

@@ -73,6 +73,10 @@ body {
     padding: 8px clamp(16px, 4vw, 44px);
     background: linear-gradient(90deg, var(--pink-2), var(--pink));
     box-shadow: 0 8px 30px rgba(255, 51, 204, 0.3);
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .logo-container {
@@ -545,6 +549,12 @@ footer {
     padding: 38px 18px 52px;
     background: #111214;
     text-align: center;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 0;
 }
 
 .footer-links {
@@ -603,6 +613,10 @@ footer p {
     padding: 8px clamp(16px, 4vw, 44px);
     background: linear-gradient(90deg, var(--pink-2), var(--pink));
     box-shadow: 0 8px 30px rgba(255, 51, 204, 0.3);
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .hero-section {
@@ -805,3 +819,28 @@ footer p {
 /* Cagado hint */
 .price-hint { display: none; text-align: center; color: var(--yellow); font-weight: 700; font-size: 1.1rem; margin-top: 12px; padding: 10px 20px; background: rgba(241,196,15,0.1); border: 1px solid rgba(241,196,15,0.3); border-radius: 12px; }
 .price-hint.show { display: block; }
+
+/* Save toast */
+.save-toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    z-index: 99999;
+    background: linear-gradient(135deg, #1a1b1e, #23242a);
+    color: #fff;
+    padding: 14px 28px;
+    border-radius: 14px;
+    border: 1px solid rgba(46, 204, 113, 0.4);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 700;
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    white-space: nowrap;
+}
+.save-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}

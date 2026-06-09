@@ -543,7 +543,7 @@
 
         <div class="arcade-grid">
             <!-- Tarjeta Songless -->
-            <a href="songless/index.html" class="arcade-card songless-card">
+            <a href="songless/" class="arcade-card songless-card">
                 <div class="card-image-header">
                     <img class="card-icon-img" src="icon_songless.png" alt="Songless Icon">
                 </div>
@@ -566,7 +566,7 @@
             </a>
 
             <!-- Tarjeta Emojless -->
-            <a href="emojless/index.html" class="arcade-card emojless-card">
+            <a href="emojless/" class="arcade-card emojless-card">
                 <div class="card-image-header">
                     <img class="card-icon-img" src="icon_emojless.png" alt="Emojless Icon">
                 </div>
@@ -589,7 +589,7 @@
             </a>
 
             <!-- Tarjeta Thumbnail Blur -->
-            <a href="thumbnail-blur/index.html" class="arcade-card songless-card">
+            <a href="thumbnail-blur/" class="arcade-card songless-card">
                 <div class="card-image-header">
                     <img class="card-icon-img" src="icon_miniatura_borrosa.png" alt="Thumbnail Blur Icon">
                 </div>
@@ -611,7 +611,7 @@
             </a>
 
             <!-- Tarjeta Letrless -->
-            <a href="letrless/index.html" class="arcade-card emojless-card">
+            <a href="letrless/" class="arcade-card emojless-card">
                 <div class="card-image-header">
                     <img class="card-icon-img" src="Letrless.png" alt="Letrless Icon">
                 </div>
@@ -633,7 +633,7 @@
             </a>
 
             <!-- Tarjeta Mas Caro -->
-            <a href="mas-caro/index.html" class="arcade-card mascaro-card">
+            <a href="mas-caro/" class="arcade-card mascaro-card">
                 <div class="card-image-header">
                     <img class="card-icon-img" src="icon_vs.png" alt="¿Qué es más caro? Icon">
                 </div>
@@ -745,15 +745,15 @@
         }
         const _hoveredEls = new WeakSet();
         document.addEventListener('mouseover', (e) => {
-            const el = e.target.closest('button, a.pill-link, a.icon-btn, a.arcade-card');
+            const el = e.target.closest('button, a.pill-link, a.icon-btn, a.arcade-card, .footer-links a');
             if (el && !_hoveredEls.has(el)) { _hoveredEls.add(el); playSound('hover'); }
         });
         document.addEventListener('mouseout', (e) => {
-            const el = e.target.closest('button, a.pill-link, a.icon-btn, a.arcade-card');
+            const el = e.target.closest('button, a.pill-link, a.icon-btn, a.arcade-card, .footer-links a');
             if (el && !el.contains(e.relatedTarget)) _hoveredEls.delete(el);
         });
         document.addEventListener('click', (e) => {
-            const el = e.target.closest('button, a.pill-link, a.icon-btn, a.arcade-card');
+            const el = e.target.closest('button, a.pill-link, a.icon-btn, a.arcade-card, .footer-links a');
             if (el) playSound('click');
         });
 
@@ -860,7 +860,7 @@
             <hr class="upd-sep">
             <div style="background:rgba(241,196,15,0.1);border:1px solid rgba(241,196,15,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
                 <p style="margin:0 0 8px;color:var(--yellow);font-weight:800;font-size:0.9rem;"><img src="Aviso.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Aviso importante para Ricky</p>
-                <p style="margin:0;color:var(--muted);line-height:1.6;">Para la próxima, pon el enlace en <span style="color:#fff;font-weight:700;">la descripción o en el vídeo</span>, porque la gente no lo encuentra. Puedes usar este enlace: <a href="https://janiito-studio.github.io/RickyEdit-Games/index.html" target="_blank" style="color:var(--cyan);text-decoration:underline;font-weight:700;">https://janiito-studio.github.io/RickyEdit-Games/index.html</a></p>
+                <p style="margin:0;color:var(--muted);line-height:1.6;">Para la próxima, pon el enlace en <span style="color:#fff;font-weight:700;">la descripción o en el vídeo</span>, porque la gente no lo encuentra. Puedes usar este enlace: <a href="https://janiito-studio.github.io/RickyEdit-Games/" target="_blank" style="color:var(--cyan);text-decoration:underline;font-weight:700;">https://janiito-studio.github.io/RickyEdit-Games/</a></p>
             </div>
 
                 <div style="background:rgba(255,51,204,0.1);border:1px solid rgba(255,51,204,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
@@ -911,7 +911,7 @@
             <hr class="upd-sep">
             <div style="background:rgba(241,196,15,0.1);border:1px solid rgba(241,196,15,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
                 <p style="margin:0 0 8px;color:var(--yellow);font-weight:800;font-size:0.9rem;"><img src="Aviso.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Aviso importante para Ricky</p>
-                <p style="margin:0;color:var(--muted);line-height:1.6;">Para la próxima, pon el enlace en <span style="color:#fff;font-weight:700;">la descripción o en el vídeo</span>, porque la gente no lo encuentra. Puedes usar este enlace: <a href="https://janiito-studio.github.io/RickyEdit-Games/index.html" target="_blank" style="color:var(--cyan);text-decoration:underline;font-weight:700;">https://janiito-studio.github.io/RickyEdit-Games/index.html</a></p>
+                <p style="margin:0;color:var(--muted);line-height:1.6;">Para la próxima, pon el enlace en <span style="color:#fff;font-weight:700;">la descripción o en el vídeo</span>, porque la gente no lo encuentra. Puedes usar este enlace: <a href="https://janiito-studio.github.io/RickyEdit-Games/" target="_blank" style="color:var(--cyan);text-decoration:underline;font-weight:700;">https://janiito-studio.github.io/RickyEdit-Games/</a></p>
             </div>
             <div style="background:rgba(255,51,204,0.1);border:1px solid rgba(255,51,204,0.25);border-radius:12px;padding:16px;margin-bottom:16px;">
                 <p style="margin:0 0 8px;color:var(--pink);font-weight:800;font-size:0.9rem;"><img src="Iconos RickyEdit Web/🛡️.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Cuenta oficial</p>

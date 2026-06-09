@@ -58,7 +58,10 @@
     <div id="obs-logo" style="display:none;"></div>
     <script>
         var GAME_PATH = 'Iconos RickyEdit Web/';
-        var STORAGE_KEY = 'rlb_obs_lives';
+        var FIREBASE_URL = 'https://rickyedit-notifications-default-rtdb.firebaseio.com';
+        var params = new URLSearchParams(window.location.search);
+        var playerId = params.get('id');
+        var lastData = null;
 
         function updateDisplay(data) {
             var el = document.getElementById('obs-lives');
@@ -76,17 +79,13 @@
             logo.innerHTML = '';
             var lives, maxLives;
             if (typeof data === 'string') {
-                try {
-                    var parsed = JSON.parse(data);
-                    lives = parsed.lives;
-                    maxLives = parsed.max;
-                } catch(e) {
-                    lives = parseInt(data || '3', 10);
-                    maxLives = 3;
-                }
+                try { var p = JSON.parse(data); lives = p.lives; maxLives = p.max; }
+                catch(e) { lives = parseInt(data || '3', 10); maxLives = 3; }
+            } else if (typeof data === 'object' && data !== null) {
+                lives = data.lives;
+                maxLives = data.max;
             } else {
-                lives = 3;
-                maxLives = 3;
+                lives = 3; maxLives = 3;
             }
             if (isNaN(lives)) lives = 3;
             if (isNaN(maxLives)) maxLives = 3;
@@ -106,26 +105,37 @@
                 hearts.forEach(function(img, i) {
                     img.src = i < lives ? GAME_PATH + 'Vida Entera.png' : GAME_PATH + 'Vida Rota.png';
                     img.alt = i < lives ? 'Vida' : 'Sin vida';
-                    if (i < lives) {
-                        img.classList.remove('lost');
-                    } else {
-                        img.classList.add('lost');
-                    }
+                    if (i < lives) img.classList.remove('lost');
+                    else img.classList.add('lost');
                 });
             }
+            lastData = JSON.stringify(data);
+        }
+
+        function pollFirebase() {
+            if (!playerId) { pollLocalStorage(); return; }
+            fetch(FIREBASE_URL + '/leaderboard/obs_lives_' + encodeURIComponent(playerId) + '.json')
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data !== null) updateDisplay(data);
+                    else pollLocalStorage();
+                })
+                .catch(function() { pollLocalStorage(); });
+        }
+
+        function pollLocalStorage() {
+            try {
+                var raw = localStorage.getItem('rlb_obs_lives');
+                if (raw && raw !== lastData) updateDisplay(raw);
+            } catch(e) {}
         }
 
         window.addEventListener('storage', function(e) {
-            if (e.key === STORAGE_KEY) {
-                updateDisplay(e.newValue);
-            }
+            if (e.key === 'rlb_obs_lives') updateDisplay(e.newValue);
         });
 
-        setInterval(function() {
-            updateDisplay(localStorage.getItem(STORAGE_KEY));
-        }, 1000);
-
-        updateDisplay(localStorage.getItem(STORAGE_KEY));
+        setInterval(pollFirebase, 500);
+        pollFirebase();
     </script>
 </body>
 </html>

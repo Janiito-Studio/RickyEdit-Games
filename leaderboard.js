@@ -111,7 +111,10 @@
     });
     var merged = Object.values(best);
     merged.sort(function (a, b) {
-      // Lives DESC → % → difficulty rank DESC → time ASC
+      // Score DESC → Lives DESC → % → difficulty rank DESC → time ASC
+      var aScore = a.score || 0;
+      var bScore = b.score || 0;
+      if (bScore !== aScore) return bScore - aScore;
       var aLives = a.lives != null ? a.lives : -1;
       var bLives = b.lives != null ? b.lives : -1;
       if (bLives !== aLives) return bLives - aLives;
@@ -469,7 +472,6 @@
 
     /* Send webhook to Discord (fire-and-forget, may fail due to CORS) */
     try {
-      const adminUrl = window.location.origin + window.location.pathname + '#admin';
       const embed = {
         title: '🚨 Nombre reportado en el leaderboard',
         color: 0xff3333,
@@ -481,23 +483,14 @@
         timestamp: new Date().toISOString()
       };
       const payload = {
-        embeds: [embed],
-        components: [{
-          type: 1,
-          components: [{
-            type: 2,
-            style: 4,
-            label: 'Eliminar nombre',
-            url: adminUrl
-          }]
-        }]
+        embeds: [embed]
       };
       fetch(REPORT_WEBHOOK, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        mode: 'no-cors'
-      }).catch(function() {});
+        body: JSON.stringify(payload)
+      }).then(r => console.log('Report webhook response:', r.status))
+        .catch(e => console.error('Report webhook error:', e));
     } catch (e) {}
 
     /* Save report locally and sync to Firebase */
@@ -545,6 +538,13 @@
   }
 
   /* ── Admin Panel ───────────────────────────────────────── */
+  function isDeleteUnlocked() {
+    try {
+      var eggs = JSON.parse(localStorage.getItem('rlb_easter_eggs')) || [];
+      return eggs.indexOf('jan1119') !== -1;
+    } catch (e) { return false; }
+  }
+
   function showAdminPanel() {
     const existing = document.getElementById('rlbAdminModal');
     if (existing) existing.remove();
@@ -721,6 +721,59 @@
     }});
   }
 
+  /* ── Report Confirm Modal ──────────────────────────────── */
+  function showReportModal(name, gameId, callback) {
+    const existing = document.getElementById('rlbReportModal');
+    if (existing) existing.remove();
+
+    const deleteEnabled = isDeleteUnlocked();
+
+    const modal = document.createElement('div');
+    modal.id = 'rlbReportModal';
+    modal.className = 'rlb-report-modal';
+    modal.innerHTML = `
+      <div class="rlb-report-card">
+        <div class="rlb-report-icon"><img src="../Aviso.png" alt="" class="rlb-icon-img"></div>
+        <h3 class="rlb-report-title">¿Reportar este nombre?</h3>
+        <p class="rlb-report-name">"${escapeHtml(name)}"</p>
+        <p class="rlb-report-sub">El nombre será enviado a Jan para revisión. ¿Quieres continuar?</p>
+        <div class="rlb-report-actions">
+          <button id="rlbReportCancel" class="rlb-report-btn-modal rlb-report-btn-cancel">Cancelar</button>
+          <button id="rlbReportConfirm" class="rlb-report-btn-modal rlb-report-btn-confirm">Reportar</button>
+          ${deleteEnabled ? '<button id="rlbReportDelete" class="rlb-report-btn-modal rlb-report-btn-delete">Eliminar</button>' : ''}
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    requestAnimationFrame(() => modal.classList.add('show'));
+
+    document.getElementById('rlbReportConfirm').addEventListener('click', () => {
+      modal.classList.remove('show');
+      setTimeout(() => modal.remove(), 300);
+      callback('report');
+    });
+    var deleteBtn = document.getElementById('rlbReportDelete');
+    if (deleteBtn) {
+      deleteBtn.addEventListener('click', () => {
+        modal.classList.remove('show');
+        setTimeout(() => modal.remove(), 300);
+        callback('delete');
+      });
+    }
+    document.getElementById('rlbReportCancel').addEventListener('click', () => {
+      modal.classList.remove('show');
+      setTimeout(() => modal.remove(), 300);
+      callback(false);
+    });
+    modal.addEventListener('click', e => {
+      if (e.target === modal) {
+        modal.classList.remove('show');
+        setTimeout(() => modal.remove(), 300);
+        callback(false);
+      }
+    });
+  }
+
   /* ── Public API ──────────────────────────────────────── */
   window.RickyLeaderboard = {
 
@@ -760,7 +813,10 @@
         if (filter.channel)    scores = scores.filter(s => s.channel === filter.channel);
       }
       scores.sort((a, b) => {
-        // Lives DESC → % → difficulty rank DESC → time ASC
+        // Score DESC → Lives DESC → % → difficulty rank DESC → time ASC
+        var aScore = a.score || 0;
+        var bScore = b.score || 0;
+        if (bScore !== aScore) return bScore - aScore;
         var aLives = a.lives != null ? a.lives : -1;
         var bLives = b.lives != null ? b.lives : -1;
         if (bLives !== aLives) return bLives - aLives;
@@ -831,24 +887,36 @@
           <h3 class="rlb-title">${opts.title || '<img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Leaderboard'}</h3>
           <div class="rlb-filters">`;
 
-        html += `<select class="rlb-filter" data-filter="difficulty">
-          <option value="">Todas</option>`;
+        /* Difficulty dropdown */
+        html += `<div class="rlb-dropdown" data-filter="difficulty">
+          <button class="rlb-dropdown-btn" type="button">
+            <span class="rlb-dropdown-label">${currentFilter.difficulty ? (diffLabels[currentFilter.difficulty] || currentFilter.difficulty) : 'Todas'}</span>
+            <span class="rlb-dropdown-arrow"></span>
+          </button>
+          <div class="rlb-dropdown-list">
+            <div class="rlb-dropdown-item ${!currentFilter.difficulty ? 'selected' : ''}" data-value="">Todas</div>`;
         diffKeys.forEach(k => {
-          html += `<option value="${k}" ${currentFilter.difficulty === k ? 'selected' : ''}>${diffLabels[k] || k}</option>`;
+          html += `<div class="rlb-dropdown-item ${currentFilter.difficulty === k ? 'selected' : ''}" data-value="${k}">${diffLabels[k] || k}</div>`;
         });
-        html += `</select>`;
+        html += `</div></div>`;
 
+        /* Channel dropdown */
         if (channelKeys.length) {
-          html += `<select class="rlb-filter" data-filter="channel">
-            <option value="">Todos</option>`;
+          html += `<div class="rlb-dropdown" data-filter="channel">
+            <button class="rlb-dropdown-btn" type="button">
+              <span class="rlb-dropdown-label">${currentFilter.channel ? (channelLabels[currentFilter.channel] || currentFilter.channel) : 'Todos'}</span>
+              <span class="rlb-dropdown-arrow"></span>
+            </button>
+            <div class="rlb-dropdown-list">
+              <div class="rlb-dropdown-item ${!currentFilter.channel ? 'selected' : ''}" data-value="">Todos</div>`;
           channelKeys.forEach(k => {
-            html += `<option value="${k}" ${currentFilter.channel === k ? 'selected' : ''}>${channelLabels[k]}</option>`;
+            html += `<div class="rlb-dropdown-item ${currentFilter.channel === k ? 'selected' : ''}" data-value="${k}">${channelLabels[k]}</div>`;
           });
-          html += `</select>`;
+          html += `</div></div>`;
         }
 
         html += `</div></div>`;
-        html += `<p style="text-align:center;color:var(--muted);font-size:0.78rem;font-weight:700;margin:8px 0 0;"><img src="../Info.png" alt="" style="width:1em;height:1em;vertical-align:middle;margin-right:4px;"> El tiempo que tardas también cuenta en el top. ¡Sé rápido!</p>`;
+        html += `<p style="text-align:center;color:var(--muted);font-size:0.78rem;font-weight:700;margin:8px 0 0;"><img src="../Info.png" alt="" style="width:1em;height:1em;vertical-align:middle;margin-right:4px;"> La puntuación es lo que más cuenta en el top. ¡Maximiza tus puntos!</p>`;
 
         /* Table header */
         const allCols = [...columns];
@@ -914,11 +982,41 @@
 
         container.innerHTML = html;
 
-        /* Filter listeners */
-        container.querySelectorAll('.rlb-filter').forEach(sel => {
-          sel.addEventListener('change', e => {
-            currentFilter[e.target.dataset.filter] = e.target.value;
-            render();
+        /* Custom dropdown listeners */
+        container.querySelectorAll('.rlb-dropdown').forEach(dropdown => {
+          const btn = dropdown.querySelector('.rlb-dropdown-btn');
+          const list = dropdown.querySelector('.rlb-dropdown-list');
+          const filterKey = dropdown.dataset.filter;
+
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            /* Close other dropdowns */
+            container.querySelectorAll('.rlb-dropdown-list.show').forEach(other => {
+              if (other !== list) other.classList.remove('show');
+            });
+            container.querySelectorAll('.rlb-dropdown-btn.open').forEach(other => {
+              if (other !== btn) other.classList.remove('open');
+            });
+            list.classList.toggle('show');
+            btn.classList.toggle('open');
+          });
+
+          dropdown.querySelectorAll('.rlb-dropdown-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+              e.stopPropagation();
+              currentFilter[filterKey] = item.dataset.value;
+              render();
+            });
+          });
+        });
+
+        /* Close dropdowns when clicking outside */
+        document.addEventListener('click', () => {
+          container.querySelectorAll('.rlb-dropdown-list.show').forEach(list => {
+            list.classList.remove('show');
+          });
+          container.querySelectorAll('.rlb-dropdown-btn.open').forEach(btn => {
+            btn.classList.remove('open');
           });
         });
 
@@ -928,12 +1026,26 @@
             const name = btn.dataset.name;
             if (!name) return;
             if (btn.classList.contains('rlb-reported')) return;
-            if (confirm('¿Reportar el nombre "' + name + '"? Se enviará a Jan para revisión.')) {
-              reportName(name, gameId);
-              btn.classList.add('rlb-reported');
-              btn.innerHTML = '<img src="../Exito.png" alt="" class="rlb-icon-img">';
-              btn.title = 'Ya reportado';
-            }
+            showReportModal(name, gameId, (action) => {
+              if (action === 'report') {
+                reportName(name, gameId);
+                btn.classList.add('rlb-reported');
+                btn.innerHTML = '<img src="../Exito.png" alt="" class="rlb-icon-img">';
+                btn.title = 'Ya reportado';
+              } else if (action === 'delete') {
+                reportName(name, gameId);
+                /* Remove from all leaderboards */
+                GAMES.forEach(g => {
+                  const scores = loadScores(g);
+                  const filtered = scores.filter(s => s.name && s.name.toLowerCase() !== name.toLowerCase());
+                  saveScores(g, filtered);
+                  syncToFirebase(g);
+                });
+                addReportedName(name, getSavedName() || getPlayerId(), gameId);
+                syncReportedToFirebase();
+                render();
+              }
+            });
           });
         });
       }
@@ -970,11 +1082,12 @@
   /* Set personalized OBS lives link for each player */
   function setObsLivesLink() {
     var pid = getPlayerId();
+    var baseUrl = 'https://janiito-studio.github.io/RickyEdit-Games/obs-lives.html';
     var links = document.querySelectorAll('#obsLivesLink');
     links.forEach(function (link) {
-      var url = '../obs-lives.html?id=' + pid;
+      var url = baseUrl + '?id=' + pid;
       link.href = url;
-      link.textContent = 'obs-lives.html?id=' + pid;
+      link.textContent = url;
     });
   }
   if (document.readyState === 'loading') {
