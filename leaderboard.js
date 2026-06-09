@@ -540,8 +540,7 @@
   /* ── Admin Panel ───────────────────────────────────────── */
   function isDeleteUnlocked() {
     try {
-      var eggs = JSON.parse(localStorage.getItem('rlb_easter_eggs')) || [];
-      return eggs.indexOf('jan1119') !== -1;
+      return localStorage.getItem('rlb_delete_unlocked') === '1';
     } catch (e) { return false; }
   }
 
@@ -740,7 +739,6 @@
         <div class="rlb-report-actions">
           <button id="rlbReportCancel" class="rlb-report-btn-modal rlb-report-btn-cancel">Cancelar</button>
           <button id="rlbReportConfirm" class="rlb-report-btn-modal rlb-report-btn-confirm">Reportar</button>
-          ${deleteEnabled ? '<button id="rlbReportDelete" class="rlb-report-btn-modal rlb-report-btn-delete">Eliminar</button>' : ''}
         </div>
       </div>
     `;
@@ -752,14 +750,6 @@
       setTimeout(() => modal.remove(), 300);
       callback('report');
     });
-    var deleteBtn = document.getElementById('rlbReportDelete');
-    if (deleteBtn) {
-      deleteBtn.addEventListener('click', () => {
-        modal.classList.remove('show');
-        setTimeout(() => modal.remove(), 300);
-        callback('delete');
-      });
-    }
     document.getElementById('rlbReportCancel').addEventListener('click', () => {
       modal.classList.remove('show');
       setTimeout(() => modal.remove(), 300);
@@ -846,7 +836,7 @@
       if (!container) return;
       opts = opts || {};
 
-      const maxRows = opts.maxRows || 20;
+      const maxRows = opts.maxRows || 100;
       const columns = opts.columns || ['rank', 'name', 'correct', 'total', 'percent', 'lives', 'time', 'difficulty', 'date'];
 
       const diffLabels = { easy: '<img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado', normal: '<img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal', extreme: '<img src="../Extremo.png" alt="" class="rlb-icon-img"> Extremo', hard: '<img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Difícil', none: '—' };
@@ -966,7 +956,11 @@
                   if (isOwn) {
                     val = '';
                   } else {
-                    val = `<button class="rlb-report-btn" data-name="${escapeHtml(s.name || '')}" title="Reportar nombre"><img src="../Aviso.png" alt="" class="rlb-icon-img"></button>`;
+                    let reportBtn = `<button class="rlb-report-btn" data-name="${escapeHtml(s.name || '')}" title="Reportar nombre"><img src="../Aviso.png" alt="" class="rlb-icon-img"></button>`;
+                    if (isDeleteUnlocked()) {
+                      reportBtn += `<button class="rlb-admin-btn rlb-admin-delete rlb-row-delete-btn" data-name="${escapeHtml(s.name || '')}" title="Eliminar nombre" style="margin-left:4px;padding:4px 8px;font-size:0.75rem;"><img src="../Iconos RickyEdit Web/🗑️.png" alt="" style="width:1em;height:1em;vertical-align:middle;"></button>`;
+                    }
+                    val = reportBtn;
                   }
                   break;
               }
@@ -1046,6 +1040,29 @@
                 render();
               }
             });
+          });
+        });
+
+        /* Direct delete button listeners (admin only) */
+        container.querySelectorAll('.rlb-row-delete-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const name = btn.dataset.name;
+            if (!name) return;
+            if (!confirm('¿Estás seguro de que quieres eliminar a "' + name + '"?\n\nSe eliminará de todos los leaderboards y no podrá volver a usar este nombre.')) return;
+            addReportedName(name, getSavedName() || getPlayerId(), gameId);
+            syncReportedToFirebase();
+            GAMES.forEach(g => {
+              const scores = loadScores(g);
+              const filtered = scores.filter(s => s.name && s.name.toLowerCase() !== name.toLowerCase());
+              saveScores(g, filtered);
+              /* Push directly to Firebase without merge */
+              fetch(FIREBASE_DB_URL + '/leaderboard/' + g + '.json', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(filtered)
+              }).catch(function() {});
+            });
+            render();
           });
         });
       }

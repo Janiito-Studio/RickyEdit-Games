@@ -133,7 +133,7 @@
         .filter-tab:hover { background: rgba(255,51,204,0.15); color: #fff; }
         .filter-tab.active { background: linear-gradient(135deg, var(--yellow), var(--pink)); color: #111; border-color: transparent; }
 
-        .controls { display: grid; gap: 18px; padding: 22px; background: rgba(14,14,18,0.56); }
+        .controls { display: grid; gap: 18px; padding: 22px; background: rgba(14,14,18,0.56); border-radius: 0 0 21px 21px; }
         .rounds { display: grid; grid-template-columns: repeat(6,1fr); gap: 8px; }
         .round-step { position: relative; min-height: 44px; display: grid; place-items: center; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,0.04); color: var(--muted); font-weight: 900; overflow: hidden; }
         .round-step.active, .round-step.done { color: #111; border-color: transparent; background: linear-gradient(135deg, var(--yellow), var(--pink)); }
@@ -556,7 +556,7 @@
     </div>
 
     <!-- Leaderboard -->
-    <div style="width:100%;max-width:800px;margin:24px auto;padding:0 16px;">
+    <div style="width:100%;max-width:1080px;margin:24px auto;padding:0 16px;">
         <div class="leaderboard-panel visible" id="leaderboardPanel">
             <div id="leaderboardContainer"></div>
         </div>

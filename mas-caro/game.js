@@ -1047,7 +1047,7 @@ function renderLeaderboard() {
         title: '<img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Top — ¿Qué es más caro?',
         columns: ['rank', 'name', 'score', 'correct', 'total', 'percent', 'lives', 'time', 'difficulty', 'date'],
         difficulties: ['easy', 'normal'],
-        maxRows: 20
+        maxRows: 100
     });
 }
 

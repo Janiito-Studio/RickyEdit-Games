@@ -883,7 +883,7 @@ function renderThumbblurLeaderboard() {
         columns: ['rank', 'name', 'score', 'correct', 'total', 'percent', 'lives', 'time', 'difficulty', 'channel', 'date'],
         difficulties: ['easy', 'normal', 'extreme'],
         channels: { principal: 'Canal Principal', secondary: 'Canal Secundario', both: 'Los 2 canales' },
-        maxRows: 20
+        maxRows: 100
     });
 }
 

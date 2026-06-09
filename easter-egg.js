@@ -6,15 +6,21 @@
   'use strict';
 
   var LS_KEY = 'rlb_easter_eggs';
-  var TOTAL_EGGS = 9;
+  var TOTAL_EGGS = 8;
 
-  /* Migration: remove letrless from discovered if it exists */
+  /* Migration: remove letrless and jan1119 from discovered if they exist */
   try {
     var _disc = JSON.parse(localStorage.getItem(LS_KEY)) || [];
+    var _changed = false;
     if (_disc.indexOf('letrless') !== -1) {
       _disc = _disc.filter(function (k) { return k !== 'letrless'; });
-      localStorage.setItem(LS_KEY, JSON.stringify(_disc));
+      _changed = true;
     }
+    if (_disc.indexOf('jan1119') !== -1) {
+      _disc = _disc.filter(function (k) { return k !== 'jan1119'; });
+      _changed = true;
+    }
+    if (_changed) localStorage.setItem(LS_KEY, JSON.stringify(_disc));
   } catch (e) {}
 
   var EASTER_EGGS = {
@@ -73,13 +79,6 @@
       title: 'Felicidades, has encontrado al Ricky Futbolero (por cierto, tiene la bandera y eso personalizado para ti)',
       subtitle: '',
       colors: ['#f1c40f', '#36e28a', '#38d4ff']
-    },
-    jan1119: {
-      id: 'jan1119',
-      image: 'Jan.png',
-      title: 'Código secreto de Jan',
-      subtitle: 'Botón de eliminar desbloqueado',
-      colors: ['#f1c40f', '#e74c3c', '#ff33cc']
     }
   };
 
@@ -224,17 +223,10 @@
       /* Check secret notification code first (jan1119 in base64) */
       if (typeof checkSecretCode === 'function' && checkSecretCode(val)) {
         input.value = '';
-        var isNewEgg = discover('jan1119');
-        if (isNewEgg) {
-          showEggReveal(EASTER_EGGS['jan1119']);
-          var newCount = getDiscovered().length;
-          var counter = modal.querySelector('.rlb-ee-count-num');
-          if (counter) counter.textContent = newCount;
-          refreshList();
-        }
-        feedback.textContent = 'Acceso concedido. Botón de notificaciones y eliminar activados.';
+        feedback.textContent = 'Acceso concedido. Botones de notificaciones y eliminar activados.';
         feedback.className = 'rlb-ee-input-feedback success';
         try { localStorage.setItem('rlb_notif_authorized', '1'); } catch (e) {}
+        try { localStorage.setItem('rlb_delete_unlocked', '1'); } catch (e) {}
         showFloatingNotifButton();
         return;
       }

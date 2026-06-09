@@ -1074,7 +1074,7 @@ function renderEmojlessLeaderboard() {
         title: '<img src="../Iconos/Trofeo leaderboard.png" alt="" class="rlb-icon-img"> Top — Emojless',
         columns: ['rank', 'name', 'score', 'correct', 'total', 'percent', 'lives', 'time', 'difficulty', 'date'],
         difficulties: ['easy', 'normal'],
-        maxRows: 20
+        maxRows: 100
     });
 }
 
