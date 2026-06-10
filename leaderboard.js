@@ -10,7 +10,7 @@
   const NAME_KEY = 'rlb_player_name';
   const PLAYER_ID_KEY = 'rlb_player_id';
   const REPORTED_KEY = 'rlb_reported_names';
-  const GAMES = ['songless', 'emojless', 'thumbblur', 'mascaro', 'letrless'];
+  const GAMES = ['songless', 'emojless', 'thumbblur', 'mascaro', 'letrless', 'pasapalabras'];
   const REPORT_WEBHOOK = 'https://discord.com/api/webhooks/1509215622310006915/9kqCW6JMtnNJqUqJALLfcxiBbcAK6_bLwqbANAPYKBp8Kb928VcrIU8xHCwrQn2dp91g';
   const FIREBASE_DB_URL = 'https://rickyedit-notifications-default-rtdb.firebaseio.com';
 
@@ -1095,6 +1095,52 @@
   var _scoreUpdateCallbacks = [];
   window.RickyLeaderboard.onScoresUpdated = function (fn) { _scoreUpdateCallbacks.push(fn); };
   window.RickyLeaderboard._fireScoreUpdate = function () { _scoreUpdateCallbacks.forEach(function (fn) { fn(); }); };
+
+  /* ── Save Toast ──────────────────────────────────────────── */
+  window.RickyLeaderboard.showSaveToast = function (gameId, savedData) {
+    var allScores = window.RickyLeaderboard.getAll(gameId);
+    var rank = allScores.findIndex(function (s) { return s.playerId === savedData.playerId; }) + 1;
+    var toast = document.createElement('div');
+    toast.className = 'rlb-save-toast';
+    toast.innerHTML = '<span style="color:#2ecc71;">&#10003;</span> Guardado correctamente. Has quedado en la <strong>#' + rank + '</strong> posición del top.';
+    document.body.appendChild(toast);
+    requestAnimationFrame(function () { toast.classList.add('show'); });
+    setTimeout(function () {
+      toast.classList.remove('show');
+      setTimeout(function () { toast.remove(); }, 400);
+    }, 3500);
+  };
+
+  /* ── Exit Confirm Modal ────────────────────────────────────── */
+  window.RickyLeaderboard.showExitConfirm = function (onSure, onFinalize) {
+    var existing = document.getElementById('rlbExitModal');
+    if (existing) existing.remove();
+    var modal = document.createElement('div');
+    modal.id = 'rlbExitModal';
+    modal.className = 'rlb-exit-modal';
+    modal.innerHTML =
+      '<div class="rlb-exit-card">' +
+        '<div class="rlb-exit-icon">&#128680;</div>' +
+        '<p class="rlb-exit-title">¿Estás seguro que quieres irte sin finalizar?</p>' +
+        '<div class="rlb-exit-actions">' +
+          '<button class="rlb-exit-btn rlb-exit-btn-sure" id="rlbExitSure">Seguro</button>' +
+          '<button class="rlb-exit-btn rlb-exit-btn-finalize" id="rlbExitFinalize">Finalizar</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(modal);
+    requestAnimationFrame(function () { modal.classList.add('show'); });
+
+    document.getElementById('rlbExitSure').addEventListener('click', function () {
+      modal.classList.remove('show');
+      setTimeout(function () { modal.remove(); }, 300);
+      if (onSure) onSure();
+    });
+    document.getElementById('rlbExitFinalize').addEventListener('click', function () {
+      modal.classList.remove('show');
+      setTimeout(function () { modal.remove(); }, 300);
+      if (onFinalize) onFinalize();
+    });
+  };
 
   /* Set personalized OBS lives link for each player */
   function setObsLivesLink() {

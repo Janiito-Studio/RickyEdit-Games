@@ -177,7 +177,21 @@
         var scoreVal = state.score || 0;
         document.getElementById('gameoverScore').textContent = scoreVal > 0 ? scoreVal + ' puntos' : '';
 
+        var heartsEl = document.getElementById('gameoverHearts');
+        if (heartsEl) {
+            heartsEl.innerHTML = '';
+            for (var i = 0; i < MAX_LIVES; i++) {
+                var img = document.createElement('img');
+                img.src = '../Iconos RickyEdit Web/Vida Rota.png';
+                img.alt = 'Sin vida';
+                heartsEl.appendChild(img);
+            }
+        }
+
         document.getElementById('gameoverOverlay').classList.add('show');
+
+        try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: 0, max: MAX_LIVES })); } catch(e) {}
+        try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lives: 0, max: MAX_LIVES }) }); } catch(e) {}
 
         if (!usedExtraLife) {
             RickyLeaderboard.save('letrless', {
@@ -196,6 +210,8 @@
     function resetLivesToLobby() {
         livesEnabled = false;
         updateLivesDisplay();
+        try { localStorage.removeItem('rlb_obs_lives'); } catch(e) {}
+        try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true }); } catch(e) {}
         if (window.RlbPlayer) RlbPlayer.signalLobby();
     }
 
@@ -267,13 +283,17 @@
         modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
     }
 
-    function addExtraLife() {
+    function addExtraLife(fromStart) {
+        if (fromStart) {
+            showExtraLifeToast('Dale a empezar para usarlo.');
+            return;
+        }
         if (!livesEnabled) {
             showExtraLifeToast('Primero activa las vidas para usar este botón.');
             return;
         }
         if (lives >= MAX_LIVES) {
-            showExtraLifeToast('Ya tienes las vidas al máximo.');
+            showExtraLifeToast('Ya tienes todas las vidas.');
             return;
         }
         function doAdd() {
@@ -291,8 +311,8 @@
         }
     }
 
-    document.getElementById('extraLifeBtn').addEventListener('click', function () { playSound('click'); addExtraLife(); });
-    document.getElementById('startExtraLifeBtn').addEventListener('click', function () { playSound('click'); addExtraLife(); });
+    document.getElementById('extraLifeBtn').addEventListener('click', function () { playSound('click'); addExtraLife(false); });
+    document.getElementById('startExtraLifeBtn').addEventListener('click', function () { playSound('click'); addExtraLife(true); });
 
     var state = {
         current: null,
@@ -870,7 +890,8 @@
                 maxStreak: state.maxStreak || 0,
                 lives: livesEnabled ? lives : null,
                 maxLives: livesEnabled ? MAX_LIVES : null
-            }, function () {
+            }, function (savedData) {
+                RickyLeaderboard.showSaveToast('letrless', savedData);
                 document.getElementById('reveal').classList.remove('show');
                 document.getElementById('startScreen').classList.remove('hide');
                 document.body.style.overflow = 'hidden';
@@ -894,7 +915,8 @@
                 maxStreak: state.maxStreak || 0,
                 lives: livesEnabled ? lives : null,
                 maxLives: livesEnabled ? MAX_LIVES : null
-            }, function () {
+            }, function (savedData) {
+                RickyLeaderboard.showSaveToast('letrless', savedData);
                 document.getElementById('reveal').classList.remove('show');
                 document.getElementById('startScreen').classList.remove('hide');
                 document.body.style.overflow = 'hidden';
@@ -939,7 +961,8 @@
                 maxStreak: state.maxStreak || 0,
                 lives: livesEnabled ? lives : null,
                 maxLives: livesEnabled ? MAX_LIVES : null
-            }, function () {
+            }, function (savedData) {
+                RickyLeaderboard.showSaveToast('letrless', savedData);
                 document.getElementById('completionOverlay').classList.remove('show');
                 document.getElementById('reveal').classList.remove('show');
                 document.getElementById('startScreen').classList.remove('hide');
@@ -969,6 +992,50 @@
             state.total = 0;
             gameStartTime = null;
             resetLivesToLobby();
+        });
+    }
+
+    // Game topbar Volver — confirm exit
+    var gameVolverBtn = document.getElementById('gameVolverBtn');
+    if (gameVolverBtn) {
+        gameVolverBtn.addEventListener('click', function () {
+            playSound('click');
+            var hasScore = state.score > 0;
+            if (!hasScore) {
+                localStorage.removeItem('rlb_obs_lives');
+                var _pid = localStorage.getItem('rlb_player_id');
+                if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true });
+                location.href = '../index.html';
+                return;
+            }
+            RickyLeaderboard.showExitConfirm(
+                function () {
+                    localStorage.removeItem('rlb_obs_lives');
+                    var _pid = localStorage.getItem('rlb_player_id');
+                    if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true });
+                    location.href = '../index.html';
+                },
+                function () {
+                    var elapsed = gameStartTime ? ((Date.now() - gameStartTime) / 1000).toFixed(1) : null;
+                    RickyLeaderboard.save('letrless', {
+                        score: state.score,
+                        difficulty: minWords === 7 ? 'easy' : minWords === 3 ? 'hard' : 'normal',
+                        time: elapsed ? parseFloat(elapsed) : null,
+                        correct: state.correct || 0,
+                        total: state.total || 0,
+                        maxStreak: state.maxStreak || 0,
+                        lives: livesEnabled ? lives : null,
+                        maxLives: livesEnabled ? MAX_LIVES : null
+                    }, function (savedData) {
+                        RickyLeaderboard.showSaveToast('letrless', savedData);
+                    });
+                    state.score = 0; state.streak = 0; state.correct = 0; state.total = 0; gameStartTime = null;
+                    localStorage.removeItem('rlb_obs_lives');
+                    var _pid = localStorage.getItem('rlb_player_id');
+                    if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true });
+                    location.href = '../index.html';
+                }
+            );
         });
     }
 

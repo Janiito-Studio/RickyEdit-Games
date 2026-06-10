@@ -1427,7 +1427,7 @@
                 <button id="startExtraLifeBtn" class="extra-life-btn" type="button">
                     <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
                 </button>
-                <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');var _pid=localStorage.getItem('rlb_player_id');if(_pid)fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_'+encodeURIComponent(_pid)+'.json',{method:'DELETE'});location.href='../index.html'">
+                <button id="gameVolverBtn" class="icon-btn" type="button">
                     Volver
                 </button>
             </div>
@@ -1611,7 +1611,7 @@
             <button id="extraLifeBtn" class="extra-life-btn" type="button">
                 <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
             </button>
-            <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');var _pid=localStorage.getItem('rlb_player_id');if(_pid)fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_'+encodeURIComponent(_pid)+'.json',{method:'DELETE'});location.href='../index.html'">
+            <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');var _pid=localStorage.getItem('rlb_player_id');if(_pid)fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_'+encodeURIComponent(_pid)+'.json',{method:'DELETE',keepalive:true});location.href='../index.html'">
                 Volver
             </button>
         </div>
@@ -1892,7 +1892,7 @@
                     <li>¡Listo! Las vidas se actualizan en tiempo real</li>
                 </ol>
                 <hr class="upd-sep">
-                <p style="color: var(--muted); font-size: 0.9rem;">Si no activas vidas, puedes fallar sin límite. El sistema de vidas es completamente opcional.</p>
+                <p style="color: var(--muted);">Si no activas vidas, puedes fallar sin límite.</p>
             </div>
         </article>
     </div>
@@ -1929,6 +1929,7 @@
             <img src="../Iconos RickyEdit Web/Vida Rota.png" alt="" class="gameover-icon">
             <h2>Game Over</h2>
             <p>Te quedaste sin vidas</p>
+            <div class="gameover-hearts" id="gameoverHearts"></div>
             <div class="gameover-score" id="gameoverScore"></div>
             <div class="gameover-actions">
                 <button id="gameoverRestartBtn" class="btn-restart"><img src="../Reiniciar.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Reintentar</button>
@@ -2105,6 +2106,8 @@
         function resetLivesToLobby() {
             livesEnabled = false;
             updateLivesDisplay();
+            try { localStorage.removeItem('rlb_obs_lives'); } catch(e) {}
+            try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true }); } catch(e) {}
             if (window.RlbPlayer) RlbPlayer.signalLobby();
         }
 
@@ -2142,8 +2145,22 @@
             const scoreVal = state.score || 0;
             document.getElementById('gameoverScore').textContent = scoreVal > 0 ? scoreVal + ' puntos' : '';
 
+            var heartsEl = document.getElementById('gameoverHearts');
+            if (heartsEl) {
+                heartsEl.innerHTML = '';
+                for (var i = 0; i < MAX_LIVES; i++) {
+                    var img = document.createElement('img');
+                    img.src = '../Iconos RickyEdit Web/Vida Rota.png';
+                    img.alt = 'Sin vida';
+                    heartsEl.appendChild(img);
+                }
+            }
+
             const overlay = document.getElementById('gameoverOverlay');
             overlay.classList.add('show');
+
+            try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: 0, max: MAX_LIVES })); } catch(e) {}
+            try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lives: 0, max: MAX_LIVES }) }); } catch(e) {}
 
             if (!usedExtraLife) {
                 RickyLeaderboard.save('songless', {
@@ -2230,13 +2247,17 @@
             modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
         }
 
-        function addExtraLife() {
+        function addExtraLife(fromStart) {
+            if (fromStart) {
+                showExtraLifeToast('Dale a empezar para usarlo.');
+                return;
+            }
             if (!livesEnabled) {
                 showExtraLifeToast('Primero activa las vidas para usar este botón.');
                 return;
             }
             if (lives >= MAX_LIVES) {
-                showExtraLifeToast('Ya tienes las vidas al máximo.');
+                showExtraLifeToast('Ya tienes todas las vidas.');
                 return;
             }
             function doAdd() {
@@ -2254,8 +2275,8 @@
             }
         }
 
-        document.getElementById('extraLifeBtn').addEventListener('click', function () { playSound('click'); addExtraLife(); });
-        document.getElementById('startExtraLifeBtn').addEventListener('click', function () { playSound('click'); addExtraLife(); });
+        document.getElementById('extraLifeBtn').addEventListener('click', function () { playSound('click'); addExtraLife(false); });
+        document.getElementById('startExtraLifeBtn').addEventListener('click', function () { playSound('click'); addExtraLife(true); });
 
         const $ = (id) => document.getElementById(id);
         const els = {
@@ -2487,7 +2508,8 @@
                     maxStreak: state.maxStreak || 0,
                     lives: livesEnabled ? lives : null,
                     maxLives: livesEnabled ? MAX_LIVES : null
-                }, () => {
+                }, (savedData) => {
+                    RickyLeaderboard.showSaveToast('songless', savedData);
                     els.reveal.classList.remove('show');
                     els.revealMedia.innerHTML = "";
                     document.getElementById('startScreen').classList.remove('hide');
@@ -3680,7 +3702,8 @@
                     maxStreak: state.maxStreak || 0,
                     lives: livesEnabled ? lives : null,
                     maxLives: livesEnabled ? MAX_LIVES : null
-                }, () => {
+                }, (savedData) => {
+                    RickyLeaderboard.showSaveToast('songless', savedData);
                     resetLivesToLobby();
                     stopPlayback();
                 document.getElementById('completionOverlay').classList.remove('show');
@@ -3707,7 +3730,7 @@
                     maxStreak: state.maxStreak || 0,
                     lives: livesEnabled ? lives : null,
                     maxLives: livesEnabled ? MAX_LIVES : null
-                }, () => {});
+                }, (savedData) => { RickyLeaderboard.showSaveToast('songless', savedData); });
             }
             resetLivesToLobby();
             document.getElementById('startScreen').classList.remove('hide');
@@ -3720,6 +3743,53 @@
             updateStats();
             renderSonglessLeaderboard();
         });
+
+        // Game topbar Volver — confirm exit
+        const gameVolverBtn = document.getElementById('gameVolverBtn');
+        if (gameVolverBtn) {
+            gameVolverBtn.addEventListener('click', () => {
+                playSound('click');
+                const hasScore = state.score > 0;
+                if (!hasScore) {
+                    localStorage.removeItem('rlb_obs_lives');
+                    const _pid = localStorage.getItem('rlb_player_id');
+                    if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true });
+                    location.href = '../index.html';
+                    return;
+                }
+                RickyLeaderboard.showExitConfirm(
+                    () => {
+                        localStorage.removeItem('rlb_obs_lives');
+                        const _pid = localStorage.getItem('rlb_player_id');
+                        if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true });
+                        location.href = '../index.html';
+                    },
+                    () => {
+                        stopPlayback();
+                        const elapsed = state.gameStartTime ? ((Date.now() - state.gameStartTime) / 1000).toFixed(1) : null;
+                        const channel = state.isSecondaryMode ? 'secondary' : (state.isSongsMode ? 'songs' : (state.pool && state.pool.length > (window.RICKY_VIDEOS || []).length ? 'both' : 'principal'));
+                        RickyLeaderboard.save('songless', {
+                            score: state.score,
+                            difficulty: state.isEasyMode ? 'easy' : 'normal',
+                            channel,
+                            time: elapsed ? parseFloat(elapsed) : null,
+                            correct: state.correct || 0,
+                            total: (state.correct || 0) + (state.incorrect || 0),
+                            maxStreak: state.maxStreak || 0,
+                            lives: livesEnabled ? lives : null,
+                            maxLives: livesEnabled ? MAX_LIVES : null
+                        }, (savedData) => {
+                            RickyLeaderboard.showSaveToast('songless', savedData);
+                        });
+                        state.playedSongs.clear(); state.score = 0; state.streak = 0; state.correct = 0; state.incorrect = 0;
+                        localStorage.removeItem('rlb_obs_lives');
+                        const _pid = localStorage.getItem('rlb_player_id');
+                        if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true });
+                        location.href = '../index.html';
+                    }
+                );
+            });
+        }
 
         renderSonglessLeaderboard();
         RickyLeaderboard.onScoresUpdated(function () { renderSonglessLeaderboard(); });

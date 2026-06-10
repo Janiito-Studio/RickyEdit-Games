@@ -473,6 +473,8 @@ function updateLivesDisplay() {
 function resetLivesToLobby() {
     livesEnabled = false;
     updateLivesDisplay();
+    try { localStorage.removeItem('rlb_obs_lives'); } catch(e) {}
+    try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true }); } catch(e) {}
     if (window.RlbPlayer) RlbPlayer.signalLobby();
 }
 
@@ -503,7 +505,22 @@ function gameOverLives() {
 
     const scoreVal = score || 0;
     document.getElementById('gameoverScore').textContent = scoreVal > 0 ? scoreVal + ' puntos' : '';
+
+    var heartsEl = document.getElementById('gameoverHearts');
+    if (heartsEl) {
+        heartsEl.innerHTML = '';
+        for (var i = 0; i < MAX_LIVES; i++) {
+            var img = document.createElement('img');
+            img.src = '../Iconos RickyEdit Web/Vida Rota.png';
+            img.alt = 'Sin vida';
+            heartsEl.appendChild(img);
+        }
+    }
+
     document.getElementById('gameoverOverlay').classList.add('show');
+
+    try { localStorage.setItem('rlb_obs_lives', JSON.stringify({ lives: 0, max: MAX_LIVES })); } catch(e) {}
+    try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lives: 0, max: MAX_LIVES }) }); } catch(e) {}
 
     if (!usedExtraLife) {
         RickyLeaderboard.save('mascaro', {
@@ -574,13 +591,17 @@ function showExtraLifeConfirm(onConfirm) {
     modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
 }
 
-function addExtraLife() {
+function addExtraLife(fromStart) {
+    if (fromStart) {
+        showExtraLifeToast('Dale a empezar para usarlo.');
+        return;
+    }
     if (!livesEnabled) {
         showExtraLifeToast('Primero activa las vidas para usar este botón.');
         return;
     }
     if (lives >= MAX_LIVES) {
-        showExtraLifeToast('Ya tienes las vidas al máximo.');
+        showExtraLifeToast('Ya tienes todas las vidas.');
         return;
     }
     function doAdd() {
@@ -598,8 +619,8 @@ function addExtraLife() {
     }
 }
 
-document.getElementById('extraLifeBtn').addEventListener('click', function () { playSound('click'); addExtraLife(); });
-document.getElementById('startExtraLifeBtn').addEventListener('click', function () { playSound('click'); addExtraLife(); });
+document.getElementById('extraLifeBtn').addEventListener('click', function () { playSound('click'); addExtraLife(false); });
+document.getElementById('startExtraLifeBtn').addEventListener('click', function () { playSound('click'); addExtraLife(true); });
 
 // Formatear precio
 function formatPrice(value) {
@@ -626,8 +647,8 @@ function updateCounters() {
 // 3. No se repitan consecutivamente, utilizando colas mezcladas sin repetición.
 function applyImageGlow(imgEl, wrapperEl, type) {
     const bgColor = type === 'skin' ? '241, 196, 15' : '56, 212, 255';
-    imgEl.style.filter = 'drop-shadow(0 0 12px rgba(241, 196, 15, 0.7)) drop-shadow(0 0 30px rgba(241, 196, 15, 0.4)) drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4))';
-    wrapperEl.style.background = `radial-gradient(ellipse at 50% 50%, rgba(241, 196, 15, 0.35), rgba(${bgColor}, 0.1) 50%, transparent 75%)`;
+    imgEl.style.filter = 'drop-shadow(0 0 12px rgba(255, 255, 255, 0.7)) drop-shadow(0 0 30px rgba(255, 255, 255, 0.3)) drop-shadow(0 6px 16px rgba(0, 0, 0, 0.4))';
+    wrapperEl.style.background = `radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.2), rgba(${bgColor}, 0.08) 50%, transparent 75%)`;
 }
 
 function getRandomPair() {
@@ -867,7 +888,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.lives-selector').forEach(selector => {
         const hearts = selector.querySelectorAll('.lives-heart-btn');
         const countEl = selector.querySelector('.lives-selector-count');
-        if (countEl) countEl.textContent = livesEnabled ? String(MAX_LIVES) : '--';
+        if (countEl) countEl.textContent = livesEnabled ? String(MAX_LIVES) : '';
         hearts.forEach(btn => {
             btn.addEventListener('click', () => {
                 playSound('click');
@@ -877,7 +898,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     try { localStorage.removeItem('rlb_obs_lives'); } catch(e) {}
         try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE' }); } catch(e) {}
                     hearts.forEach(h => h.classList.remove('active'));
-                    if (countEl) countEl.textContent = '--';
+                    if (countEl) countEl.textContent = '';
                 } else {
                     livesEnabled = true;
                     if (window.RlbPlayer) RlbPlayer.signalGame();
@@ -1012,19 +1033,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 lives: livesEnabled ? lives : null,
                 maxLives: livesEnabled ? MAX_LIVES : null
             }, (savedData) => {
-                setTimeout(() => {
-                    const allScores = RickyLeaderboard.getAll('mascaro');
-                    const rank = allScores.findIndex(s => s.playerId === savedData.playerId) + 1;
-                    const toast = document.createElement('div');
-                    toast.className = 'save-toast';
-                    toast.innerHTML = '<span style="color:#2ecc71;">&#10003;</span> Guardado correctamente. Has quedado en la <strong>#' + rank + '</strong> posición del top.';
-                    document.body.appendChild(toast);
-                    requestAnimationFrame(() => toast.classList.add('show'));
-                    setTimeout(() => {
-                        toast.classList.remove('show');
-                        setTimeout(() => toast.remove(), 400);
-                    }, 3500);
-                }, 600);
+                RickyLeaderboard.showSaveToast('mascaro', savedData);
             });
         }
         resetLivesToLobby();
@@ -1037,6 +1046,57 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('streak').textContent = '0';
         renderLeaderboard();
     });
+
+    // Game topbar Volver — confirm exit
+    var gameVolverBtn = document.getElementById('gameVolverBtn');
+    if (gameVolverBtn) {
+        gameVolverBtn.addEventListener('click', function () {
+            playSound('click');
+            var hasScore = score > 0;
+            if (!hasScore) {
+                localStorage.removeItem('rlb_obs_lives');
+                var _pid = localStorage.getItem('rlb_player_id');
+                if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true });
+                location.href = '../index.html';
+                return;
+            }
+            RickyLeaderboard.showExitConfirm(
+                function () {
+                    localStorage.removeItem('rlb_obs_lives');
+                    var _pid = localStorage.getItem('rlb_player_id');
+                    if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true });
+                    location.href = '../index.html';
+                },
+                function () {
+                    var elapsed = gameStartTime ? ((Date.now() - gameStartTime) / 1000).toFixed(1) : null;
+                    var total = correctCount + incorrectCount;
+                    var pct = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+                    if (!usedExtraLife) {
+                        RickyLeaderboard.save('mascaro', {
+                            score: score,
+                            difficulty: easyMode ? 'easy' : 'normal',
+                            time: elapsed ? parseFloat(elapsed) : null,
+                            correct: correctCount,
+                            total: total,
+                            percent: pct,
+                            maxStreak: highestStreak,
+                            lives: livesEnabled ? lives : null,
+                            maxLives: livesEnabled ? MAX_LIVES : null
+                        }, function (savedData) {
+                            RickyLeaderboard.showSaveToast('mascaro', savedData);
+                        });
+                    }
+                    resetLivesToLobby();
+                    score = 0; streak = 0; roundCount = 0; correctCount = 0; incorrectCount = 0;
+                    skinQueue = []; realQueue = []; gameStartTime = null; usedExtraLife = false;
+                    localStorage.removeItem('rlb_obs_lives');
+                    var _pid = localStorage.getItem('rlb_player_id');
+                    if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true });
+                    location.href = '../index.html';
+                }
+            );
+        });
+    }
 
     updateLivesDisplay();
     renderLeaderboard();

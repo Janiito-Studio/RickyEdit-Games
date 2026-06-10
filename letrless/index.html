@@ -1008,7 +1008,7 @@
                 <button id="startExtraLifeBtn" class="extra-life-btn" type="button">
                     <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
                 </button>
-                <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');var _pid=localStorage.getItem('rlb_player_id');if(_pid)fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_'+encodeURIComponent(_pid)+'.json',{method:'DELETE'});location.href='../index.html'">Volver</button>
+            <button id="gameVolverBtn" class="icon-btn" type="button">Volver</button>
             </div>
         </nav>
 
@@ -1021,14 +1021,14 @@
         <div class="mode-cards">
             <div class="mode-card" id="normalModeCard">
                 <button class="mode-card-toggle" id="normalModeToggle" type="button">
-                    <span><img src="../icon_songless.png" alt="" style="width:40px;height:40px;vertical-align:middle;margin-right:4px;"> Normal</span>
+                    <span><img src="../Mando.png" alt="" style="width:40px;height:40px;vertical-align:middle;margin-right:4px;"> Normal</span>
                     <span class="mode-card-chevron">▼</span>
                 </button>
                 <div class="mode-card-panel" id="normalModePanel">
                     <div class="mode-panel-content">
                         <div class="mode-diff-row">
                             <button id="startEasyBtn" class="mode-diff-btn" type="button"><img src="../Iconos/Dificultad%20dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Fácil</button>
-                            <button id="startNormalBtn" class="mode-diff-btn active" type="button"><img src="../icon_songless.png" alt="" class="rlb-icon-img"> Normal</button>
+                            <button id="startNormalBtn" class="mode-diff-btn active" type="button"><img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal</button>
                             <button id="startHardBtn" class="mode-diff-btn" type="button"><img src="../Iconos/Dificultad%20dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Difícil</button>
                         </div>
                         <div class="mode-diff-row">
@@ -1069,7 +1069,7 @@
             <button id="extraLifeBtn" class="extra-life-btn" type="button">
                 <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
             </button>
-            <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');var _pid=localStorage.getItem('rlb_player_id');if(_pid)fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_'+encodeURIComponent(_pid)+'.json',{method:'DELETE'});location.href='../index.html'">Volver</button>
+            <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');var _pid=localStorage.getItem('rlb_player_id');if(_pid)fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_'+encodeURIComponent(_pid)+'.json',{method:'DELETE',keepalive:true});location.href='../index.html'">Volver</button>
         </div>
     </nav>
 
@@ -1245,6 +1245,7 @@
             <img src="../Iconos RickyEdit Web/Vida Rota.png" alt="" class="gameover-icon">
             <h2>Game Over</h2>
             <p>Te quedaste sin vidas</p>
+            <div class="gameover-hearts" id="gameoverHearts"></div>
             <div class="gameover-score" id="gameoverScore"></div>
             <div class="gameover-actions">
                 <button id="gameoverRestartBtn" class="btn-restart"><img src="../Reiniciar.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Reintentar</button>
@@ -1270,7 +1271,7 @@
             <div class="letter-body">
                 <p><strong style="color:var(--yellow);"><img src="../Iconos/Dificultad%20dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Fácil</strong><br>
                 Las frases elegidas tienen al menos 7 palabras. Más pistas disponibles antes de quedarte sin palabras.</p>
-                <p><strong style="color:var(--pink);"><img src="../icon_songless.png" alt="" class="rlb-icon-img"> Normal</strong><br>
+                <p><strong style="color:var(--pink);"><img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal</strong><br>
                 Las frases elegidas tienen al menos 5 palabras. El equilibrio perfecto.</p>
                 <p><strong style="color:var(--pink-2);"><img src="../Iconos/Dificultad%20dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Difícil</strong><br>
                 Las frases elegidas tienen al menos 3 palabras. Menos pistas, más reto.</p>

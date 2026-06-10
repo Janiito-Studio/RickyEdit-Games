@@ -47,6 +47,11 @@
             0%, 100% { transform: translate3d(0, 0, 0); }
             50% { transform: translate3d(0, -12px, 0); }
         }
+        @keyframes heart-death-obs {
+            0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.4; }
+            25% { transform: scale(0.9) rotate(-5deg); opacity: 0.3; }
+            75% { transform: scale(0.9) rotate(5deg); opacity: 0.3; }
+        }
         @keyframes logo-float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-8px); }
@@ -97,16 +102,19 @@
                     var img = document.createElement('img');
                     img.src = i < lives ? GAME_PATH + 'Vida Entera.png' : GAME_PATH + 'Vida Rota.png';
                     img.alt = i < lives ? 'Vida' : 'Sin vida';
-                    if (i >= lives) img.className = 'lost';
-                    img.style.animationDelay = (i * 0.15) + 's';
+                    if (i >= lives) {
+                        img.className = 'lost';
+                        img.style.animation = lives === 0 ? 'heart-death-obs 1.8s ease-in-out infinite ' + (i * 0.15) + 's' : '';
+                    }
+                    img.style.animationDelay = lives === 0 ? '' : (i * 0.15) + 's';
                     el.appendChild(img);
                 }
             } else {
                 hearts.forEach(function(img, i) {
                     img.src = i < lives ? GAME_PATH + 'Vida Entera.png' : GAME_PATH + 'Vida Rota.png';
                     img.alt = i < lives ? 'Vida' : 'Sin vida';
-                    if (i < lives) img.classList.remove('lost');
-                    else img.classList.add('lost');
+                    if (i < lives) { img.classList.remove('lost'); img.style.animation = ''; }
+                    else { img.classList.add('lost'); img.style.animation = lives === 0 ? 'heart-death-obs 1.8s ease-in-out infinite ' + (i * 0.15) + 's' : ''; }
                 });
             }
             lastData = JSON.stringify(data);
@@ -118,7 +126,7 @@
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
                     if (data !== null) updateDisplay(data);
-                    else pollLocalStorage();
+                    else { updateDisplay(null); }
                 })
                 .catch(function() { pollLocalStorage(); });
         }

@@ -41,7 +41,8 @@
     var p = location.pathname;
     if (p.indexOf('/songless') !== -1 || p.indexOf('/emojless') !== -1 ||
         p.indexOf('/thumbnail-blur') !== -1 || p.indexOf('/mas-caro') !== -1 ||
-        p.indexOf('/letrless') !== -1 || p.indexOf('/emojiplay') !== -1 ||
+        p.indexOf('/letrless') !== -1 || p.indexOf('/pasapalabras') !== -1 ||
+        p.indexOf('/emojiplay') !== -1 ||
         p.indexOf('/trivia') !== -1 || p.indexOf('/find-diff') !== -1) {
       return '../';
     }

@@ -281,7 +281,7 @@
                 <button id="startExtraLifeBtn" class="extra-life-btn" type="button">
                     <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
                 </button>
-                <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');var _pid=localStorage.getItem('rlb_player_id');if(_pid)fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_'+encodeURIComponent(_pid)+'.json',{method:'DELETE'});location.href='../index.html'">Volver</button>
+            <button id="gameVolverBtn" class="icon-btn" type="button">Volver</button>
             </div>
         </nav>
 
@@ -395,7 +395,7 @@
             <button id="extraLifeBtn" class="extra-life-btn" type="button">
                 <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
             </button>
-            <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');var _pid=localStorage.getItem('rlb_player_id');if(_pid)fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_'+encodeURIComponent(_pid)+'.json',{method:'DELETE'});location.href='../index.html'">Volver</button>
+            <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');var _pid=localStorage.getItem('rlb_player_id');if(_pid)fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_'+encodeURIComponent(_pid)+'.json',{method:'DELETE',keepalive:true});location.href='../index.html'">Volver</button>
         </div>
     </nav>
 
@@ -536,7 +536,7 @@
                     <li>¡Listo! Las vidas se actualizan en tiempo real</li>
                 </ol>
                 <hr class="upd-sep">
-                <p style="color: var(--muted); font-size: 0.9rem;">Si no activas vidas, puedes fallar sin límite.</p>
+                <p style="color: var(--muted);">Si no activas vidas, puedes fallar sin límite.</p>
             </div>
         </article>
     </div>
@@ -546,6 +546,7 @@
             <img src="../Iconos RickyEdit Web/Vida Rota.png" alt="" class="gameover-icon">
             <h2>Game Over</h2>
             <p>Te quedaste sin vidas</p>
+            <div class="gameover-hearts" id="gameoverHearts"></div>
             <div class="gameover-score" id="gameoverScore"></div>
             <div class="gameover-actions">
                 <button id="gameoverRestartBtn" class="btn-restart"><img src="../Reiniciar.png" alt="" style="width:1.5em;height:1.5em;vertical-align:middle;margin-right:6px;"> Reintentar</button>

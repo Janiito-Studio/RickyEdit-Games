@@ -1,0 +1,1263 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rickyedit Pasapalabras</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="icon" href="../pasapalabras.png" type="image/png" />
+    <link rel="stylesheet" href="../lives.css" />
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #18191c;
+            --card: rgba(34, 35, 41, 0.78);
+            --card-strong: #222329;
+            --dark: #0d0d10;
+            --pink: #ff33cc;
+            --pink-2: #ff168c;
+            --yellow: #f1c40f;
+            --cyan: #38d4ff;
+            --green: #36e28a;
+            --text: #fff;
+            --muted: #b9bbbe;
+            --line: rgba(255, 255, 255, 0.1);
+            --shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Outfit, system-ui, sans-serif;
+            background:
+                linear-gradient(135deg, rgba(255, 51, 204, 0.15), transparent 32rem),
+                var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        a { color: inherit; text-decoration: none; }
+        button, input { font: inherit; }
+        button { border: 0; cursor: pointer; }
+        button:disabled { cursor: not-allowed; filter: grayscale(0.8); opacity: 0.55; }
+
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            min-height: 62px;
+            padding: 8px clamp(16px, 4vw, 44px);
+            background: linear-gradient(90deg, var(--pink-2), var(--pink));
+            box-shadow: 0 8px 30px rgba(255, 51, 204, 0.3);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-logo {
+            width: min(220px, 48vw);
+            max-height: 48px;
+            object-fit: contain;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.55));
+        }
+
+        .nav-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: end;
+            gap: 10px;
+        }
+
+        .pill-link, .icon-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 40px;
+            border-radius: 999px;
+            padding: 0 14px;
+            border: 1px solid rgba(255, 255, 255, 0.24);
+            background: rgba(0, 0, 0, 0.18);
+            color: #fff;
+            font-family: inherit;
+            font-size: inherit;
+            font-weight: 800;
+            white-space: nowrap;
+            text-decoration: none;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .pill-link:hover, .icon-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(0, 0, 0, 0.32);
+        }
+
+        .extra-life-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-height: 40px;
+            border-radius: 999px;
+            padding: 0 14px;
+            border: 2px solid var(--green);
+            background: rgba(54, 226, 138, 0.15);
+            color: var(--green);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 800;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .extra-life-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(54, 226, 138, 0.25);
+        }
+
+        .extra-life-btn img { width: 1.4em; height: 1.4em; vertical-align: middle; }
+
+        .rlb-icon-img { width: 1.6em; height: 1.6em; vertical-align: middle; margin-right: 4px; }
+
+        /* ── Start Screen ── */
+        .start-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background:
+                linear-gradient(135deg, rgba(255, 51, 204, 0.15), transparent 32rem),
+                var(--bg);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+            gap: 24px;
+            transition: opacity 0.4s ease, visibility 0.4s ease;
+            padding: 80px 24px 40px;
+            text-align: center;
+        }
+
+        .start-screen.hide {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 50px;
+            max-width: 700px;
+        }
+
+        .hero-avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid var(--pink);
+            box-shadow: 0 0 25px rgba(255, 51, 204, 0.45);
+            object-fit: cover;
+            margin-bottom: 20px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .hero-section h1 {
+            font-size: clamp(2.4rem, 7vw, 6.8rem);
+            font-weight: 900;
+            line-height: 0.86;
+            letter-spacing: 0;
+            text-transform: lowercase;
+            margin: 0 0 12px;
+            text-shadow: 0 10px 36px rgba(0, 0, 0, 0.65);
+            color: #fff;
+        }
+
+        .hero-section p {
+            margin: 0;
+            max-width: 700px;
+            color: var(--muted);
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            font-weight: 600;
+        }
+
+        /* ── Mode Cards ── */
+        .mode-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            width: 100%;
+            max-width: 960px;
+            margin-top: 16px;
+            align-items: start;
+        }
+
+        .mode-card {
+            border-radius: 24px;
+            border: 1px solid var(--line);
+            background: var(--card);
+            overflow: visible;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .mode-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 30px 60px rgba(255, 51, 204, 0.15);
+            border-color: rgba(255, 51, 204, 0.25);
+        }
+
+        .mode-card-toggle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 20px 24px;
+            background: rgba(255, 51, 204, 0.08);
+            color: #fff;
+            font-size: 1.15rem;
+            font-weight: 900;
+            text-align: left;
+            border: none;
+            border-bottom: 1px solid var(--line);
+            border-radius: 24px;
+            cursor: pointer;
+            transition: background 0.2s ease, border-radius 0.2s ease, color 0.2s ease;
+        }
+
+        .mode-card-toggle:hover {
+            background: rgba(255, 51, 204, 0.15);
+        }
+
+        .mode-card.open .mode-card-toggle {
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            color: #0d0d10;
+            border-radius: 24px 24px 0 0;
+            border-bottom-color: transparent;
+        }
+
+        .mode-card-chevron {
+            transition: transform 0.25s ease;
+            font-size: 0.7rem;
+            opacity: 0.5;
+        }
+
+        .mode-card.open .mode-card-chevron {
+            transform: rotate(180deg);
+        }
+
+        .mode-card-panel {
+            width: 100%;
+            display: none;
+            background: var(--card);
+            border-top: 1px solid var(--line);
+            border-radius: 0 0 24px 24px;
+        }
+
+        .mode-card.open .mode-card-panel {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .mode-panel-content {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .mode-diff-row {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            width: 100%;
+            flex-wrap: wrap;
+        }
+
+        .mode-diff-btn {
+            font-size: 1.1rem;
+            font-weight: 900;
+            padding: 14px 32px;
+            border-radius: 50px;
+            color: #fff;
+            background: rgba(255, 51, 204, 0.18);
+            border: none;
+            position: relative;
+            transition: all 0.25s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .mode-diff-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 2px;
+            background: rgba(255, 51, 204, 0.5);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+            transition: background 0.25s ease;
+        }
+
+        .mode-diff-btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 51, 204, 0.3);
+        }
+
+        .mode-diff-btn:hover::before {
+            background: rgba(255, 51, 204, 0.8);
+        }
+
+        .mode-diff-btn.active {
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            color: #0d0d10;
+            box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
+        }
+
+        .mode-diff-btn.active::before {
+            background: transparent;
+        }
+
+        .mode-start-btn {
+            font-size: 1.3rem;
+            font-weight: 900;
+            padding: 16px 48px;
+            border-radius: 50px;
+            color: #0d0d10;
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .mode-start-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 51, 204, 0.65);
+        }
+        .mode-start-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .info-toggle-btn {
+            background: rgba(255,255,255,0.06); border: 1px solid var(--line);
+            border-radius: 12px; color: var(--muted); font-weight: 700;
+            padding: 10px 20px; cursor: pointer; font-size: 0.85rem;
+            transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px;
+            position: relative; z-index: 1;
+        }
+        .info-toggle-btn:hover {
+            background: rgba(255,51,204,0.12); color: #fff;
+            border-color: rgba(255,51,204,0.3); transform: translateY(-1px);
+        }
+
+        /* ── Hero (in-game) ── */
+        .hero {
+            position: relative;
+            min-height: 330px;
+            display: grid;
+            align-items: end;
+            overflow: hidden;
+            padding: 54px clamp(16px, 5vw, 68px) 86px;
+            background:
+                linear-gradient(135deg, rgba(255, 51, 204, 0.15), transparent 32rem),
+                var(--bg);
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: -50%;
+            background-image:
+                linear-gradient(45deg, var(--pink) 25%, transparent 25%),
+                linear-gradient(-45deg, var(--pink) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, var(--pink) 75%),
+                linear-gradient(-45deg, transparent 75%, var(--pink) 75%);
+            background-position: 0 0, 0 32px, 32px -32px, -32px 0;
+            background-size: 64px 64px;
+            opacity: 0.78;
+            animation: pattern 18s linear infinite;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(180deg, transparent 0%, var(--bg) 100%);
+            pointer-events: none;
+        }
+
+        @keyframes pattern { to { transform: translate(-128px, 128px); } }
+
+        .hero-inner {
+            position: relative;
+            z-index: 1;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(180px, 320px);
+            gap: clamp(24px, 5vw, 58px);
+            align-items: end;
+            width: min(1180px, 100%);
+            margin: 0 auto;
+        }
+
+        .hero-copy { display: grid; gap: 18px; }
+
+        .hero-copy h1 {
+            margin: 0;
+            max-width: 780px;
+            font-size: clamp(2.4rem, 7vw, 6.8rem);
+            line-height: 0.86;
+            letter-spacing: 0;
+            text-transform: lowercase;
+            text-shadow: 0 10px 36px rgba(0, 0, 0, 0.65);
+        }
+
+        .hero-copy p {
+            margin: 0;
+            max-width: 700px;
+            color: #f2edf4;
+            font-size: clamp(1rem, 2.4vw, 1.35rem);
+            font-weight: 600;
+        }
+
+        .avatar-card {
+            justify-self: end;
+            width: min(100%, 290px);
+            padding: 8px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, var(--pink), #ff9bdc);
+            box-shadow: 0 22px 58px rgba(0, 0, 0, 0.55);
+            transform: rotate(2deg);
+        }
+
+        .avatar-card img {
+            display: block;
+            width: 100%;
+            border-radius: 16px;
+        }
+
+        /* ── Shell / Window ── */
+        .shell {
+            position: relative;
+            z-index: 1;
+            width: min(1080px, calc(100% - 32px));
+            margin: -52px auto 40px;
+        }
+
+        .window {
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            background: rgba(14, 14, 18, 0.45);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(20px);
+            overflow: visible;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .window-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            background: rgba(0, 0, 0, 0.32);
+            border-bottom: 1px solid var(--line);
+            border-radius: 22px 22px 0 0;
+            overflow: hidden;
+        }
+
+        .window-dots { display: flex; gap: 8px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+        .dot-red { background: #ff5f56; }
+        .dot-yellow { background: #ffbd2e; }
+        .dot-green { background: #27c93f; }
+
+        .window-title {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            flex-grow: 1;
+            text-align: center;
+            margin-right: 48px;
+        }
+
+        .window-content { padding: 24px; }
+
+        .glass {
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            background: var(--card);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(18px);
+        }
+
+        /* ── Game Layout ── */
+        .game-layout {
+            display: grid;
+            grid-template-columns: 290px minmax(0, 1fr);
+            gap: 22px;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .hero-inner { grid-template-columns: 1fr; }
+            .avatar-card { justify-self: start; width: 210px; }
+            .game-layout { grid-template-columns: 1fr; }
+            .mystery-screen { min-height: 400px; }
+        }
+
+        .side { display: grid; gap: 18px; padding: 20px; }
+        .side h2, .reveal h2 { margin: 0; font-size: 1.35rem; letter-spacing: 0; }
+
+        .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+        .stat {
+            padding: 14px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            background: rgba(255, 255, 255, 0.045);
+        }
+
+        .stat span {
+            display: block;
+            color: var(--muted);
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .stat strong {
+            display: block;
+            margin-top: 4px;
+            font-size: 1.7rem;
+            line-height: 1;
+        }
+
+        .hint-card {
+            padding: 16px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(255, 51, 204, 0.18), rgba(241, 196, 15, 0.13));
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #f3f3f3;
+        }
+
+        .hint-card p { margin: 8px 0 0; color: var(--muted); }
+
+        /* ── Game Card ── */
+        .mystery-screen {
+            position: relative;
+            min-height: 480px;
+            overflow: hidden;
+            background:
+                linear-gradient(90deg,
+                    rgba(255, 51, 204, 0.1) 1px,
+                    transparent 1px) 0 0 / 34px 34px,
+                linear-gradient(180deg,
+                    rgba(255, 255, 255, 0.06) 1px,
+                    transparent 1px) 0 0 / 34px 34px,
+                radial-gradient(circle at 50% 44%,
+                    rgba(255, 51, 204, 0.45),
+                    transparent 14rem),
+                #101014;
+            border-top-left-radius: 22px;
+            border-top-right-radius: 22px;
+            display: grid;
+            place-items: center;
+        }
+
+        .curtain {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            background:
+                linear-gradient(90deg, rgba(255, 51, 204, 0.1) 1px, transparent 1px) 0 0 / 34px 34px,
+                linear-gradient(180deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px) 0 0 / 34px 34px,
+                radial-gradient(circle at 50% 44%, rgba(255, 51, 204, 0.45), transparent 14rem),
+                #101014;
+        }
+
+        /* ── Rosco Wheel ── */
+        .rosco-container {
+            position: relative;
+            width: 380px;
+            height: 380px;
+            z-index: 2;
+        }
+
+        .rosco-svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 4px 20px rgba(0, 0, 0, 0.3));
+        }
+
+        .rosco-letter {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .rosco-letter circle {
+            fill: rgba(255, 255, 255, 0.06);
+            stroke: rgba(255, 255, 255, 0.18);
+            stroke-width: 2;
+            transition: all 0.3s ease;
+        }
+
+        .rosco-letter text {
+            fill: var(--muted);
+            font-size: 13px;
+            font-weight: 800;
+            font-family: Outfit, sans-serif;
+            transition: fill 0.3s ease;
+        }
+
+        .rosco-letter.current circle {
+            fill: rgba(255, 51, 204, 0.3);
+            stroke: var(--pink);
+            stroke-width: 3;
+            filter: drop-shadow(0 0 16px rgba(255, 51, 204, 0.6));
+        }
+
+        .rosco-letter.current text {
+            fill: #fff;
+            font-size: 15px;
+        }
+
+        .rosco-letter.correct circle {
+            fill: rgba(54, 226, 138, 0.3);
+            stroke: var(--green);
+            stroke-width: 3;
+            filter: drop-shadow(0 0 8px rgba(54, 226, 138, 0.3));
+        }
+
+        .rosco-letter.correct text {
+            fill: var(--green);
+        }
+
+        .rosco-letter.wrong circle {
+            fill: rgba(231, 76, 60, 0.3);
+            stroke: #e74c3c;
+            stroke-width: 3;
+            filter: drop-shadow(0 0 8px rgba(231, 76, 60, 0.3));
+        }
+
+        .rosco-letter.wrong text {
+            fill: #e74c3c;
+        }
+
+        .rosco-letter.skipped circle {
+            fill: rgba(241, 196, 15, 0.2);
+            stroke: var(--yellow);
+            stroke-width: 2;
+            stroke-dasharray: 5 3;
+        }
+
+        .rosco-letter.skipped text {
+            fill: var(--yellow);
+        }
+
+        .rosco-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+        }
+
+        .rosco-center .letter-big {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--pink);
+            text-shadow: 0 0 24px rgba(255, 51, 204, 0.5);
+            line-height: 1;
+        }
+
+        .rosco-center .letter-hint {
+            font-size: 0.85rem;
+            color: var(--muted);
+            max-width: 130px;
+            margin-top: 4px;
+        }
+
+        /* ── Controls ── */
+        .controls {
+            display: grid;
+            gap: 18px;
+            padding: 22px;
+            background: rgba(14, 14, 18, 0.56);
+            border-radius: 0 0 21px 21px;
+        }
+
+        .question-display {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .question-display .q-letter {
+            font-size: 1.1rem;
+            font-weight: 900;
+            color: var(--pink);
+        }
+
+        .question-display .q-text {
+            font-size: 1rem;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        .guess-row {
+            position: relative;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            gap: 10px;
+        }
+
+        input {
+            min-width: 0;
+            min-height: 54px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            padding: 0 16px;
+            outline: 0;
+            background: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        input:focus {
+            border-color: var(--pink);
+            box-shadow: 0 0 0 4px rgba(255, 51, 204, 0.16);
+        }
+
+        .btn {
+            min-height: 54px;
+            border-radius: 14px;
+            padding: 0 18px;
+            color: #111;
+            font-weight: 900;
+            box-shadow: 0 8px 0 rgba(0, 0, 0, 0.3);
+            transition: transform 0.16s ease, box-shadow 0.16s ease;
+            white-space: nowrap;
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(3px);
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.32);
+        }
+
+        .btn-primary { background: linear-gradient(135deg, var(--yellow), var(--pink)); color: #111; }
+        .btn-blue { background: linear-gradient(135deg, var(--pink-2), var(--pink)); color: #fff; }
+        .btn-dark { background: rgba(255, 51, 204, 0.1); color: #fff; border: 1px solid var(--pink); }
+
+        .btn-pasapalabras {
+            background: rgba(241, 196, 15, 0.15);
+            color: var(--yellow);
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            box-shadow: 0 8px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-pasapalabras:hover:not(:disabled) {
+            transform: translateY(3px);
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.32);
+        }
+
+        .actions { display: flex; flex-wrap: wrap; gap: 10px; }
+        .status { min-height: 26px; color: var(--muted); font-weight: 700; }
+
+        .timer-display {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--yellow);
+        }
+
+        .timer-display.warning { color: #e74c3c; animation: pulse 1s ease-in-out infinite; }
+
+        /* ── Result Overlay ── */
+        .result-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+        }
+
+        .result-overlay.show { display: flex; }
+
+        .result-card {
+            background: var(--card-strong);
+            border: 1px solid var(--line);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5);
+        }
+
+        .result-card h2 {
+            font-size: 2rem;
+            font-weight: 900;
+            margin: 0 0 12px;
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .result-card .result-score {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--yellow);
+            margin: 16px 0;
+        }
+
+        .result-card .result-stats {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin: 16px 0;
+            color: var(--muted);
+        }
+
+        .result-card .result-stats span { font-weight: 700; color: var(--text); }
+
+        .result-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+
+        /* ── Footer ── */
+        footer {
+            margin-top: 42px;
+            padding: 38px 18px 52px;
+            background: #111214;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .footer-links a {
+            min-height: 48px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 18px;
+            border-radius: 999px;
+            background: #1a1b1e;
+            border: 1px solid var(--line);
+            color: var(--yellow);
+            font-weight: 900;
+            box-shadow: 0 6px 0 rgba(255, 51, 204, 0.42);
+            text-decoration: none;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            transform: translateY(-2px);
+            background: rgba(0, 0, 0, 0.32);
+        }
+
+        footer p { margin: 0; color: rgba(255, 255, 255, 0.5); font-weight: 700; }
+
+        /* ── Modals ── */
+        .modal {
+            position: fixed; inset: 0; z-index: 1100;
+            display: none; align-items: center; justify-content: center;
+            padding: 20px; background: rgba(0,0,0,0.68); backdrop-filter: blur(8px);
+        }
+        .modal.show { display: flex; }
+
+        .letter {
+            width: min(720px, 100%); max-height: min(760px, calc(100vh - 40px));
+            overflow: auto; border-radius: 22px;
+            border: 1px solid rgba(255,255,255,0.16);
+            background: linear-gradient(135deg, rgba(255,51,204,0.12), rgba(241,196,15,0.08)), #18191c;
+            box-shadow: var(--shadow);
+        }
+        .letter-head {
+            position: sticky; top: 0;
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
+            padding: 18px 20px;
+            background: linear-gradient(90deg, var(--pink-2), var(--pink));
+        }
+        .letter-head strong { font-size: 1.15rem; }
+        .close-btn {
+            width: 38px; height: 38px; border-radius: 50%;
+            background: rgba(0,0,0,0.26); color: #fff;
+            font-size: 1.3rem; font-weight: 900; border: none; cursor: pointer;
+        }
+        .letter-body {
+            padding: 22px 22px 6px; color: #f7f2f7;
+            font-size: 1.05rem; line-height: 1.65;
+        }
+        .letter-body p { margin: 0 0 16px; }
+
+        .upd-sep { border: none; border-top: 1px solid rgba(255, 255, 255, 0.1); margin: 12px 0; }
+        .upd-highlight { color: var(--yellow); font-weight: 700; }
+
+        /* ── Animations ── */
+        @keyframes float { 50% { transform: translateY(-10px); } }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @media (max-width: 640px) {
+            .hero { padding-bottom: 70px; }
+            .topbar { align-items: flex-start; flex-direction: column; }
+            .nav-actions { justify-content: start; }
+            .guess-row { grid-template-columns: 1fr; }
+            .actions .btn, .guess-row .btn { width: 100%; }
+            .rosco-container { width: 280px; height: 280px; }
+            .mystery-screen { min-height: 400px; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="startScreen" class="start-screen">
+        <nav class="topbar" style="position: fixed; top: 0; left: 0; right: 0; z-index: 1001;">
+            <div class="logo-container">
+                <img class="nav-logo" src="../Rickyedit Games.png" alt="Rickyedit Games Logo" />
+            </div>
+            <div class="nav-actions">
+                <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
+                <button id="startOpenUpdatesBtn" class="icon-btn" type="button">Info</button>
+                <button id="startExtraLifeBtn" class="extra-life-btn" type="button">
+                    <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
+                </button>
+                <button class="icon-btn" type="button" onclick="localStorage.removeItem('rlb_obs_lives');var _pid=localStorage.getItem('rlb_player_id');if(_pid)fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_'+encodeURIComponent(_pid)+'.json',{method:'DELETE',keepalive:true});location.href='../index.html'">Volver</button>
+            </div>
+        </nav>
+
+        <section class="hero-section">
+            <img class="hero-avatar" src="../Avatar Rickyedit.jpg" alt="Avatar Rickyedit" />
+            <h1>Rickyedit Pasapalabras</h1>
+            <p>Responde preguntas sobre RickyEdit letra a letra del abecedario. ¡Completa el rosco!</p>
+        </section>
+
+        <div class="mode-cards">
+            <div class="mode-card" id="normalModeCard">
+                <button class="mode-card-toggle" id="normalModeToggle" type="button">
+                    <span><img src="../Mando.png" alt="" style="width:40px;height:40px;vertical-align:middle;margin-right:4px;"> Normal</span>
+                    <span class="mode-card-chevron">▼</span>
+                </button>
+                <div class="mode-card-panel" id="normalModePanel">
+                    <div class="mode-panel-content">
+                        <div class="mode-diff-row">
+                            <button id="startEasyBtn" class="mode-diff-btn" type="button"><img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado</button>
+                            <button id="startNormalBtn" class="mode-diff-btn active" type="button"><img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal</button>
+                        </div>
+                        <div class="mode-diff-row">
+                            <div class="lives-selector">
+                                <span class="lives-selector-label">Vidas:</span>
+                                <button class="lives-heart-btn" data-lives="1" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="1 vida"></button>
+                                <button class="lives-heart-btn" data-lives="2" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="2 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="3" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="3 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="4" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="4 vidas"></button>
+                                <button class="lives-heart-btn" data-lives="5" type="button"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="5 vidas"></button>
+                                <span class="lives-selector-count"></span>
+                            </div>
+                        </div>
+                        <button class="info-toggle-btn" type="button" onclick="document.getElementById('infoModal').classList.add('show')"><img src="../Info.png" alt="" class="rlb-icon-img"> Info dificultades</button>
+                        <button class="info-toggle-btn" type="button" onclick="document.getElementById('infoLivesModal').classList.add('show')"><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" class="rlb-icon-img"> Info vidas</button>
+                        <button class="mode-start-btn" id="startGameBtn" type="button">Empezar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <nav class="topbar">
+        <div class="logo-container">
+            <img class="nav-logo" src="../Rickyedit Games.png" alt="Rickyedit Games Logo" />
+        </div>
+        <div class="nav-actions">
+            <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
+            <button id="openUpdatesBtn" class="icon-btn" type="button">Info</button>
+            <button id="extraLifeBtn" class="extra-life-btn" type="button">
+                <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
+            </button>
+            <button id="gameVolverBtn" class="icon-btn" type="button">
+                Volver
+            </button>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-inner">
+            <div class="hero-copy">
+                <h1>Rickyedit Pasapalabras</h1>
+                <p id="descriptionText">
+                    Responde preguntas sobre RickyEdit letra a letra del abecedario. ¡Completa todo el rosco!
+                </p>
+            </div>
+            <div class="avatar-card">
+                <img src="../Avatar Rickyedit.jpg" alt="Avatar Rickyedit" />
+            </div>
+        </div>
+    </header>
+
+    <main class="shell">
+        <div class="window glass">
+            <div class="window-header">
+                <div class="window-dots">
+                    <span class="dot dot-red"></span>
+                    <span class="dot dot-yellow"></span>
+                    <span class="dot dot-green"></span>
+                </div>
+                <div class="window-title">Partida</div>
+            </div>
+            <div class="window-content">
+                <section class="game-layout">
+                    <aside class="side glass">
+                        <h2>Panel de partida</h2>
+                        <div class="stats">
+                            <div class="stat">
+                                <span>Puntos</span>
+                                <strong id="score">0</strong>
+                            </div>
+                            <div class="stat">
+                                <span>Racha</span>
+                                <strong id="streak">0</strong>
+                            </div>
+                            <div class="stat">
+                                <span>Racha Max</span>
+                                <strong id="maxStreak">0</strong>
+                            </div>
+                            <div class="stat">
+                                <span>Rango</span>
+                                <strong id="rank" style="font-size: 1.25rem; margin-top: 8px;">Novato</strong>
+                            </div>
+                            <div class="stat">
+                                <span>Correctas</span>
+                                <strong id="correctCount">0</strong>
+                            </div>
+                            <div class="stat">
+                                <span>Restantes</span>
+                                <strong id="remainingCount">25</strong>
+                            </div>
+                        </div>
+                        <div class="hint-card">
+                            <strong>Cómo va</strong>
+                            <p>
+                                Aparecerá una letra del rosco con su pregunta. ¡Escribe la respuesta y avanza!
+                            </p>
+                        </div>
+                        <div class="hint-card">
+                            <strong>Pasapalabras</strong>
+                            <p id="segmentsInfo">
+                                Usa "Pasapalabras" para saltar una letra y volver a ella más tarde.
+                            </p>
+                        </div>
+                    </aside>
+
+                    <div>
+                        <article class="game-card glass">
+                            <div id="mysteryScreen" class="mystery-screen">
+                                <div id="livesDisplay" style="position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:10;display:none;gap:6px;font-size:1.8rem;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));pointer-events:none;"></div>
+                                <div class="rosco-container" id="roscoContainer"></div>
+                            </div>
+
+                            <div class="controls">
+                                <div id="timerDisplay" class="timer-display" style="display:none;"></div>
+                                <div id="questionDisplay" class="question-display">
+                                    <div class="q-letter" id="qLetter">-</div>
+                                    <div class="q-text" id="qText">Pulsa Empezar para jugar</div>
+                                </div>
+                                <div class="guess-row">
+                                    <input id="guessInput" type="text" autocomplete="off"
+                                        placeholder="Escribe tu respuesta" disabled />
+                                    <button id="guessBtn" class="btn btn-primary" type="button" disabled>
+                                        Adivinar
+                                    </button>
+                                </div>
+                                <div class="actions">
+                                    <button id="pasapalabrasBtn" class="btn btn-pasapalabras" type="button" disabled>
+                                        Pasapalabras
+                                    </button>
+                                    <button id="finalizeBtnMid" class="btn btn-dark" type="button">
+                                        Finalizar partida
+                                    </button>
+                                </div>
+                                <div id="status" class="status" role="status">
+                                    Pulsa Empezar para jugar
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <div id="resultOverlay" class="result-overlay">
+        <div class="result-card">
+            <h2 id="resultTitle">¡Rosco completado!</h2>
+            <div class="result-score" id="resultScore">0 puntos</div>
+            <div class="result-stats">
+                <div>Correctas: <span id="resultCorrect">0</span></div>
+                <div>Falladas: <span id="resultWrong">0</span></div>
+                <div>Tiempo: <span id="resultTime">0s</span></div>
+            </div>
+            <p id="resultMsg" style="color: var(--muted); margin: 12px 0;"></p>
+            <div class="result-actions">
+                <button id="resultRestartBtn" class="btn btn-blue" type="button">Volver a empezar</button>
+                <button id="resultFinalizeBtn" class="btn btn-primary" type="button">Finalizar</button>
+                <button id="resultHomeBtn" class="btn btn-dark" type="button">Volver al inicio</button>
+            </div>
+            <p style="color: var(--yellow); font-size: 0.85rem; font-weight: 700; margin-top: 16px;"><img src="../Info.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Dale a "Finalizar" para guardar tu puntuación en el leaderboard.</p>
+        </div>
+    </div>
+
+    <div id="gameoverOverlay" class="result-overlay">
+        <div class="result-card">
+            <img src="../Iconos RickyEdit Web/Vida Rota.png" alt="" style="width:80px;height:80px;margin-bottom:16px;">
+            <h2>Game Over</h2>
+            <p style="color: var(--muted);">Te quedaste sin vidas</p>
+            <div class="gameover-hearts" id="gameoverHearts"></div>
+            <div class="result-score" id="gameoverScore"></div>
+            <div class="result-actions">
+                <button id="gameoverRestartBtn" class="btn btn-blue" type="button">Reintentar</button>
+                <button id="gameoverHomeBtn" class="btn btn-dark" type="button">Inicio</button>
+            </div>
+            <p style="color: var(--muted); font-size: 0.78rem; margin-top: 12px;">Usa el botón +1 Vida en la barra superior para evitar el Game Over.</p>
+        </div>
+    </div>
+
+    <div style="width:100%;max-width:1080px;margin:24px auto;padding:0 16px;">
+        <div class="leaderboard-panel visible" id="leaderboardPanel">
+            <div id="leaderboardContainer"></div>
+        </div>
+    </div>
+
+    <div id="infoModal" class="modal" role="dialog" aria-modal="true">
+        <article class="letter">
+            <div class="letter-head">
+                <strong>Info Dificultades</strong>
+                <button class="close-btn" type="button" onclick="document.getElementById('infoModal').classList.remove('show')" aria-label="Cerrar">×</button>
+            </div>
+            <div class="letter-body">
+                <p><strong style="color:var(--yellow);"><img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado</strong><br>
+                Sin límite de tiempo. 3 vidas por defecto. Ideal para practicar.</p>
+                <p><strong style="color:var(--pink);"><img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal</strong><br>
+                120 segundos para completar el rosco. ¡Corre contra el tiempo!</p>
+                <hr class="upd-sep">
+                <p><strong style="color:var(--green);"><img src="../Iconos/Modo sin repetir.png" alt="" class="rlb-icon-img"> Pasapalabras</strong><br>
+                Puedes saltar letras y volver a ellas más tarde. Útil si no sabes una respuesta.</p>
+            </div>
+        </article>
+    </div>
+
+    <div id="infoLivesModal" class="modal" role="dialog" aria-modal="true">
+        <article class="letter">
+            <div class="letter-head">
+                <strong>Info Vidas</strong>
+                <button class="close-btn" type="button" onclick="document.getElementById('infoLivesModal').classList.remove('show')" aria-label="Cerrar">×</button>
+            </div>
+            <div class="letter-body">
+                <p><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> <strong style="color:var(--pink);">Sistema de vidas (opcional)</strong></p>
+                <ul>
+                    <li>Elige entre <strong>1 y 5 vidas</strong> haciendo clic en los corazones antes de empezar</li>
+                    <li>Cada <strong>respuesta fallida</strong> se pierde una vida</li>
+                    <li>Si pierdes todas las vidas, aparece el Game Over</li>
+                </ul>
+                <hr class="upd-sep">
+                <p><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> <strong style="color:var(--green);">Botón +1 Vida</strong></p>
+                <ul>
+                    <li>Puedes usarlo <strong>las veces que quieras</strong> (ilimitado)</li>
+                    <li>Sirve por si ocurre algún <strong>bug o problema técnico</strong></li>
+                    <li><strong>Importante:</strong> si usas el botón, tu puntuación <strong>no se guardará en el leaderboard</strong></li>
+                </ul>
+                <hr class="upd-sep">
+                <p><strong style="color:var(--cyan);"><img src="../Camara.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Cómo mostrar vidas en OBS</strong></p>
+                <ol>
+                    <li>En OBS, añade una nueva fuente de tipo <strong>"Navegador"</strong></li>
+                    <li>En la URL, pega: <a id="obsLivesLink" href="../obs-lives.html" target="_blank" style="color:var(--cyan);text-decoration:underline;">obs-lives.html</a></li>
+                    <li>Establece el ancho en <strong>800</strong> y el alto en <strong>200</strong> y ponlo donde quieras.</li>
+                    <li>¡Listo! Las vidas se actualizan en tiempo real</li>
+                </ol>
+                <hr class="upd-sep">
+                <p style="color: var(--muted);">Si no activas vidas, puedes fallar sin límite.</p>
+            </div>
+        </article>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="https://janiito-studio.github.io/RickyEdit-Web/" target="_blank" rel="noreferrer">Otros Proyectos Relacionados</a>
+            <a href="https://janiito-studio.github.io/Janiito-Studio/" target="_blank" rel="noreferrer">Mi Portafolios</a>
+        </div>
+        <p>© 2026 Rickyedit Games. Hecho por Jan (Discord: .janiito | Twitch: jasanzo)</p>
+    </footer>
+
+    <link rel="stylesheet" href="../leaderboard.css">
+    <link rel="stylesheet" href="../updates.css">
+    <link rel="stylesheet" href="../easter-egg.css">
+    <link rel="stylesheet" href="../volume.css">
+    <script src="../leaderboard.js?v=2.0"></script>
+    <script src="../updates.js"></script>
+    <script src="../easter-egg.js?v=2.0"></script>
+    <script src="../volume.js"></script>
+    <script src="../rlb-player.js"></script>
+    <script src="game.js?v=2.0"></script>
+</body>
+
+</html>

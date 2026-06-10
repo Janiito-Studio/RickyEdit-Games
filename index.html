@@ -222,6 +222,29 @@
             filter: brightness(0.6) grayscale(0.5);
         }
 
+        .mascaro-card .card-image-header {
+            background: radial-gradient(circle, rgba(241, 196, 15, 0.06) 0%, rgba(0, 0, 0, 0.35) 100%) !important;
+        }
+
+        .pasapalabras-card .card-image-header {
+            background: radial-gradient(circle, rgba(255, 51, 204, 0.06) 0%, rgba(0, 0, 0, 0.35) 100%);
+        }
+
+        .pasapalabras-card:hover {
+            box-shadow: 0 30px 60px rgba(255, 51, 204, 0.2) !important;
+            border-color: rgba(255, 51, 204, 0.35) !important;
+        }
+
+        .pasapalabras-card .card-badge {
+            background: rgba(255, 51, 204, 0.12);
+            color: var(--pink);
+            border: 1px solid rgba(255, 51, 204, 0.25);
+        }
+
+        .pasapalabras-card .card-action {
+            color: var(--pink);
+        }
+
         .arcade-card:hover .card-icon-img {
             transform: scale(1.15) rotate(3deg);
         }
@@ -230,6 +253,12 @@
             transform: translateY(-8px);
             box-shadow: 0 30px 60px rgba(255, 51, 204, 0.15);
             border-color: rgba(255, 51, 204, 0.25);
+        }
+
+        .mascaro-card:hover {
+            transform: translateY(-8px) !important;
+            box-shadow: 0 30px 60px rgba(241, 196, 15, 0.2) !important;
+            border-color: rgba(241, 196, 15, 0.35) !important;
         }
 
         .card-body {
@@ -643,6 +672,28 @@
                         <h2>¿Qué es más caro?</h2>
                         <p>El gran dilema: ¿Es una skin de Counter Strike más cara que un coche, un viaje o un reloj de
                             lujo en la vida real? ¡Atrévete a adivinar!</p>
+                    </div>
+                    <div class="card-action">
+                        JUGAR AHORA
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Tarjeta Pasapalabras -->
+            <a href="pasapalabras/index.html" class="arcade-card pasapalabras-card">
+                <div class="card-image-header">
+                    <img class="card-icon-img" src="pasapalabras.png" alt="Pasapalabras Icon">
+                </div>
+                <div class="card-body">
+                    <div>
+                        <span class="card-badge">Adivinar</span>
+                        <h2>Pasapalabras</h2>
+                        <p>Responde preguntas sobre RickyEdit letra a letra. ¡Completa todo el rosco!</p>
                     </div>
                     <div class="card-action">
                         JUGAR AHORA

@@ -87,6 +87,33 @@
     0%, 100% { transform: translate3d(0, 0, 0); }
     50% { transform: translate3d(0, -12px, 0); }
 }
+@keyframes heart-death {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(0.85); opacity: 0.3; }
+}
+@keyframes heart-death-obs {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.4; }
+    25% { transform: scale(0.9) rotate(-5deg); opacity: 0.3; }
+    75% { transform: scale(0.9) rotate(5deg); opacity: 0.3; }
+}
+
+/* ── Game Over hearts display ────────────────────────────── */
+.gameover-hearts {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 12px 0;
+}
+.gameover-hearts img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    animation: heart-death 1.8s ease-in-out infinite;
+}
+.gameover-hearts img:nth-child(2) { animation-delay: 0.15s; }
+.gameover-hearts img:nth-child(3) { animation-delay: 0.3s; }
+.gameover-hearts img:nth-child(4) { animation-delay: 0.45s; }
+.gameover-hearts img:nth-child(5) { animation-delay: 0.6s; }
 
 /* ── Game Over overlay ────────────────────────────────────── */
 .gameover-overlay {
@@ -193,9 +220,9 @@
     min-height: 40px;
     border-radius: 999px;
     padding: 0 14px;
-    border: 1px solid rgba(54, 226, 138, 0.4);
+    border: 2px solid var(--green);
     background: rgba(54, 226, 138, 0.15);
-    color: #fff;
+    color: var(--green);
     font-family: inherit;
     font-size: inherit;
     font-weight: 800;
