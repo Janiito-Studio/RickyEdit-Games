@@ -645,6 +645,55 @@ function doFinalize() {
     });
 }
 
+function confirmFinalize() {
+    if (window.RickyLeaderboard && typeof RickyLeaderboard.showFinalizeConfirm === 'function') {
+        RickyLeaderboard.showFinalizeConfirm(doFinalize);
+    } else if (confirm('¿Finalizar partida y guardar tu puntuación en el top?')) {
+        doFinalize();
+    }
+}
+
+function handleGameVolverClick(e) {
+    if (e) e.preventDefault();
+    playSound('click');
+    const hasScore = state.score > 0;
+    if (!hasScore) {
+        localStorage.removeItem('rlb_obs_lives');
+        const _pid = localStorage.getItem('rlb_player_id');
+        if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true });
+        location.href = '../index.html';
+        return;
+    }
+    RickyLeaderboard.showExitConfirm(
+        () => {
+            localStorage.removeItem('rlb_obs_lives');
+            const _pid = localStorage.getItem('rlb_player_id');
+            if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true });
+            location.href = '../index.html';
+        },
+        () => {
+            const elapsed = pasapalabrasGameStartTime ? ((Date.now() - pasapalabrasGameStartTime) / 1000).toFixed(1) : null;
+            RickyLeaderboard.save('pasapalabras', {
+                score: state.score,
+                difficulty: easyMode ? 'easy' : 'normal',
+                time: elapsed ? parseFloat(elapsed) : null,
+                correct: state.correct || 0,
+                total: state.total || 0,
+                maxStreak: state.maxStreak || 0,
+                lives: livesEnabled ? lives : null,
+                maxLives: livesEnabled ? MAX_LIVES : null
+            }, (savedData) => {
+                RickyLeaderboard.showSaveToast('pasapalabras', savedData);
+            });
+            state.score = 0; state.streak = 0; state.correct = 0; state.wrong = 0; state.total = 0; pasapalabrasGameStartTime = null;
+            localStorage.removeItem('rlb_obs_lives');
+            const _pid = localStorage.getItem('rlb_player_id');
+            if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true });
+            location.href = '../index.html';
+        }
+    );
+}
+
 // ── Leaderboard ──
 function renderPasapalabrasLeaderboard() {
     RickyLeaderboard.render('leaderboardContainer', 'pasapalabras', {
@@ -730,8 +779,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Finalize buttons
-    $('finalizeBtnMid').addEventListener('click', () => { playSound('click'); doFinalize(); });
-    $('resultFinalizeBtn').addEventListener('click', () => { playSound('click'); doFinalize(); });
+    $('finalizeBtnMid').addEventListener('click', () => { playSound('click'); confirmFinalize(); });
+    $('resultFinalizeBtn').addEventListener('click', () => { playSound('click'); confirmFinalize(); });
 
     // Result restart
     $('resultRestartBtn').addEventListener('click', () => {
@@ -776,44 +825,8 @@ document.addEventListener('DOMContentLoaded', () => {
     $('startExtraLifeBtn').addEventListener('click', () => { playSound('click'); addExtraLife(true); });
 
     // Game topbar Volver
-    $('gameVolverBtn').addEventListener('click', () => {
-        playSound('click');
-        const hasScore = state.score > 0;
-        if (!hasScore) {
-            localStorage.removeItem('rlb_obs_lives');
-            const _pid = localStorage.getItem('rlb_player_id');
-            if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true });
-            location.href = '../index.html';
-            return;
-        }
-        RickyLeaderboard.showExitConfirm(
-            () => {
-                localStorage.removeItem('rlb_obs_lives');
-                const _pid = localStorage.getItem('rlb_player_id');
-                if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true });
-                location.href = '../index.html';
-            },
-            () => {
-                const elapsed = pasapalabrasGameStartTime ? ((Date.now() - pasapalabrasGameStartTime) / 1000).toFixed(1) : null;
-                RickyLeaderboard.save('pasapalabras', {
-                    score: state.score,
-                    difficulty: easyMode ? 'easy' : 'normal',
-                    time: elapsed ? parseFloat(elapsed) : null,
-                    correct: state.correct || 0,
-                    total: state.total || 0,
-                    maxStreak: state.maxStreak || 0,
-                    lives: livesEnabled ? lives : null,
-                    maxLives: livesEnabled ? MAX_LIVES : null
-                }, (savedData) => {
-                    RickyLeaderboard.showSaveToast('pasapalabras', savedData);
-                });
-                state.score = 0; state.streak = 0; state.correct = 0; state.wrong = 0; state.total = 0; pasapalabrasGameStartTime = null;
-                localStorage.removeItem('rlb_obs_lives');
-                const _pid = localStorage.getItem('rlb_player_id');
-                if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE', keepalive: true });
-                location.href = '../index.html';
-            }
-        );
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('#gameVolverBtn')) handleGameVolverClick(e);
     });
 
     // Hover sounds

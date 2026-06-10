@@ -3,6 +3,7 @@
    ============================================================ */
 .rlb-volume-wrapper {
   position: relative;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
   height: 40px;
@@ -48,6 +49,8 @@
 .rlb-volume-slider-wrap {
   width: 0;
   opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
   transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
 }
 .rlb-volume-wrapper:hover .rlb-volume-slider-wrap,
@@ -55,6 +58,7 @@
   width: 80px;
   opacity: 1;
   margin-left: 4px;
+  pointer-events: auto;
 }
 
 /* ── Slider input ──────────────────────────────────────── */

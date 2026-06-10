@@ -49,7 +49,7 @@
   background: linear-gradient(180deg, rgba(255, 51, 204, 0.04), transparent), var(--card);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   position: relative;
-  z-index: 10;
+  z-index: 50;
 }
 .rlb-title {
   font-size: 1.4rem;
@@ -169,6 +169,7 @@
   backdrop-filter: blur(20px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   position: relative;
+  z-index: 1;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 51, 204, 0.4) transparent;
 }
@@ -616,9 +617,101 @@
 }
 .rlb-exit-actions {
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  gap: 10px;
 }
 .rlb-exit-btn {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+.rlb-exit-btn-sure {
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.24);
+  color: #e74c3c;
+}
+.rlb-exit-btn-sure:hover {
+  background: rgba(231, 76, 60, 0.18);
+  color: #ff5e4d;
+}
+.rlb-exit-btn-finalize {
+  background: linear-gradient(135deg, var(--yellow), var(--pink));
+  color: #0d0d10;
+  box-shadow: 0 8px 24px rgba(255, 51, 204, 0.35);
+}
+.rlb-exit-btn-finalize:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(255, 51, 204, 0.5);
+}
+.rlb-exit-btn-cancel {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+.rlb-exit-btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+/* Finalize Confirm Modal */
+.rlb-finalize-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(12px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+.rlb-finalize-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+.rlb-finalize-card {
+  width: min(400px, 100%);
+  background: linear-gradient(135deg, rgba(255, 51, 204, 0.12), rgba(241, 196, 15, 0.08)), #18191c;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 24px;
+  padding: 36px 32px;
+  text-align: center;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+  transform: translateY(20px) scale(0.95);
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.rlb-finalize-modal.show .rlb-finalize-card {
+  transform: translateY(0) scale(1);
+}
+.rlb-finalize-icon {
+  font-size: 2.5rem;
+  margin-bottom: 12px;
+}
+.rlb-finalize-title {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 8px;
+}
+.rlb-finalize-sub {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0 0 24px;
+}
+.rlb-finalize-actions {
+  display: flex;
+  gap: 12px;
+}
+.rlb-finalize-btn {
   flex: 1;
   padding: 12px 20px;
   border-radius: 14px;
@@ -628,21 +721,21 @@
   border: none;
   transition: all 0.2s ease;
 }
-.rlb-exit-btn-sure {
+.rlb-finalize-btn-cancel {
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid var(--line);
   color: var(--muted);
 }
-.rlb-exit-btn-sure:hover {
+.rlb-finalize-btn-cancel:hover {
   background: rgba(255, 255, 255, 0.12);
   color: #fff;
 }
-.rlb-exit-btn-finalize {
+.rlb-finalize-btn-confirm {
   background: linear-gradient(135deg, var(--yellow), var(--pink));
   color: #0d0d10;
   box-shadow: 0 8px 24px rgba(255, 51, 204, 0.35);
 }
-.rlb-exit-btn-finalize:hover {
+.rlb-finalize-btn-confirm:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 30px rgba(255, 51, 204, 0.5);
 }

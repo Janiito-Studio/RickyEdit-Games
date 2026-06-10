@@ -8,6 +8,12 @@
   var LS_KEY = 'rlb_volume';
   var LS_MUTE_KEY = 'rlb_muted';
 
+  var scriptSrc = document.currentScript ? document.currentScript.src : '';
+  var scriptBase = '';
+  if (scriptSrc) {
+    scriptBase = scriptSrc.substring(0, scriptSrc.lastIndexOf('/') + 1);
+  }
+
   function getVolume() {
     try { return parseFloat(localStorage.getItem(LS_KEY)); }
     catch (e) { return NaN; }
@@ -38,7 +44,8 @@
   };
 
   function imgBase() {
-    var p = location.pathname;
+    if (scriptBase) return scriptBase;
+    var p = location.pathname.toLowerCase();
     if (p.indexOf('/songless') !== -1 || p.indexOf('/emojless') !== -1 ||
         p.indexOf('/thumbnail-blur') !== -1 || p.indexOf('/mas-caro') !== -1 ||
         p.indexOf('/letrless') !== -1 || p.indexOf('/pasapalabras') !== -1 ||
@@ -67,10 +74,11 @@
   function setupVolumeUI() {
     var actions = document.querySelectorAll('.nav-actions');
     actions.forEach(function (nav) {
+      if (nav.querySelector('.rlb-volume-wrapper')) return;
       var ctrl = createVolumeControl();
-      var volver = nav.querySelector('button[onclick*="index.html"]');
-      if (volver) {
-        nav.insertBefore(ctrl, volver);
+      var beforeTarget = nav.querySelector('#gameVolverBtn, button[onclick*="index.html"], a[href$="index.html"]');
+      if (beforeTarget) {
+        nav.insertBefore(ctrl, beforeTarget);
       } else {
         nav.appendChild(ctrl);
       }

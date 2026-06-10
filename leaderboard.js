@@ -592,7 +592,7 @@
         </div>
       </div>`;
     document.body.appendChild(modal);
-    requestAnimationFrame(() => modal.classList.add('show'));
+    setTimeout(() => modal.classList.add('show'), 10);
 
     modal.querySelectorAll('.rlb-admin-delete').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -668,7 +668,7 @@
       </div>
     `;
     document.body.appendChild(modal);
-    requestAnimationFrame(() => modal.classList.add('show'));
+    setTimeout(() => modal.classList.add('show'), 10);
 
     const input = document.getElementById('rlbNameInput');
     const error = document.getElementById('rlbNameError');
@@ -743,7 +743,7 @@
       </div>
     `;
     document.body.appendChild(modal);
-    requestAnimationFrame(() => modal.classList.add('show'));
+    setTimeout(() => modal.classList.add('show'), 10);
 
     document.getElementById('rlbReportConfirm').addEventListener('click', () => {
       modal.classList.remove('show');
@@ -1111,7 +1111,6 @@
     }, 3500);
   };
 
-  /* ── Exit Confirm Modal ────────────────────────────────────── */
   window.RickyLeaderboard.showExitConfirm = function (onSure, onFinalize) {
     var existing = document.getElementById('rlbExitModal');
     if (existing) existing.remove();
@@ -1123,22 +1122,64 @@
         '<div class="rlb-exit-icon">&#128680;</div>' +
         '<p class="rlb-exit-title">¿Estás seguro que quieres irte sin finalizar?</p>' +
         '<div class="rlb-exit-actions">' +
-          '<button class="rlb-exit-btn rlb-exit-btn-sure" id="rlbExitSure">Seguro</button>' +
-          '<button class="rlb-exit-btn rlb-exit-btn-finalize" id="rlbExitFinalize">Finalizar</button>' +
+          '<button class="rlb-exit-btn rlb-exit-btn-finalize" id="rlbExitFinalize">Finalizar y Guardar</button>' +
+          '<button class="rlb-exit-btn rlb-exit-btn-sure" id="rlbExitSure">Salir sin Guardar</button>' +
+          '<button class="rlb-exit-btn rlb-exit-btn-cancel" id="rlbExitCancel">Volver a la partida</button>' +
         '</div>' +
       '</div>';
     document.body.appendChild(modal);
-    requestAnimationFrame(function () { modal.classList.add('show'); });
+    setTimeout(function () { modal.classList.add('show'); }, 10);
 
-    document.getElementById('rlbExitSure').addEventListener('click', function () {
+    function close() {
       modal.classList.remove('show');
       setTimeout(function () { modal.remove(); }, 300);
+    }
+
+    document.getElementById('rlbExitSure').addEventListener('click', function () {
+      close();
       if (onSure) onSure();
     });
     document.getElementById('rlbExitFinalize').addEventListener('click', function () {
+      close();
+      if (onFinalize) onFinalize();
+    });
+    document.getElementById('rlbExitCancel').addEventListener('click', close);
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) close();
+    });
+  };
+
+  window.RickyLeaderboard.showFinalizeConfirm = function (onConfirm) {
+    var existing = document.getElementById('rlbFinalizeModal');
+    if (existing) existing.remove();
+    var modal = document.createElement('div');
+    modal.id = 'rlbFinalizeModal';
+    modal.className = 'rlb-finalize-modal';
+    modal.innerHTML =
+      '<div class="rlb-finalize-card">' +
+        '<div class="rlb-finalize-icon">&#10003;</div>' +
+        '<p class="rlb-finalize-title">¿Finalizar partida?</p>' +
+        '<p class="rlb-finalize-sub">Se guardará tu puntuación en el top.</p>' +
+        '<div class="rlb-finalize-actions">' +
+          '<button class="rlb-finalize-btn rlb-finalize-btn-cancel" id="rlbFinalizeCancel">Cancelar</button>' +
+          '<button class="rlb-finalize-btn rlb-finalize-btn-confirm" id="rlbFinalizeConfirm">Finalizar</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(modal);
+    setTimeout(function () { modal.classList.add('show'); }, 10);
+
+    function close() {
       modal.classList.remove('show');
       setTimeout(function () { modal.remove(); }, 300);
-      if (onFinalize) onFinalize();
+    }
+
+    document.getElementById('rlbFinalizeCancel').addEventListener('click', close);
+    document.getElementById('rlbFinalizeConfirm').addEventListener('click', function () {
+      close();
+      if (onConfirm) onConfirm();
+    });
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) close();
     });
   };
 

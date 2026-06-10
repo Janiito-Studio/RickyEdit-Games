@@ -113,7 +113,7 @@
         .avatar-card { justify-self: end; width: min(100%,290px); padding: 8px; border-radius: 22px; background: linear-gradient(135deg, var(--pink), #ff9bdc); box-shadow: 0 22px 58px rgba(0,0,0,0.55); transform: rotate(2deg); }
         .avatar-card img { display: block; width: 100%; border-radius: 16px; }
 
-        .shell { position: relative; z-index: 1; width: min(1080px, calc(100% - 32px)); margin: -52px auto 40px; }
+        .shell { position: relative; z-index: 60; width: min(1080px, calc(100% - 32px)); margin: -52px auto 40px; }
         .window { border: 1px solid var(--line); border-radius: 22px; background: rgba(14,14,18,0.45); box-shadow: var(--shadow); backdrop-filter: blur(20px); overflow: visible; display: flex; flex-direction: column; width: 100%; }
         .window-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: rgba(0,0,0,0.32); border-bottom: 1px solid var(--line); border-radius: 22px 22px 0 0; }
         .window-dots { display: flex; gap: 8px; }
@@ -138,7 +138,7 @@
         .round-step { position: relative; min-height: 44px; display: grid; place-items: center; border-radius: 12px; border: 1px solid var(--line); background: rgba(255,255,255,0.04); color: var(--muted); font-weight: 900; overflow: hidden; }
         .round-step.active, .round-step.done { color: #111; border-color: transparent; background: linear-gradient(135deg, var(--yellow), var(--pink)); }
         .guess-row { position: relative; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 10px; }
-        .search-results { position: absolute; left: 0; right: 0; top: calc(100% + 8px); z-index: 200; display: none; max-height: 380px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.14); border-radius: 16px; background: rgba(13,13,17,0.98); box-shadow: 0 28px 60px rgba(0,0,0,0.65); backdrop-filter: blur(20px); }
+        .search-results { position: absolute; left: 0; right: 0; top: calc(100% + 8px); z-index: 1200; display: none; max-height: 380px; overflow-y: auto; border: 1px solid rgba(255,255,255,0.14); border-radius: 16px; background: rgba(13,13,17,0.98); box-shadow: 0 28px 60px rgba(0,0,0,0.65); backdrop-filter: blur(20px); }
         .search-results.show { display: block; }
         .search-summary { position: sticky; top: 0; padding: 8px 14px; background: linear-gradient(90deg, rgba(255,51,204,0.22), rgba(241,196,15,0.12)), #15151a; color: var(--muted); font-size: 0.82rem; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; z-index: 1; }
         .search-option { display: flex; align-items: center; gap: 12px; width: 100%; padding: 8px 12px; border-top: 1px solid rgba(255,255,255,0.07); background: transparent; color: #fff; text-align: left; cursor: pointer; transition: background 0.12s ease; }
