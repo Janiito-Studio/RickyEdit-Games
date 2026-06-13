@@ -9,7 +9,7 @@
     var WORDS = [
         'RICKY', 'CALVO', 'HUEVO', 'PELAO', 'GORRA',
         'BARBA', 'BROMA', 'TUITS', 'RISAS', 'RIMAS',
-        'DRAMA', 'TETAS', 'PLACA', 'VAPER', 'BANEO',
+        'DRAMA', 'TETAS', 'PLACA', 'DAYUM', 'BANEO',
         'RETOS', 'SUSTO', 'GRITO', 'MANCO', 'RATAS',
         'PASTA', 'FUNAS', 'MEMES', 'HATER', 'RANGO'
     ];
