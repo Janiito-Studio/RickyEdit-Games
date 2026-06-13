@@ -115,7 +115,8 @@
            p.indexOf('/thumbnail-blur') !== -1 ||
            p.indexOf('/mas-caro') !== -1 ||
            p.indexOf('/letrless') !== -1 ||
-           p.indexOf('/pasapalabras') !== -1;
+           p.indexOf('/pasapalabras') !== -1 ||
+           p.indexOf('/wordle') !== -1;
   }
 
   function imgPath(file) {

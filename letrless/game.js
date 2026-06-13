@@ -625,7 +625,6 @@
     els.againBtn.addEventListener('click', function () { playSound('click'); newRound(); });
     els.skipBtn.addEventListener('click', function () {
         playSound('click');
-        state.total++;
         nextRound(false);
         failCount++;
         if (failCount >= 2) {
@@ -1128,7 +1127,7 @@
         '<li><span class="upd-highlight">Normal</span> — Frases con 5+ palabras (equilibrado)</li>' +
         '<li><span class="upd-highlight">Difícil</span> — Frases con 3+ palabras (menos pistas)</li>' +
         '<li><span class="upd-highlight">Sin repetir</span> — No se repite ninguna canción</li>' +
-        '<li><span class="upd-highlight">Aleatorio</span> — Las canciones salen en orden aleatorio</li>' +
+        '<li><span class="upd-highlight">Aleatorio</span> — Las canciones se repiten y salen en orden aleatorio</li>' +
         '</ul>' +
         '<hr class="upd-sep">' +
         '<h3><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Sistema de vidas</h3>' +

@@ -10,7 +10,7 @@
   const NAME_KEY = 'rlb_player_name';
   const PLAYER_ID_KEY = 'rlb_player_id';
   const REPORTED_KEY = 'rlb_reported_names';
-  const GAMES = ['songless', 'emojless', 'thumbblur', 'mascaro', 'letrless', 'pasapalabras'];
+  const GAMES = ['songless', 'emojless', 'thumbblur', 'mascaro', 'letrless', 'pasapalabras', 'wordle'];
   const REPORT_WEBHOOK = 'https://discord.com/api/webhooks/1509215622310006915/9kqCW6JMtnNJqUqJALLfcxiBbcAK6_bLwqbANAPYKBp8Kb928VcrIU8xHCwrQn2dp91g';
   const FIREBASE_DB_URL = 'https://rickyedit-notifications-default-rtdb.firebaseio.com';
 

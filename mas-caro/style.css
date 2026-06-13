@@ -264,6 +264,9 @@ main {
     position: relative;
     margin-bottom: 32px;
 }
+.arena.has-lives {
+    padding-top: 75px;
+}
 
 .card-container {
     flex: 1;

@@ -32,6 +32,13 @@
         * { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
 
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0d0d10; }
+        ::-webkit-scrollbar-thumb { background: rgba(255, 51, 204, 0.5); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255, 51, 204, 0.7); }
+        * { scrollbar-width: thin; scrollbar-color: rgba(255, 51, 204, 0.5) #0d0d10; }
+
         body {
             margin: 0;
             min-height: 100vh;
@@ -51,13 +58,13 @@
         .topbar {
             position: sticky;
             top: 0;
-            z-index: 20;
+            z-index: 70;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 16px;
-            min-height: 62px;
-            padding: 8px clamp(16px, 4vw, 44px);
+            min-height: 48px;
+            padding: 6px clamp(16px, 4vw, 44px);
             background: linear-gradient(90deg, var(--pink-2), var(--pink));
             box-shadow: 0 8px 30px rgba(255, 51, 204, 0.3);
         }
@@ -991,6 +998,7 @@
             <img class="hero-avatar" src="../Avatar Rickyedit.jpg" alt="Avatar Rickyedit" />
             <h1>Rickyedit Pasapalabras</h1>
             <p>Responde preguntas sobre RickyEdit letra a letra del abecedario. ¡Completa el rosco!</p>
+            
         </section>
 
         <div class="mode-cards">
@@ -1021,9 +1029,10 @@
                         <button class="mode-start-btn" id="startGameBtn" type="button">Empezar</button>
                     </div>
                 </div>
-            </div>
-        </div>
+            </div> 
+        </div> <p> Gracias Marc por la idea de este juego. </p>
     </div>
+    
 
     <nav class="topbar">
         <div class="logo-container">

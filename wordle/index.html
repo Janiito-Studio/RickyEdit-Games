@@ -4,12 +4,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Rickyedit Emojless</title>
+    <title>Rickyedit Wordle</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap"
         rel="stylesheet" />
-    <link rel="icon" href="../icon_emojless.png" type="image/png" />
+    <link rel="icon" href="../wordle_logo.png" type="image/png" />
     <link rel="stylesheet" href="../lives.css" />
     <style>
         :root {
@@ -69,11 +69,7 @@
             box-shadow: 0 8px 30px rgba(255, 51, 204, 0.3);
         }
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .logo-container { display: flex; align-items: center; gap: 12px; }
 
         .nav-logo {
             width: min(220px, 48vw);
@@ -82,210 +78,115 @@
             filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.55));
         }
 
-        .nav-actions {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: end;
-            gap: 10px;
-        }
+        .nav-actions { display: flex; flex-wrap: wrap; justify-content: end; gap: 10px; }
 
         .pill-link, .icon-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 40px;
-            border-radius: 999px;
-            padding: 0 14px;
-            border: 1px solid rgba(255, 255, 255, 0.24);
-            background: rgba(0, 0, 0, 0.18);
-            color: #fff;
-            font-family: inherit;
-            font-size: inherit;
-            font-weight: 800;
-            white-space: nowrap;
-            text-decoration: none;
+            display: inline-flex; align-items: center; justify-content: center;
+            min-height: 40px; border-radius: 999px; padding: 0 14px;
+            border: 1px solid rgba(255, 255, 255, 0.24); background: rgba(0, 0, 0, 0.18);
+            color: #fff; font-family: inherit; font-size: inherit; font-weight: 800;
+            white-space: nowrap; text-decoration: none;
             transition: transform 0.2s ease, background 0.2s ease;
         }
-
-        .pill-link:hover, .icon-btn:hover {
-            transform: translateY(-2px);
-            background: rgba(0, 0, 0, 0.32);
-        }
+        .pill-link:hover, .icon-btn:hover { transform: translateY(-2px); background: rgba(0, 0, 0, 0.32); }
 
         .hero {
-            position: relative;
-            min-height: 330px;
-            display: grid;
-            align-items: end;
-            overflow: hidden;
-            padding: 54px clamp(16px, 5vw, 68px) 86px;
-            background:
-                linear-gradient(135deg, rgba(255, 51, 204, 0.15), transparent 32rem),
-                var(--bg);
+            position: relative; min-height: 330px; display: grid; align-items: end;
+            overflow: hidden; padding: 54px clamp(16px, 5vw, 68px) 86px;
+            background: linear-gradient(135deg, rgba(255, 51, 204, 0.15), transparent 32rem), var(--bg);
         }
-
         .hero::before {
-            content: "";
-            position: absolute;
-            inset: -50%;
+            content: ""; position: absolute; inset: -50%;
             background-image:
                 linear-gradient(45deg, var(--pink) 25%, transparent 25%),
                 linear-gradient(-45deg, var(--pink) 25%, transparent 25%),
                 linear-gradient(45deg, transparent 75%, var(--pink) 75%),
                 linear-gradient(-45deg, transparent 75%, var(--pink) 75%);
             background-position: 0 0, 0 32px, 32px -32px, -32px 0;
-            background-size: 64px 64px;
-            opacity: 0.78;
+            background-size: 64px 64px; opacity: 0.78;
             animation: pattern 18s linear infinite;
         }
-
         .hero::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background:
-                linear-gradient(180deg, transparent 0%, var(--bg) 100%);
+            content: ""; position: absolute; inset: 0;
+            background: linear-gradient(180deg, transparent 0%, var(--bg) 100%);
             pointer-events: none;
         }
-
         @keyframes pattern { to { transform: translate(-128px, 128px); } }
 
         .hero-inner {
-            position: relative;
-            z-index: 1;
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(180px, 320px);
-            gap: clamp(24px, 5vw, 58px);
-            align-items: end;
-            width: min(1180px, 100%);
-            margin: 0 auto;
+            position: relative; z-index: 1;
+            display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, 320px);
+            gap: clamp(24px, 5vw, 58px); align-items: end;
+            width: min(1180px, 100%); margin: 0 auto;
         }
-
         .hero-copy { display: grid; gap: 18px; }
-
-        .logo-title {
-            width: min(520px, 90vw);
-            filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.8));
-            animation: float 4s ease-in-out infinite;
-        }
 
         @keyframes float { 50% { transform: translateY(-10px); } }
 
         h1 {
-            margin: 0;
-            max-width: 780px;
-            font-size: clamp(2.4rem, 7vw, 6.8rem);
-            line-height: 0.86;
-            letter-spacing: 0;
-            text-transform: lowercase;
+            margin: 0; max-width: 780px; font-size: clamp(2.4rem, 7vw, 6.8rem);
+            line-height: 0.86; letter-spacing: 0; text-transform: lowercase;
             text-shadow: 0 10px 36px rgba(0, 0, 0, 0.65);
         }
-
-        .hero-copy p {
-            margin: 0;
-            max-width: 700px;
-            color: #f2edf4;
-            font-size: clamp(1rem, 2.4vw, 1.35rem);
-            font-weight: 600;
-        }
+        .hero-copy p { margin: 0; max-width: 700px; color: #f2edf4; font-size: clamp(1rem, 2.4vw, 1.35rem); font-weight: 600; }
 
         .avatar-card {
-            justify-self: end;
-            width: min(100%, 290px);
-            padding: 8px;
-            border-radius: 22px;
+            justify-self: end; width: min(100%, 290px); padding: 8px; border-radius: 22px;
             background: linear-gradient(135deg, var(--pink), #ff9bdc);
-            box-shadow: 0 22px 58px rgba(0, 0, 0, 0.55);
-            transform: rotate(2deg);
+            box-shadow: 0 22px 58px rgba(0, 0, 0, 0.55); transform: rotate(2deg);
         }
+        .avatar-card img { display: block; width: 100%; border-radius: 16px; }
 
-        .avatar-card img {
-            display: block;
-            width: 100%;
-            border-radius: 16px;
-        }
-
-        .shell {
-            position: relative;
-            z-index: 60;
-            width: min(1080px, calc(100% - 32px));
-            margin: -52px auto 40px;
-        }
+        .shell { position: relative; z-index: 60; width: min(1080px, calc(100% - 32px)); margin: -52px auto 16px; }
 
         .window {
-            border: 1px solid var(--line);
-            border-radius: 22px;
-            background: rgba(14, 14, 18, 0.45);
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(20px);
-            overflow: visible;
-            display: flex;
-            flex-direction: column;
-            width: 100%;
+            border: 1px solid var(--line); border-radius: 22px;
+            background: rgba(14, 14, 18, 0.45); box-shadow: var(--shadow);
+            backdrop-filter: blur(20px); overflow: visible;
+            display: flex; flex-direction: column; width: 100%;
         }
-
         .window-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 20px;
-            background: rgba(0, 0, 0, 0.32);
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 20px; background: rgba(0, 0, 0, 0.32);
             border-bottom: 1px solid var(--line);
-            border-radius: 22px 22px 0 0;
-            overflow: hidden;
+            border-radius: 22px 22px 0 0; overflow: hidden;
         }
-
         .window-dots { display: flex; gap: 8px; }
         .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
         .dot-red { background: #ff5f56; }
         .dot-yellow { background: #ffbd2e; }
         .dot-green { background: #27c93f; }
-
         .window-title {
-            font-size: 0.85rem;
-            font-weight: 800;
-            color: var(--muted);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            flex-grow: 1;
-            text-align: center;
-            margin-right: 48px;
+            font-size: 0.85rem; font-weight: 800; color: var(--muted);
+            letter-spacing: 1.5px; text-transform: uppercase; flex-grow: 1;
+            text-align: center; margin-right: 48px;
         }
-
         .window-content { padding: 24px; }
 
-        .game-layout {
-            display: grid;
-            grid-template-columns: 290px minmax(0, 1fr);
-            gap: 22px;
-            align-items: start;
-        }
+        .game-layout { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 22px; align-items: start; }
 
         .glass {
-            border: 1px solid var(--line);
-            border-radius: 22px;
-            background: var(--card);
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(18px);
+            border: 1px solid var(--line); border-radius: 22px;
+            background: var(--card); box-shadow: var(--shadow); backdrop-filter: blur(18px);
         }
 
         .mystery-screen {
-            position: relative;
-            min-height: 420px;
-            overflow: hidden;
-            background: #000;
-            border-top-left-radius: 22px;
-            border-top-right-radius: 22px;
-            display: grid;
-            place-items: center;
+            position: relative; min-height: 480px; background: #000;
+            border-top-left-radius: 22px; border-top-right-radius: 22px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 16px; overflow: hidden;
+        }
+        .mystery-screen.has-lives {
+            min-height: 540px;
+        }
+        .mystery-screen.cagado {
+            min-height: 580px;
+        }
+        .mystery-screen.cagado.has-lives {
+            min-height: 640px;
         }
         .curtain {
-            position: absolute;
-            inset: 0;
-            z-index: 1;
-            display: grid;
-            place-items: center;
-            padding: 24px;
+            position: absolute; inset: 0; z-index: 1; display: grid; place-items: center; padding: 24px;
             background:
                 linear-gradient(90deg, rgba(255, 51, 204, 0.1) 1px, transparent 1px) 0 0 / 34px 34px,
                 linear-gradient(180deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px) 0 0 / 34px 34px,
@@ -293,498 +194,249 @@
                 #101014;
         }
 
-        .emoji-display {
-            font-size: clamp(1.8rem, 5vw, 3.2rem);
-            z-index: 2;
-            text-align: center;
-            filter: drop-shadow(0 0 20px rgba(255, 51, 204, 0.5));
-            animation: float 4s ease-in-out infinite;
-            line-height: 1.4;
-            white-space: nowrap;
+        /* ── Wordle Grid ── */
+        .wordle-grid {
+            z-index: 2; display: grid; grid-template-rows: repeat(8, 1fr); gap: 8px;
         }
+        .wordle-row {
+            display: grid; grid-template-columns: repeat(5, 64px); gap: 8px;
+            transition: opacity 0.2s;
+        }
+        .wordle-row.pending { opacity: 0.5; }
+        .wordle-row.active { opacity: 1; }
+        .wordle-row.done { opacity: 1; }
+
+        .tile {
+            width: 64px; height: 64px;
+            display: grid; place-items: center;
+            font-size: 2rem; font-weight: 900; text-transform: uppercase;
+            border: 3px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.12);
+            color: #fff; user-select: none;
+            border-radius: 14px;
+            box-shadow: 0 0 14px rgba(255,255,255,0.08), inset 0 1px 0 rgba(255,255,255,0.15);
+            transition: border-color 0.15s, background 0.15s;
+        }
+        .tile.filled {
+            border-color: rgba(255,255,255,0.7);
+            background: rgba(255,255,255,0.18);
+            animation: pop 0.1s ease;
+        }
+        @keyframes pop { 50% { transform: scale(1.08); } }
+
+        .tile.flip-half {
+            transition: transform 0.25s ease-in;
+            transform: rotateX(90deg);
+        }
+        .tile.flip-full {
+            transition: transform 0.25s ease-out;
+            transform: rotateX(0);
+        }
+        .tile.correct { background: #36e28a; border-color: #36e28a; color: #1a1a2e; box-shadow: 0 0 14px rgba(54,226,138,0.3); }
+        .tile.present { background: #f1c40f; border-color: #f1c40f; color: #1a1a2e; box-shadow: 0 0 14px rgba(241,196,15,0.3); }
+        .tile.absent  { background: #2a2a36; border-color: #2a2a36; color: rgba(255,255,255,0.5); }
+
+        .tile.shake { animation: shake 0.4s ease; }
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            20% { transform: translateX(-4px); }
+            40% { transform: translateX(4px); }
+            60% { transform: translateX(-3px); }
+            80% { transform: translateX(3px); }
+        }
+
+        .tile.pop-win { animation: popWin 0.6s ease; }
+        @keyframes popWin {
+            0%   { transform: scale(1); }
+            30%  { transform: scale(1.2); }
+            60%  { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+
+        /* ── Keyboard ── */
+        .keyboard {
+            display: flex; flex-direction: column; gap: 6px;
+            max-width: 500px; width: 100%; margin: 0 auto; padding: 0 4px;
+        }
+        .kb-row { display: flex; justify-content: center; gap: 5px; }
+
+        .key {
+            min-width: 43px; height: 58px;
+            border-radius: 10px;
+            background: linear-gradient(180deg, rgba(255,51,204,0.2), rgba(255,51,204,0.08));
+            border: 1px solid rgba(255,51,204,0.3);
+            color: #fff; font-weight: 800; font-size: 0.85rem;
+            cursor: pointer; display: grid; place-items: center;
+            transition: all 0.15s ease; -webkit-tap-highlight-color: transparent;
+            box-shadow: 0 2px 0 rgba(255,51,204,0.2), 0 0 8px rgba(255,51,204,0.08);
+        }
+        .key:active { transform: scale(0.95); }
+        .key.wide { min-width: 68px; font-size: 0.75rem; letter-spacing: 0.5px; }
+        .key.correct { background: #36e28a; color: #1a1a2e; border-color: #36e28a; box-shadow: 0 2px 0 #2ab576, 0 0 10px rgba(54,226,138,0.3); }
+        .key.present { background: #f1c40f; color: #1a1a2e; border-color: #f1c40f; box-shadow: 0 2px 0 #d4ad0d, 0 0 10px rgba(241,196,15,0.3); }
+        .key.absent  { background: #2a2a36; color: rgba(255,255,255,0.4); border-color: #3a3a4c; box-shadow: none; }
 
         .controls {
-            display: grid;
-            gap: 18px;
-            padding: 22px;
-            background: rgba(14, 14, 18, 0.56);
-            border-radius: 0 0 21px 21px;
-        }
-
-        .rounds {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 8px;
-        }
-
-        .round-step {
-            position: relative;
-            min-height: 44px;
-            display: grid;
-            place-items: center;
-            border-radius: 12px;
-            border: 1px solid var(--line);
-            background: rgba(255, 255, 255, 0.04);
-            color: var(--muted);
-            font-weight: 900;
-            overflow: hidden;
-        }
-
-        .round-step.active, .round-step.done {
-            color: #111;
-            border-color: transparent;
-            background: linear-gradient(135deg, var(--yellow), var(--pink));
-        }
-
-        .guess-row {
-            position: relative;
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) auto;
-            gap: 10px;
-        }
-
-        .search-results {
-            position: absolute;
-            left: 0;
-            right: 0;
-            top: calc(100% + 8px);
-            z-index: 1200;
-            display: none;
-            max-height: 380px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            border-radius: 16px;
-            background: rgba(13, 13, 17, 0.98);
-            box-shadow: 0 28px 60px rgba(0, 0, 0, 0.65);
-            backdrop-filter: blur(20px);
-        }
-
-        .search-results.show { display: block; }
-
-        .search-summary {
-            position: sticky;
-            top: 0;
-            padding: 8px 14px;
-            background:
-                linear-gradient(90deg, rgba(255, 51, 204, 0.22), rgba(241, 196, 15, 0.12)),
-                #15151a;
-            color: var(--muted);
-            font-size: 0.82rem;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            z-index: 1;
-        }
-
-        .search-option {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            width: 100%;
-            padding: 8px 12px;
-            border-top: 1px solid rgba(255, 255, 255, 0.07);
-            background: transparent;
-            color: #fff;
-            text-align: left;
-            cursor: pointer;
-            transition: background 0.12s ease;
-        }
-
-        .search-option:hover, .search-option.selected {
-            background: rgba(255, 51, 204, 0.18);
-            outline: none;
-        }
-
-        .search-option-thumb {
-            flex-shrink: 0;
-            width: 88px;
-            aspect-ratio: 16 / 9;
-            border-radius: 6px;
-            object-fit: cover;
-            background: #111;
-            border: 1px solid rgba(255, 255, 255, 0.07);
-        }
-
-        .search-option-info {
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-            flex: 1;
-        }
-
-        .search-option-title {
-            font-weight: 800;
-            font-size: 0.88rem;
-            line-height: 1.3;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .search-option-meta {
-            color: var(--muted);
-            font-size: 0.75rem;
-            font-weight: 700;
-            margin-top: 3px;
-        }
-
-        input {
-            min-width: 0;
-            min-height: 54px;
-            border: 1px solid var(--line);
-            border-radius: 14px;
-            padding: 0 16px;
-            outline: 0;
-            background: rgba(0, 0, 0, 0.3);
-            color: #fff;
-            font-weight: 700;
-        }
-
-        input:focus {
-            border-color: var(--pink);
-            box-shadow: 0 0 0 4px rgba(255, 51, 204, 0.16);
+            display: grid; gap: 18px; padding: 22px;
+            background: rgba(14, 14, 18, 0.56); border-radius: 0 0 21px 21px;
         }
 
         .btn {
-            min-height: 54px;
-            border-radius: 14px;
-            padding: 0 18px;
-            color: #111;
-            font-weight: 900;
+            min-height: 54px; border-radius: 14px; padding: 0 18px;
+            color: #111; font-weight: 900;
             box-shadow: 0 8px 0 rgba(0, 0, 0, 0.3);
-            transition: transform 0.16s ease, box-shadow 0.16s ease;
-            white-space: nowrap;
+            transition: transform 0.16s ease, box-shadow 0.16s ease; white-space: nowrap;
         }
-
-        .btn:hover:not(:disabled) {
-            transform: translateY(3px);
-            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.32);
-        }
-
+        .btn:hover:not(:disabled) { transform: translateY(3px); box-shadow: 0 5px 0 rgba(0, 0, 0, 0.32); }
         .btn-primary { background: linear-gradient(135deg, var(--yellow), var(--pink)); color: #111; }
-        .btn-pink { background: var(--pink-2); color: #fff; }
         .btn-blue { background: linear-gradient(135deg, var(--pink-2), var(--pink)); color: #fff; }
         .btn-dark { background: rgba(255, 51, 204, 0.1); color: #fff; border: 1px solid var(--pink); }
 
         .actions { display: flex; flex-wrap: wrap; gap: 10px; }
-        .status { min-height: 26px; color: var(--muted); font-weight: 700; }
+        .status { min-height: 26px; color: var(--muted); font-weight: 700; text-align: center; }
 
         .side { display: grid; gap: 18px; padding: 20px; }
         .side h2, .reveal h2 { margin: 0; font-size: 1.35rem; letter-spacing: 0; }
 
         .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-
         .stat {
-            padding: 14px;
-            border-radius: 16px;
-            border: 1px solid var(--line);
+            padding: 14px; border-radius: 16px; border: 1px solid var(--line);
             background: rgba(255, 255, 255, 0.045);
         }
-
-        .stat span {
-            display: block;
-            color: var(--muted);
-            font-size: 0.88rem;
-            font-weight: 700;
-        }
-
-        .stat strong {
-            display: block;
-            margin-top: 4px;
-            font-size: 1.7rem;
-            line-height: 1;
-        }
+        .stat span { display: block; color: var(--muted); font-size: 0.88rem; font-weight: 700; }
+        .stat strong { display: block; margin-top: 4px; font-size: 1.7rem; line-height: 1; }
 
         .hint-card {
-            padding: 16px;
-            border-radius: 16px;
+            padding: 16px; border-radius: 16px;
             background: linear-gradient(135deg, rgba(255, 51, 204, 0.18), rgba(241, 196, 15, 0.13));
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            color: #f3f3f3;
+            border: 1px solid rgba(255, 255, 255, 0.12); color: #f3f3f3;
         }
-
         .hint-card p { margin: 8px 0 0; color: var(--muted); }
 
         .reveal { display: none; margin-top: 22px; overflow: hidden; border-radius: 22px; }
         .reveal.show { display: block; }
-        .reveal-media { aspect-ratio: 16 / 9; background: #000; }
-        .reveal-media iframe { width: 100%; height: 100%; border: 0; }
-
-        .reveal-body {
-            display: grid;
-            gap: 12px;
-            padding: 18px 20px 20px;
-        }
-
+        .reveal-body { display: grid; gap: 12px; padding: 18px 20px 20px; }
         .reveal-body p { margin: 0; color: var(--muted); font-weight: 700; }
 
+        .result-display {
+            padding: 32px; text-align: center;
+            background: rgba(0,0,0,0.3); border-radius: 16px; margin-bottom: 12px;
+        }
+        .result-display .result-word {
+            font-size: clamp(2rem, 5vw, 3rem); font-weight: 900;
+            letter-spacing: 8px; text-transform: uppercase;
+        }
+        .result-display .result-word.win { color: var(--green); }
+        .result-display .result-word.lose { color: var(--pink); }
+        .result-display .result-subtitle { color: var(--muted); font-size: 1rem; margin-top: 8px; font-weight: 600; }
+
         footer {
-            margin-top: 42px;
-            padding: 38px 18px 52px;
-            background: #111214;
-            text-align: center;
+            margin-top: 12px; padding: 20px 18px 24px;
+            background: #111214; text-align: center;
         }
-
         .footer-links {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 12px;
-            margin-bottom: 18px;
+            display: flex; flex-wrap: wrap; justify-content: center;
+            gap: 12px; margin-bottom: 18px;
         }
-
         .footer-links a {
-            min-height: 48px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 18px;
-            border-radius: 999px;
-            background: #1a1b1e;
-            border: 1px solid var(--line);
-            color: var(--yellow);
-            font-weight: 900;
-            box-shadow: 0 6px 0 rgba(255, 51, 204, 0.42);
-            text-decoration: none;
+            min-height: 48px; display: inline-flex; align-items: center; justify-content: center;
+            padding: 0 18px; border-radius: 999px; background: #1a1b1e;
+            border: 1px solid var(--line); color: var(--yellow); font-weight: 900;
+            box-shadow: 0 6px 0 rgba(255, 51, 204, 0.42); text-decoration: none;
             transition: transform 0.2s ease, background 0.2s ease;
         }
-
-        .footer-links a:hover {
-            transform: translateY(-2px);
-            background: rgba(0, 0, 0, 0.32);
-        }
-
+        .footer-links a:hover { transform: translateY(-2px); background: rgba(0, 0, 0, 0.32); }
         footer p { margin: 0; color: rgba(255, 255, 255, 0.5); font-weight: 700; }
 
-        @media (max-width: 900px) {
-            .hero-inner { grid-template-columns: 1fr; }
-            .avatar-card { justify-self: start; width: 210px; }
-            .game-layout { grid-template-columns: 1fr; }
-            .mystery-screen { min-height: 360px; }
-        }
-
-        @media (max-width: 640px) {
-            .hero { padding-bottom: 70px; }
-            .topbar { align-items: flex-start; flex-direction: column; }
-            .nav-actions { justify-content: start; }
-            .guess-row { grid-template-columns: 1fr; }
-            .rounds { grid-template-columns: repeat(3, 1fr); }
-            .actions .btn, .guess-row .btn { width: 100%; }
-        }
-
-        .hero-section {
-            text-align: center;
-            margin-bottom: 50px;
-            max-width: 700px;
-        }
-
-        .hero-avatar {
-            width: 110px;
-            height: 110px;
-            border-radius: 50%;
-            border: 4px solid var(--pink);
-            box-shadow: 0 0 25px rgba(255, 51, 204, 0.45);
-            object-fit: cover;
-            margin-bottom: 20px;
-            animation: float 4s ease-in-out infinite;
-        }
-
-        .hero-section h1 {
-            font-size: clamp(2.4rem, 7vw, 6.8rem);
-            font-weight: 900;
-            line-height: 0.86;
-            letter-spacing: 0;
-            text-transform: lowercase;
-            margin: 0 0 12px;
-            text-shadow: 0 10px 36px rgba(0, 0, 0, 0.65);
-            color: #fff;
-        }
-
-        .hero-section p {
-            margin: 0;
-            max-width: 700px;
-            color: var(--muted);
-            font-size: clamp(1rem, 2.5vw, 1.25rem);
-            font-weight: 600;
-        }
-
+        /* ── Start Screen ── */
         .start-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background:
-                linear-gradient(135deg, rgba(255, 51, 204, 0.15), transparent 32rem),
-                var(--bg);
-            z-index: 1000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            overflow-y: auto;
-            gap: 24px;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: linear-gradient(135deg, rgba(255, 51, 204, 0.15), transparent 32rem), var(--bg);
+            z-index: 1000; display: flex; flex-direction: column; align-items: center;
+            overflow-y: auto; gap: 24px;
             transition: opacity 0.4s ease, visibility 0.4s ease;
-            padding: 80px 24px 40px;
-            text-align: center;
+            padding: 80px 24px 40px; text-align: center;
         }
+        .start-screen.hide { opacity: 0; visibility: hidden; pointer-events: none; }
 
-        .start-screen.hide {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
+        .hero-section { text-align: center; margin-bottom: 50px; max-width: 700px; }
+        .hero-avatar {
+            width: 110px; height: 110px; border-radius: 50%;
+            border: 4px solid var(--pink); box-shadow: 0 0 25px rgba(255, 51, 204, 0.45);
+            object-fit: cover; margin-bottom: 20px; animation: float 4s ease-in-out infinite;
+        }
+        .hero-section h1 {
+            font-size: clamp(2.4rem, 7vw, 6.8rem); font-weight: 900; line-height: 0.86;
+            letter-spacing: 0; text-transform: lowercase; margin: 0 0 12px;
+            text-shadow: 0 10px 36px rgba(0, 0, 0, 0.65); color: #fff;
+        }
+        .hero-section p {
+            margin: 0; max-width: 700px; color: var(--muted);
+            font-size: clamp(1rem, 2.5vw, 1.25rem); font-weight: 600;
         }
 
         .mode-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            width: 100%;
-            max-width: 960px;
-            margin-top: 16px;
-            align-items: start;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px; width: 100%; max-width: 960px; margin-top: 16px; align-items: start;
         }
-
         .mode-card {
-            border-radius: 24px;
-            border: 1px solid var(--line);
-            background: var(--card);
-            overflow: visible;
-            backdrop-filter: blur(20px);
-            box-shadow: var(--shadow);
+            border-radius: 24px; border: 1px solid var(--line); background: var(--card);
+            overflow: visible; backdrop-filter: blur(20px); box-shadow: var(--shadow);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
         .mode-card:hover {
             transform: translateY(-6px);
             box-shadow: 0 30px 60px rgba(255, 51, 204, 0.15);
             border-color: rgba(255, 51, 204, 0.25);
         }
-
         .mode-card-toggle {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            padding: 20px 24px;
-            background: rgba(255, 51, 204, 0.08);
-            color: #fff;
-            font-size: 1.15rem;
-            font-weight: 900;
-            text-align: left;
-            border: none;
-            border-bottom: 1px solid var(--line);
-            border-radius: 24px;
-            cursor: pointer;
-            transition: background 0.2s ease, border-radius 0.2s ease, color 0.2s ease;
+            display: flex; justify-content: space-between; align-items: center;
+            width: 100%; padding: 20px 24px; background: rgba(255, 51, 204, 0.08);
+            color: #fff; font-size: 1.15rem; font-weight: 900; text-align: left;
+            border: none; border-bottom: 1px solid var(--line); border-radius: 24px;
+            cursor: pointer; transition: background 0.2s ease, border-radius 0.2s ease, color 0.2s ease;
         }
-
-        .mode-card-toggle:hover {
-            background: rgba(255, 51, 204, 0.15);
-        }
-
+        .mode-card-toggle:hover { background: rgba(255, 51, 204, 0.15); }
         .mode-card.open .mode-card-toggle {
             background: linear-gradient(135deg, var(--yellow), var(--pink));
-            color: #0d0d10;
-            border-radius: 24px 24px 0 0;
-            border-bottom-color: transparent;
+            color: #0d0d10; border-radius: 24px 24px 0 0; border-bottom-color: transparent;
         }
-
-        .mode-card-chevron {
-            transition: transform 0.25s ease;
-            font-size: 0.7rem;
-            opacity: 0.5;
-        }
-
-        .mode-card.open .mode-card-chevron {
-            transform: rotate(180deg);
-        }
-
+        .mode-card-chevron { transition: transform 0.25s ease; font-size: 0.7rem; opacity: 0.5; }
+        .mode-card.open .mode-card-chevron { transform: rotate(180deg); }
         .mode-card-panel {
-            width: 100%;
-            display: none;
-            background: var(--card);
-            border-top: 1px solid var(--line);
-            border-radius: 0 0 24px 24px;
+            width: 100%; display: none; background: var(--card);
+            border-top: 1px solid var(--line); border-radius: 0 0 24px 24px;
         }
-
-        .mode-card.open .mode-card-panel {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .mode-card.open .mode-card-panel { display: block; animation: slideDown 0.3s ease; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
         .mode-panel-content {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            padding: 20px;
+            width: 100%; display: flex; flex-direction: column; align-items: center;
+            gap: 20px; padding: 20px;
         }
-
         .mode-diff-row {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
-            width: 100%;
-            flex-wrap: wrap;
+            display: flex; flex-direction: row; align-items: center; justify-content: center;
+            gap: 16px; width: 100%; flex-wrap: wrap;
         }
-
         .mode-diff-btn {
-            font-size: 1.1rem;
-            font-weight: 900;
-            padding: 14px 32px;
-            border-radius: 50px;
-            color: #fff;
-            background: rgba(255, 51, 204, 0.18);
-            border: none;
-            position: relative;
-            transition: all 0.25s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            outline: none;
+            font-size: 1.1rem; font-weight: 900; padding: 14px 32px; border-radius: 50px;
+            color: #fff; background: rgba(255, 51, 204, 0.18); border: none;
+            position: relative; transition: all 0.25s ease;
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer; outline: none;
         }
-
         .mode-diff-btn::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            padding: 2px;
+            content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 2px;
             background: rgba(255, 51, 204, 0.5);
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
+            -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
             transition: background 0.25s ease;
         }
-
-        .mode-diff-btn:hover {
-            transform: translateY(-2px);
-            background: rgba(255, 51, 204, 0.3);
-        }
-
-        .mode-diff-btn:hover::before {
-            background: rgba(255, 51, 204, 0.8);
-        }
-
+        .mode-diff-btn:hover { transform: translateY(-2px); background: rgba(255, 51, 204, 0.3); }
+        .mode-diff-btn:hover::before { background: rgba(255, 51, 204, 0.8); }
         .mode-diff-btn.active {
             background: linear-gradient(135deg, var(--yellow), var(--pink));
-            color: #0d0d10;
-            box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
+            color: #0d0d10; box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
         }
-
-        .mode-diff-btn.active::before {
-            background: transparent;
-        }
+        .mode-diff-btn.active::before { background: transparent; }
 
         .info-toggle-btn {
             background: rgba(255,255,255,0.06); border: 1px solid var(--line);
@@ -797,25 +449,25 @@
             background: rgba(255,51,204,0.12); color: #fff;
             border-color: rgba(255,51,204,0.3); transform: translateY(-1px);
         }
-        .info-lives-toggle-btn {
-            background: rgba(255,255,255,0.06); border: 1px solid var(--line);
-            border-radius: 12px; color: var(--muted); font-weight: 700;
-            padding: 10px 20px; cursor: pointer; font-size: 0.85rem;
-            transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px;
-            position: relative; z-index: 1;
-        }
-        .info-lives-toggle-btn:hover {
-            background: rgba(255,51,204,0.12); color: #fff;
-            border-color: rgba(255,51,204,0.3); transform: translateY(-1px);
-        }
 
+        .mode-start-btn {
+            font-size: 1.3rem; font-weight: 900; padding: 16px 48px; border-radius: 50px;
+            color: #0d0d10;
+            background: linear-gradient(135deg, var(--yellow), var(--pink));
+            box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
+            transition: all 0.2s ease; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; border: none;
+        }
+        .mode-start-btn:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 15px 40px rgba(255, 51, 204, 0.65); }
+        .mode-start-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        /* ── Modals ── */
         .modal {
             position: fixed; inset: 0; z-index: 1100;
             display: none; align-items: center; justify-content: center;
             padding: 20px; background: rgba(0,0,0,0.68); backdrop-filter: blur(8px);
         }
         .modal.show { display: flex; }
-
         .letter {
             width: min(720px, 100%); max-height: min(760px, calc(100vh - 40px));
             overflow: auto; border-radius: 22px;
@@ -841,75 +493,64 @@
         }
         .letter-body p { margin: 0 0 16px; }
 
-        .mode-start-btn {
-            font-size: 1.3rem;
-            font-weight: 900;
-            padding: 16px 48px;
-            border-radius: 50px;
-            color: #0d0d10;
-            background: linear-gradient(135deg, var(--yellow), var(--pink));
-            box-shadow: 0 10px 35px rgba(255, 51, 204, 0.45);
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            border: none;
+        .info-lives-toggle-btn {
+            background: rgba(255,255,255,0.06); border: 1px solid var(--line);
+            border-radius: 12px; color: var(--muted); font-weight: 700;
+            padding: 10px 20px; cursor: pointer; font-size: 0.85rem;
+            transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 6px;
+            position: relative; z-index: 1;
+        }
+        .info-lives-toggle-btn:hover {
+            background: rgba(255,51,204,0.12); color: #fff;
+            border-color: rgba(255,51,204,0.3); transform: translateY(-1px);
         }
 
-        .mode-start-btn:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 15px 40px rgba(255, 51, 204, 0.65);
-        }
-        .mode-start-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-        .mode-year-section {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 100%;
-            align-items: center;
-        }
-        .mode-year-label {
-            font-size: 0.72rem;
-            font-weight: 800;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .mode-year-chips {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
+        .lives-bar {
+            display: none;
             justify-content: center;
+            padding: 12px 16px 8px;
         }
-        .year-chip {
-            padding: 4px 13px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--muted);
-            font-size: 0.8rem;
-            font-weight: 800;
-            cursor: pointer;
-            transition: all 0.15s ease;
+        .lives-bar.visible {
+            display: flex;
         }
-        .year-chip:hover {
-            background: rgba(255, 255, 255, 0.12);
-            color: #fff;
+        #livesDisplay {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            font-size: 1.8rem;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
+            pointer-events: none;
         }
-        .year-chip.active {
-            background: rgba(255, 51, 204, 0.25);
-            border-color: var(--pink);
-            color: #fff;
+
+        /* ── Responsive ── */
+        @media (max-width: 900px) {
+            .hero-inner { grid-template-columns: 1fr; }
+            .avatar-card { justify-self: start; width: 210px; }
+            .game-layout { grid-template-columns: 1fr; }
+            .mystery-screen { min-height: 480px; }
+            .mystery-screen.cagado { min-height: 540px; }
+            .mystery-screen.has-lives { min-height: 520px; }
+            .mystery-screen.cagado.has-lives { min-height: 600px; }
+        }
+        @media (max-width: 640px) {
+            .hero { padding-bottom: 70px; }
+            .topbar { align-items: flex-start; flex-direction: column; }
+            .nav-actions { justify-content: start; }
+            .mystery-screen { min-height: 440px; padding: 12px; }
+            .mystery-screen.cagado { min-height: 520px; }
+            .mystery-screen.has-lives { min-height: 480px; }
+            .mystery-screen.cagado.has-lives { min-height: 560px; }
+            .wordle-row { grid-template-columns: repeat(5, 56px); gap: 6px; }
+            .tile { width: 56px; height: 56px; font-size: 1.5rem; border-radius: 12px; }
+            .wordle-grid { gap: 6px; }
+            .key { min-width: 28px; height: 48px; font-size: 0.7rem; border-radius: 8px; }
+            .key.wide { min-width: 52px; }
         }
     </style>
 </head>
 
 <body>
+    <!-- ═══════ START SCREEN ═══════ -->
     <div id="startScreen" class="start-screen">
         <nav class="topbar" style="position: fixed; top: 0; left: 0; right: 0; z-index: 1001;">
             <div class="logo-container">
@@ -927,14 +568,14 @@
 
         <section class="hero-section">
             <img class="hero-avatar" src="../Avatar Rickyedit.jpg" alt="Avatar Rickyedit" />
-            <h1>Rickyedit emojless</h1>
-            <p>Adivina la canción basándote en los emojis. ¿Conoces la discografía de Ricky?</p>
+            <h1>Rickyedit wordle</h1>
+            <p>Adivina la palabra de 5 letras en intentos limitados. Todas las palabras están relacionadas con el universo RickyEdit.</p>
         </section>
 
         <div class="mode-cards">
             <div class="mode-card" id="normalModeCard">
                 <button class="mode-card-toggle" id="normalModeToggle" type="button">
-                    <span><img src="../icon_songless.png" alt="" style="width:40px;height:40px;vertical-align:middle;margin-right:4px;"> Normal</span>
+                    <span><img src="../Mando.png" alt="" style="width:40px;height:40px;vertical-align:middle;margin-right:4px;"> Normal</span>
                     <span class="mode-card-chevron">▼</span>
                 </button>
                 <div class="mode-card-panel" id="normalModePanel">
@@ -946,10 +587,6 @@
                         <div class="mode-diff-row">
                             <button id="startNoRepeatBtn" class="mode-diff-btn active" type="button"><img src="../Iconos/Modo sin repetir.png" alt="" class="rlb-icon-img"> Sin repetir</button>
                             <button id="startRandomBtn" class="mode-diff-btn" type="button"><img src="../Iconos/Modo aleatorio.png" alt="" class="rlb-icon-img"> Aleatorio</button>
-                        </div>
-                        <div class="mode-year-section">
-                            <span class="mode-year-label">Año</span>
-                            <div class="mode-year-chips" id="yearChips"></div>
                         </div>
                         <div class="mode-diff-row">
                             <div class="lives-selector">
@@ -968,17 +605,16 @@
                     </div>
                 </div>
             </div>
-        </div> <p> Gracias Marc por ayudarme a escoger los emojis. </p>
+        </div>  <p> Gracias Jonacio por la idea de este juego. </p>
     </div>
 
-    <nav class="topbar">
+    <!-- ═══════ MAIN GAME ═══════ -->
+        <nav class="topbar">
         <div class="logo-container">
             <img class="nav-logo" src="../Rickyedit Games.png" alt="Rickyedit Games Logo" />
         </div>
         <div class="nav-actions">
-            <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal
-                Principal</a>
-            <button id="openLetterBtn" class="icon-btn" type="button">Mensaje</button>
+            <a class="pill-link" href="https://www.youtube.com/@rickyedit" target="_blank" rel="noreferrer">Canal Principal</a>
             <button id="openUpdatesBtn" class="icon-btn" type="button">Info</button>
             <button id="extraLifeBtn" class="extra-life-btn" type="button">
                 <img src="../Iconos RickyEdit Web/Vida Entera.png" alt=""> +1 Vida
@@ -992,15 +628,15 @@
     <header class="hero">
         <div class="hero-inner">
             <div class="hero-copy">
-                <h1>Rickyedit emojless</h1>
+                <h1>Rickyedit wordle</h1>
                 <p id="descriptionText">
-                    Adivina la canción basándote en los emojis. ¡Pon a prueba tus conocimientos de la discografía de Ricky!
+                    Adivina la palabra de 5 letras en intentos limitados. Todas las palabras están relacionadas con el universo RickyEdit.
                 </p>
             </div>
             <div class="avatar-card">
                 <img src="../Avatar Rickyedit.jpg" alt="Avatar Rickyedit" />
             </div>
-        </div>
+        </div> 
     </header>
 
     <main class="shell">
@@ -1039,54 +675,42 @@
                                 <strong id="attempt">1/6</strong>
                             </div>
                             <div class="stat">
-                                <span>Canciones</span>
-                                <strong id="videoCount">0</strong>
+                                <span>Palabras</span>
+                                <strong id="wordCount">25</strong>
                             </div>
                         </div>
                         <div class="hint-card">
                             <strong>Cómo va</strong>
                             <p>
-                                Aparecerán 6 emojis que representan la canción. ¡Adivina el título antes de quedarte sin intentos!
+                                Escribe letras con el teclado (físico o virtual). Cada intento cambia de color según la precisión.
                             </p>
                         </div>
                         <div class="hint-card">
-                            <strong>Emojis</strong>
-                            <p id="segmentsInfo">
-                                Empiezas con 1 emoji visible. Cada fallo revela uno más.
+                            <strong>Colores</strong>
+                            <p>
+                                <span style="color:#36e28a;font-weight:800;">🟩 Correcta + posición</span><br>
+                                <span style="color:#f1c40f;font-weight:800;">🟨 Correcta, mala posición</span><br>
+                                <span style="color:#6b6b7b;font-weight:800;">⬜ No está en la palabra</span>
                             </p>
                         </div>
                     </aside>
 
                     <div>
                         <article class="game-card glass">
+                            <div id="livesBar" class="lives-bar">
+                                <div id="livesDisplay"></div>
+                            </div>
                             <div id="mysteryScreen" class="mystery-screen">
-                                <div id="livesDisplay" style="position:absolute;top:18px;left:50%;transform:translateX(-50%);z-index:10;display:none;gap:6px;font-size:1.8rem;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.5));pointer-events:none;"></div>
                                 <div class="curtain">
-                                    <div id="emojiDisplay" class="emoji-display">❓ ❓ ❓ ❓ ❓ ❓</div>
+                                    <div id="wordleGrid" class="wordle-grid"></div>
                                 </div>
                             </div>
 
                             <div class="controls">
-                                <div id="rounds" class="rounds" aria-label="Rondas del juego"></div>
-                                <div class="guess-row">
-                                    <input id="guessInput" type="text" autocomplete="off"
-                                        placeholder="Escribe el título de la canción" />
-                                    <button id="guessBtn" class="btn btn-primary" type="button">
-                                        Adivinar
-                                    </button>
-                                    <div id="searchResults" class="search-results" role="listbox"
-                                        aria-label="Resultados por título"></div>
-                                </div>
+                                <div id="keyboard" class="keyboard"></div>
                                 <div class="actions">
-                                    <button id="newBtn" class="btn btn-blue" type="button">
-                                        Nueva Canción
-                                    </button>
-                                    <button id="skipBtn" class="btn btn-dark" type="button">
-                                        Siguiente pista
-                                    </button>
-                                    <button id="finalizeBtnMid" class="btn btn-dark" type="button">
-                                        Finalizar partida
-                                    </button>
+                                    <button id="newBtn" class="btn btn-blue" type="button">Nueva Palabra</button>
+                                    <button id="finalizeBtnMid" class="btn btn-dark" type="button">Finalizar partida</button>
                                 </div>
                                 <div id="status" class="status" role="status">
                                     Listo para jugar
@@ -1095,30 +719,26 @@
                         </article>
 
                         <article id="reveal" class="reveal glass">
-                            <div id="revealMedia" class="reveal-media"></div>
                             <div class="reveal-body">
-                                <h2 id="revealTitle">Título</h2>
-                                <p id="revealLinkText"></p>
+                                <div id="resultDisplay" class="result-display">
+                                    <div id="resultWord" class="result-word"></div>
+                                    <div id="resultSubtitle" class="result-subtitle"></div>
+                                </div>
+                                <h2 id="revealTitle">Resultado</h2>
                                 <div class="actions">
-                                    <a id="watchLink" class="pill-link" href="#" target="_blank" rel="noreferrer">Abrir
-                                        en YouTube</a>
-                                    <button id="againBtn" class="btn btn-blue" type="button">
-                                        Jugar otra
-                                    </button>
-                                    <button id="finalizeBtn" class="btn btn-dark" type="button">
-                                        Finalizar
-                                    </button>
+                                    <button id="againBtn" class="btn btn-blue" type="button">Jugar otra</button>
+                                    <button id="finalizeBtn" class="btn btn-dark" type="button">Finalizar</button>
                                 </div>
                                 <p style="color: var(--yellow); font-size: 0.85rem; font-weight: 700; margin-top: 12px; text-align: center;"><img src="../Info.png" alt="" style="width:2em;height:2em;vertical-align:middle;margin-right:4px;"> Dale a "Finalizar" para guardar tu puntuación en el leaderboard.</p>
                             </div>
                         </article>
                     </div> 
                 </section>
-            </div> 
+            </div>
         </div> 
     </main>
 
-    <!-- Completion Overlay (No-Repeat mode) -->
+    <!-- Completion Overlay -->
     <div id="completionOverlay" class="modal" role="dialog" aria-modal="true">
         <article class="letter" style="text-align: center;">
             <div class="letter-head" style="justify-content: center;">
@@ -1126,13 +746,13 @@
             </div>
             <div class="letter-body" style="text-align: center;">
                 <p style="font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 12px;">
-                    ¡Has adivinado todas las canciones!
+                    ¡Has adivinado todas las palabras!
                 </p>
                 <p style="color: var(--muted); margin-bottom: 8px;">
                     Puntuación final: <strong style="color: var(--yellow);" id="completionScore">0</strong> puntos
                 </p>
                 <p style="color: var(--muted); margin-bottom: 24px;">
-                    Has completado el reto sin repetir ninguna canción. ¡Eres un verdadero experto en la discografía de Ricky!
+                    Has completado el reto sin repetir ninguna palabra. ¡Eres un verdadero experto!
                 </p>
                 <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
                     <button id="completionRestartBtn" class="mode-start-btn" style="font-size: 1rem; padding: 14px 32px;"><img src="../Reiniciar.png" alt="" class="rlb-icon-img" style="width:2.2em;height:2.2em;vertical-align:middle;margin-right:6px;"> Volver a empezar</button>
@@ -1161,12 +781,13 @@
     </div>
 
     <!-- Leaderboard -->
-    <div style="width:100%;max-width:1080px;margin:24px auto;padding:0 16px;">
+    <div style="width:100%;max-width:1080px;margin:12px auto;padding:0 16px;">
         <div class="leaderboard-panel visible" id="leaderboardPanel">
             <div id="leaderboardContainer"></div>
         </div>
     </div>
 
+    <!-- Info Modal -->
     <div id="infoModal" class="modal" role="dialog" aria-modal="true">
         <article class="letter">
             <div class="letter-head">
@@ -1175,18 +796,19 @@
             </div>
             <div class="letter-body">
                 <p><strong style="color:var(--yellow);"><img src="../Iconos/Dificultad dif%C3%ADcil.png" alt="" class="rlb-icon-img"> Cagado</strong><br>
-                4 intentos. Empiezas con 3 emojis visibles desde el principio. Cada fallo revela uno más. Ideal para principiantes.</p>
+                8 intentos para adivinar la palabra. Más oportunidades, más fácil.</p>
                 <p><strong style="color:var(--pink);"><img src="../Iconos/Dificultad normal.png" alt="" class="rlb-icon-img"> Normal</strong><br>
-                6 intentos. Empiezas con solo 1 emoji visible y cada fallo revela uno más. El modo clásico.</p>
+                6 intentos. El modo clásico del Wordle.</p>
                 <hr style="border:none;border-top:1px solid rgba(255,255,255,0.1);margin:8px 0;">
                 <p><strong style="color:var(--green);"><img src="../Iconos/Modo sin repetir.png" alt="" class="rlb-icon-img"> Sin repetir</strong><br>
-                No se repite ninguna canción hasta que se hayan mostrado todas. Más desafío.</p>
+                No se repite ninguna palabra hasta que se hayan mostrado todas. Más desafío.</p>
                 <p><strong style="color:var(--yellow);"><img src="../Iconos/Modo aleatorio.png" alt="" class="rlb-icon-img"> Aleatorio</strong><br>
-                Las canciones se repiten aleatoriamente. Puede salir la misma dos veces seguidas.</p>
+                Las palabras se repiten aleatoriamente. Puede salir la misma dos veces seguidas.</p>
             </div>
         </article>
     </div>
 
+    <!-- Info Vidas Modal -->
     <div id="infoLivesModal" class="modal" role="dialog" aria-modal="true">
         <article class="letter">
             <div class="letter-head">
@@ -1221,25 +843,10 @@
         </article>
     </div>
 
-    <!-- Letter Modal -->
-    <div id="letterModal" class="modal" role="dialog" aria-modal="true">
-        <article class="letter">
-            <div class="letter-head">
-                <strong>Mensaje para Ricky (De Marc)</strong>
-                <button id="closeLetterBtn" class="close-btn" type="button" aria-label="Cerrar">×</button>
-            </div>
-            <div class="letter-body">
-                <p>Hola Ricky, soy amigo de Jan (Marc). Te quería decir que con los emojis he ayudado a Jan y te lo he puesto más difícil, jajaja. Eres mi creador de contenido favorito. Gracias por todo lo que haces. Eres muy válido y valioso para mí <img src="../Iconos RickyEdit Web/💜.png" alt="" style="width:2.2em;height:2.2em;vertical-align:middle;">.</p>
-            </div>
-        </article>
-    </div>
-
     <footer>
         <div class="footer-links">
-            <a href="https://janiito-studio.github.io/RickyEdit-Web/" target="_blank" rel="noreferrer">Otros Proyectos
-                Relacionados (La web que te hice)</a>
-            <a href="https://janiito-studio.github.io/Janiito-Studio/" target="_blank" rel="noreferrer">Mi
-                Portafolios</a>
+            <a href="https://janiito-studio.github.io/RickyEdit-Web/" target="_blank" rel="noreferrer">Otros Proyectos Relacionados (La web que te hice)</a>
+            <a href="https://janiito-studio.github.io/Janiito-Studio/" target="_blank" rel="noreferrer">Mi Portafolios</a>
         </div>
         <p>© 2026 Rickyedit Games. Hecho por Jan (Discord: .janiito | Twitch: jasanzo)</p>
     </footer>
@@ -1248,13 +855,12 @@
     <link rel="stylesheet" href="../updates.css">
     <link rel="stylesheet" href="../easter-egg.css">
     <link rel="stylesheet" href="../volume.css">
-    <script src="../ricky-songs.js"></script>
     <script src="../leaderboard.js?v=2.0"></script>
     <script src="../updates.js"></script>
     <script src="../easter-egg.js?v=2.0"></script>
     <script src="../volume.js"></script>
     <script src="../rlb-player.js"></script>
-    <script src="game.js?v=2.0"></script>
+    <script src="game.js"></script>
 </body>
 
 </html>

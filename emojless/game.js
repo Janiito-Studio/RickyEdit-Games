@@ -448,7 +448,6 @@ els.newBtn.addEventListener("click", () => { playSound('click'); newRound(); });
 els.againBtn.addEventListener("click", () => { playSound('click'); newRound(); });
 els.skipBtn.addEventListener("click", () => {
     playSound('click');
-    state.total++;
     nextRound(false);
     failCount++;
     if (failCount >= 2) {
@@ -940,7 +939,7 @@ const EMOJLESS_INFO_HTML =
     '<li><span class="upd-highlight">Cagado</span> — Empiezas con 3 emojis visibles y tienes 4 intentos</li>' +
     '<li><span class="upd-highlight">Normal</span> — Empiezas con 1 emoji visible y tienes 6 intentos</li>' +
     '<li><span class="upd-highlight">Sin repetir</span> — No se repite ninguna canción</li>' +
-    '<li><span class="upd-highlight">Aleatorio</span> — Las canciones salen en orden aleatorio</li>' +
+    '<li><span class="upd-highlight">Aleatorio</span> — Las canciones se repiten y salen en orden aleatorio</li>' +
     '</ul>' +
     '<hr class="upd-sep">' +
     '<h3><img src="../Iconos RickyEdit Web/Vida Entera.png" alt="" style="width:2.4em;height:2.4em;vertical-align:middle;margin-right:6px;"> Sistema de vidas</h3>' +

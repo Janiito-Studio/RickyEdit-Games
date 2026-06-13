@@ -442,14 +442,17 @@ function playSound(type) {
 
 function updateLivesDisplay() {
     var el = document.getElementById('livesDisplay');
+    var arena = document.querySelector('.arena');
     if (!el) return;
     if (!livesEnabled) {
         el.style.display = 'none';
+        if (arena) arena.classList.remove('has-lives');
         try { localStorage.removeItem('rlb_obs_lives'); } catch(e) {}
         try { var _pid = localStorage.getItem('rlb_player_id'); if (_pid) fetch('https://rickyedit-notifications-default-rtdb.firebaseio.com/leaderboard/obs_lives_' + encodeURIComponent(_pid) + '.json', { method: 'DELETE' }); } catch(e) {}
         return;
     }
     el.style.display = 'flex';
+    if (arena) arena.classList.add('has-lives');
     var hearts = el.querySelectorAll('.life-heart');
     if (hearts.length !== MAX_LIVES) {
         el.innerHTML = '';
